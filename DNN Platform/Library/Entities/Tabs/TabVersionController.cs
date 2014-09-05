@@ -55,7 +55,7 @@ namespace DotNetNuke.Entities.Tabs
                                                                 return CBO.FillCollection<TabVersion>(Provider.GetTabVersions(tabId));                                                                    
                                                             });            
         }
-
+        
         public void SaveTabVersion(TabVersion tabVersion)
         {
             var tabVersionId = Provider.SaveTabVersion(tabVersion.TabVersionId, tabVersion.TabId, tabVersion.TimeStamp,
@@ -89,7 +89,7 @@ namespace DotNetNuke.Entities.Tabs
             Provider.DeleteTabVersion(tabVersionId);
             ClearCache(tabId);
         }
-
+        
         private void ClearCache(int tabId)
         {
             string cacheKey = string.Format(DataCache.TabVersionsCacheKey, tabId);

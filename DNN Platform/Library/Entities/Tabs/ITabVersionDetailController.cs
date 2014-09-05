@@ -34,6 +34,14 @@ namespace DotNetNuke.Entities.Tabs
         TabVersionDetail GetTabVersionDetail(int tabVersionDetailId, int tabVersionId, bool ignoreCache = false);
 
         /// <summary>
+        /// Get all Tab Version Details of a existing version and earlier
+        /// </summary>
+        /// <param name="tabId">The Tab Id to be queried</param>
+        /// <param name="version">The Tab Id to be queried</param>        
+        IEnumerable<TabVersionDetail> GetVersionHistory(int tabId, int version);
+
+
+        /// <summary>
         /// Gets all Tab Version Details of an existing Tab Version
         /// </summary>        
         /// <param name="tabVersionId">Tha Tab Version Id to be quiered</param>                
@@ -42,8 +50,19 @@ namespace DotNetNuke.Entities.Tabs
 
         /// <summary>
         /// Saves a Tab Version Detail object. Adds or updates an existing one
-        /// </summary>        
+        /// </summary>      
         void SaveTabVersionDetail(TabVersionDetail tabVersionDetail);
+
+
+        /// <summary>
+        /// Saves a Tab Version Detail object. Adds or updates an existing one
+        /// </summary>        
+        void SaveTabVersionDetail(TabVersionDetail tabVersionDetail, int createdByUserID);
+
+        /// <summary>
+        /// Saves a Tab Version Detail object. Adds or updates an existing one
+        /// </summary>        
+        void SaveTabVersionDetail(TabVersionDetail tabVersionDetail, int createdByUserID, int modifiedByUserID);
 
         /// <summary>
         /// Deletes a Tab Version Detail

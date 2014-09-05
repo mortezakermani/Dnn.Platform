@@ -900,6 +900,11 @@ namespace DotNetNuke.Data
             return ExecuteReader("GetTabVersionDetails", GetNull(tabVersionId));
         }
 
+        public virtual IDataReader GetTabVersionDetailsHistory(int tabId, int version)
+        {
+            return ExecuteReader("GetTabVersionDetailsHistory", GetNull(tabId), GetNull(version));
+        }
+
         public virtual IDataReader GetCustomAliasesForTabs()
         {
             return ExecuteReader("GetCustomAliasesForTabs");
@@ -935,9 +940,9 @@ namespace DotNetNuke.Data
             return ExecuteScalar<int>("SaveTabVersion", tabVersionId, tabId, timeStamp, version, isPublished, createdByUserID, modifiedByUserID);
         }
 
-        public virtual int SaveTabVersionDetail(int tabVersionDetailId, int tabVersionId, int moduleId, int moduleVersion, string paneName, int moduleOrder, int createdByUserID, int modifiedByUserID)
+        public virtual int SaveTabVersionDetail(int tabVersionDetailId, int tabVersionId, int moduleId, int moduleVersion, string paneName, int moduleOrder, int action, int createdByUserID, int modifiedByUserID)
         {
-            return ExecuteScalar<int>("SaveTabVersionDetail", tabVersionDetailId, tabVersionId, moduleId, moduleVersion, paneName, moduleOrder, createdByUserID, modifiedByUserID);
+            return ExecuteScalar<int>("SaveTabVersionDetail", tabVersionDetailId, tabVersionId, moduleId, moduleVersion, paneName, moduleOrder, action, createdByUserID, modifiedByUserID);
         }
 
         public virtual void UpdateTab(int tabId, int contentItemId, int portalId, Guid versionGuid,
