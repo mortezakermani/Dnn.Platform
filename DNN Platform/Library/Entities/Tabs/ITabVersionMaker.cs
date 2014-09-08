@@ -19,34 +19,28 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
+using System.Collections.Generic;
+using DotNetNuke.Entities.Modules;
 
 namespace DotNetNuke.Entities.Tabs
 {
-    ///<summary>
-    ///Class to represent a Tab Version object
-    ///</summary>    
-    public class TabVersionDetail: BaseEntityInfo
+    public interface ITabVersionMaker
     {
-      #region Public Properties
-
-        public int TabVersionDetailId { get; set; }
-        public int TabVersionId { get; set; }
-        public int ModuleId { get; set; }
-        public int ModuleVersion { get; set; }
-        public string PaneName { get; set; }
-        public int ModuleOrder { get; set; }
-        public TabVersionDetailAction Action { get; set; }
-
-        #endregion
+        /// <summary>
+        /// Creates a new Tab Version 
+        /// </summary>        
+        TabVersion CreateNewVersion(int tabId, int createdByUserID);
         
-    }
+        /// <summary>
+        /// Get all Modules and their Module version contained in specific Tab Version
+        /// </summary>        
+        IEnumerable<TabVersionDetail> GetVersionModules(int tabId, int version, bool ignoreCache = false);
+        
+        /// <summary>
+        /// Rolls back an existing version
+        /// </summary>
+        TabVersion RollBackVesion(int tabId, int createdByUserID, int version);
 
-    public enum TabVersionDetailAction
-    {
-        Added,
-        Modified,
-        Deleted,
-        Reset
+
     }
 }

@@ -40,12 +40,6 @@ namespace DotNetNuke.Entities.Tabs
         ///  Tracks a deleted module into a Tab Version
         /// </summary>
         void TrackModuleDeletion(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion);
-
-        /// <summary>
-        /// Get all Modules and their Module version contained in specific Tab Version
-        /// </summary>        
-        IEnumerable<TabVersionDetail> GetVersionModules(int tabId, int version, bool ignoreCache = false);
-
-
+        
     }
 }

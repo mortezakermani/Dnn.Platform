@@ -73,123 +73,21 @@ namespace DotNetNuke.Entities.Tabs
             
             TabVersionDetailController.Instance.SaveTabVersionDetail(tabVersionDetail, createdByUserID);
         }
-
-        public IEnumerable<TabVersionDetail> GetVersionModules(int tabId, int version, bool ignoreCache = false)
-        {
-            //if we are not using the cache
-            if (ignoreCache || Host.Host.PerformanceSetting == Globals.PerformanceSettings.NoCaching)
-            {
-                return GetVersionModulesInternal(tabId, version);
-            }
-
-            string cacheKey = string.Format(DataCache.TabVersionModulesCacheKey, tabId, version);
-            return CBO.GetCachedObject<List<TabVersionDetail>>(new CacheItemArgs(cacheKey,
-                                                                    DataCache.TabVersionModulesTimeOut,
-                                                                    DataCache.TabVersionModulesPriority),
-                                                            c =>
-                                                            {
-                                                                return GetVersionModulesInternal(tabId, version);
-                                                            });
-        }
-
-        private IEnumerable<TabVersionDetail> GetVersionModulesInternal(int tabId, int version)
-        {
-            var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, version);
-
-            var versionModules = new Dictionary<int, TabVersionDetail>();
-            foreach (var tabVersionDetail in tabVersionDetails)
-            {
-                switch (tabVersionDetail.Action)
-                {
-                    case TabVersionDetailAction.Added:                        
-                    case TabVersionDetailAction.Modified:
-                        if (versionModules.ContainsKey(tabVersionDetail.ModuleId))
-                        {
-                            versionModules[tabVersionDetail.ModuleId] = tabVersionDetail;
-                        }
-                        else
-                        {
-                            versionModules.Add(tabVersionDetail.ModuleId, tabVersionDetail);
-                        }
-                        break;
-                    case TabVersionDetailAction.Deleted:
-                        if (versionModules.ContainsKey(tabVersionDetail.ModuleId))
-                        {
-                            versionModules.Remove(tabVersionDetail.ModuleId);
-                        }
-                        break;
-                }
-            }
-
-            return versionModules.Values.ToList();
-        }
-
+        
         private TabVersion GetUnPublishedTabVersion(int tabId, int createdByUserID, out bool newTabVersion)
         {
             if (TabVersionController.Instance.GetTabVersions(tabId).All(tv => tv.IsPublished))
             {
                 newTabVersion = true;
-                return CreateNewVersion(tabId, createdByUserID);
+                return TabVersionMaker.Instance.CreateNewVersion(tabId, createdByUserID);
             }
             newTabVersion = false;
             return TabVersionController.Instance.GetTabVersions(tabId).SingleOrDefault(tv => !tv.IsPublished);
         }
 
-        private TabVersion CreateNewVersion(int tabId, int createdByUserID)
-        {
-            //TODO Get this value from Settings
-            var maxVersionsAllowed = 5;
-            var tabVersionsOrdered = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
-            var tabVersionCount = tabVersionsOrdered.Count();
-            if ( tabVersionCount >= maxVersionsAllowed)
-            {
-                //The last existing version is going to be deleted, therefore we need to add the snapshot to the previous one
-                var snapShotTabVersion = tabVersionsOrdered.ElementAtOrDefault(tabVersionCount - 2);
-                CreateSnapshotOverVersion(tabId, tabVersionsOrdered, snapShotTabVersion);
-                DeleteOldVersions(tabVersionsOrdered, snapShotTabVersion);
-            }
-
-            return TabVersionController.Instance.CreateTabVersion(tabId, createdByUserID);
-        }
         
-        private void CreateSnapshotOverVersion(int tabId, IOrderedEnumerable<TabVersion> tabVersionsOrdered, TabVersion snapshoTabVersion)
-        {
-            var snapShotTabVersionDetails = GetVersionModulesInternal(tabId, snapshoTabVersion.Version);
-            
-            var existingTabVersionDetails = TabVersionDetailController.Instance.GetTabVersionDetails(snapshoTabVersion.TabVersionId);
-            for(int i = existingTabVersionDetails.Count(); i > 0; i--)
-            {
-                var existingDetail = existingTabVersionDetails.ElementAtOrDefault(i - 1);
-                if (snapShotTabVersionDetails.All(tvd => tvd.TabVersionDetailId != existingDetail.TabVersionDetailId))
-                {
-                    TabVersionDetailController.Instance.DeleteTabVersionDetail(existingDetail.TabVersionId, existingDetail.TabVersionDetailId);                    
-                }
-            }
-
-            foreach (var tabVersionDetail in snapShotTabVersionDetails)
-            {
-                tabVersionDetail.TabVersionId = snapshoTabVersion.TabVersionId;
-                TabVersionDetailController.Instance.SaveTabVersionDetail(tabVersionDetail);
-            }
-
-        }
         
-        private void DeleteOldVersions(IEnumerable<TabVersion> tabVersionsOrdered, TabVersion snapShotTabVersion)
-        {
-            var oldVersions = tabVersionsOrdered.Where(tv => tv.Version < snapShotTabVersion.Version);
-            for (int i = oldVersions.Count(); i > 0; i--)
-            {
-                var oldVersion = oldVersions.ElementAtOrDefault(i - 1);
-                var oldVersionDetails = TabVersionDetailController.Instance.GetTabVersionDetails(oldVersion.TabVersionId);
-                for (int j = oldVersionDetails.Count(); j > 0; j--)
-                {
-                    var oldVersionDetail = oldVersionDetails.ElementAtOrDefault(j - 1);
-                    TabVersionDetailController.Instance.DeleteTabVersionDetail(oldVersionDetail.TabVersionId, oldVersionDetail.TabVersionDetailId);
-                }
-                TabVersionController.Instance.DeleteTabVersion(oldVersion.TabId, oldVersion.TabVersionId);
-            }
-        }
-
+        
         private TabVersionDetail GetTabVersionDetailFromModule(int tabVersionId, ModuleInfo module, int moduleVersion, TabVersionDetailAction action)
         {
             return new TabVersionDetail
