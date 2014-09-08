@@ -30,7 +30,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web;
-
+using System.Web.WebPages;
 using DotNetNuke.Application;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
@@ -1154,26 +1154,36 @@ namespace DotNetNuke.Entities.Portals
             if (ActiveTab != null)
             {
                 var objPaneModules = new Dictionary<string, int>();
-                foreach (ModuleInfo cloneModule in ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone()))
+
+                var version = HttpContext.Current.Request.QueryString["version"];
+
+                if (!version.IsEmpty() && tabID != -1)
                 {
-                    ConfigureModule(cloneModule);
-
-                    if (objPaneModules.ContainsKey(cloneModule.PaneName) == false)
-                    {
-                        objPaneModules.Add(cloneModule.PaneName, 0);
-                    }
-                    cloneModule.PaneModuleCount = 0;
-                    if (!cloneModule.IsDeleted)
-                    {
-                        objPaneModules[cloneModule.PaneName] = objPaneModules[cloneModule.PaneName] + 1;
-                        cloneModule.PaneModuleIndex = objPaneModules[cloneModule.PaneName] - 1;
-                    }
-
-                    ActiveTab.Modules.Add(cloneModule);
+                    ActiveTab.Modules.AddRange(GetVersionedModules(tabID, version));
                 }
-                foreach (ModuleInfo module in ActiveTab.Modules)
+                else
                 {
-                    module.PaneModuleCount = objPaneModules[module.PaneName];
+                    foreach (ModuleInfo cloneModule in ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone()))
+                    {
+                        ConfigureModule(cloneModule);
+
+                        if (objPaneModules.ContainsKey(cloneModule.PaneName) == false)
+                        {
+                            objPaneModules.Add(cloneModule.PaneName, 0);
+                        }
+                        cloneModule.PaneModuleCount = 0;
+                        if (!cloneModule.IsDeleted)
+                        {
+                            objPaneModules[cloneModule.PaneName] = objPaneModules[cloneModule.PaneName] + 1;
+                            cloneModule.PaneModuleIndex = objPaneModules[cloneModule.PaneName] - 1;
+                        }
+
+                        ActiveTab.Modules.Add(cloneModule);
+                    }
+                    foreach (ModuleInfo module in ActiveTab.Modules)
+                    {
+                        module.PaneModuleCount = objPaneModules[module.PaneName];
+                    }
                 }
             }
         }
@@ -1193,7 +1203,8 @@ namespace DotNetNuke.Entities.Portals
         /// -----------------------------------------------------------------------------
         private bool VerifyPortalTab(int portalId, int tabId)
         {
-            var portalTabs = TabController.Instance.GetTabsByPortal(portalId);
+            TabCollection portalTabs = TabController.Instance.GetTabsByPortal(portalId);
+
             var hostTabs = TabController.Instance.GetTabsByPortal(Null.NullInteger);
 
             //Check portal
@@ -1241,6 +1252,105 @@ namespace DotNetNuke.Entities.Portals
             }
 
             return isVerified;
+        }
+
+        private ArrayList GetVersionedModules(int tabId, string version)
+        {
+            var versionTab = TabVersionController.Instance.GetTabVersion(int.Parse(version), tabId);
+            // FIXME: uncomment:
+            //var details = TabVersionDetailController.Instance.GetTabVersionDetails(versionTab.TabVersionId);
+            // FIXME: to be deleted.
+            var details = new List<TabVersionDetail>
+            {
+                 new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+                 new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane", ModuleVersion = 62},
+                 new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+                 new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
+            };
+
+            var objPaneModules = new Dictionary<string, int>();
+
+            var modules = new ArrayList();
+
+            foreach (var detail in details)
+            {
+
+                var module = ModuleController.Instance.GetModule(detail.ModuleId, Null.NullInteger, true);
+                if (module == null)
+                {
+                    continue;
+                }
+
+                ModuleInfo cloneModule = module.Clone();
+                ConfigureModule(cloneModule);
+                cloneModule.ModuleVersion = detail.ModuleVersion;
+                cloneModule.Version = detail.ModuleVersion.ToString();
+
+                if (objPaneModules.ContainsKey(cloneModule.PaneName) == false)
+                {
+                    objPaneModules.Add(cloneModule.PaneName, 0);
+                }
+                cloneModule.PaneModuleCount = 0;
+                if (!cloneModule.IsDeleted)
+                {
+                    objPaneModules[cloneModule.PaneName] = objPaneModules[cloneModule.PaneName] + 1;
+                    cloneModule.PaneModuleIndex = objPaneModules[cloneModule.PaneName] - 1;
+                }
+
+                modules.Add(cloneModule);
+            }
+
+            foreach (ModuleInfo module in modules)
+            {
+                module.PaneModuleCount = objPaneModules[module.PaneName];
+            }
+
+            return modules;
+        }
+
+        private static TabCollection GetTabVersion(int tabId, string version, TabCollection portalTabs)
+        {
+            var versionTab = TabVersionController.Instance.GetTabVersion(int.Parse(version), tabId);
+
+            var portalTabsForVersioning = new TabCollection();
+            //if (versionTab != null)
+            {
+                //var details = TabVersionDetailController.Instance.GetTabVersionDetails(versionTab.TabVersionId);
+
+                var details = new List<TabVersionDetail>
+                {
+                    //new TabVersionDetail {ModuleId = 368},
+                    new TabVersionDetail {ModuleId = 365, ModuleOrder = 3},
+                    new TabVersionDetail {ModuleId = 363, ModuleOrder = 1},
+                    new TabVersionDetail {ModuleId = 367, ModuleOrder = 1},
+                    new TabVersionDetail {ModuleId = 366, ModuleOrder = 1},
+                    new TabVersionDetail {ModuleId = 370, ModuleOrder = 1},
+                    new TabVersionDetail {ModuleId = 371, ModuleOrder = 1},
+                    new TabVersionDetail {ModuleId = 364, ModuleOrder = 1},
+                    new TabVersionDetail {ModuleId = 372, ModuleOrder = 1},
+                };
+
+                foreach (var portalTab in portalTabs)
+                {
+                    var tab = portalTab.Value;
+                    var clonedTab = tab.Clone();
+                    portalTabsForVersioning.Add(tab);
+
+                    var modulesToBeDeleted = new List<ModuleInfo>();
+                    foreach (var child in tab.ChildModules)
+                    {
+                        clonedTab.Modules.Add(child.Value.Clone());
+
+                        var detail = details.Find(item => item.ModuleId == child.Key);
+                        if (detail == null)
+                        {
+                            modulesToBeDeleted.Add(child.Value);
+                        }
+                    }
+                    modulesToBeDeleted.ForEach(item => tab.ChildModules.Remove(item.ModuleID));
+                }
+            }
+            return portalTabsForVersioning;
         }
 
         private bool VerifySpecialTab(int portalId, int tabId)

@@ -506,6 +506,15 @@ namespace DotNetNuke.UI.Modules
                     //inject a message placeholder for common module messaging - UI.Skins.Skin.AddModuleMessage
                     InjectMessageControl(this);
 
+                    if (_control is IVersionable)
+                    {
+                        var versionableControl = _control as IVersionable;
+                        if (_moduleConfiguration.ModuleVersion != -1)
+                        {
+                            versionableControl.SetModuleVersion(_moduleConfiguration.ModuleVersion);    
+                        }
+                    }
+
                     //inject the module into the panel
                     InjectModuleContent(_control);
                 }
