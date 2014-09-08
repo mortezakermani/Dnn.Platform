@@ -279,6 +279,7 @@
     <Compile Include="Entities\Portals\IPortalEventHandlers.cs" />
     <Compile Include="Entities\Profile\IProfileEventHandlers.cs" />
     <Compile Include="Entities\Profile\ProfileEventArgs.cs" />
+    <Compile Include="Entities\Tabs\ITabVersionMaker.cs" />
     <Compile Include="Entities\Tabs\ITabVersionTracker.cs" />
     <Compile Include="Entities\Tabs\ITabVersionDetailController.cs" />
     <Compile Include="Entities\Tabs\ITabVersionController.cs" />
@@ -286,6 +287,7 @@
     <Compile Include="Entities\Tabs\TabVersionController.cs" />
     <Compile Include="Entities\Tabs\TabVersionDetail.cs" />
     <Compile Include="Entities\Tabs\TabVersion.cs" />
+    <Compile Include="Entities\Tabs\TabVersionMaker.cs" />
     <Compile Include="Entities\Tabs\TabVersionTracker.cs" />
     <Compile Include="Entities\Users\IUserEventHandlers.cs" />
     <Compile Include="Common\Internal\IEventHandlersContainer.cs" />
