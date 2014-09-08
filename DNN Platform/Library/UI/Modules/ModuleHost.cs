@@ -257,6 +257,14 @@ namespace DotNetNuke.UI.Modules
                                                               moduleInfo)); 
             }
 
+            // TODO: this should be reviewed. Side effects?
+            // If an specific version of a page is been viewed. This is not 
+            // the standard view mode.
+            if (moduleInfo.ModuleVersion != Null.NullInteger)
+            {
+                return false;
+            }
+
             return viewMode || settings.UserMode == PortalSettings.Mode.View;
         }
 
@@ -509,10 +517,7 @@ namespace DotNetNuke.UI.Modules
                     if (_control is IVersionable)
                     {
                         var versionableControl = _control as IVersionable;
-                        if (_moduleConfiguration.ModuleVersion != -1)
-                        {
-                            versionableControl.SetModuleVersion(_moduleConfiguration.ModuleVersion);    
-                        }
+                        versionableControl.SetModuleVersion(_moduleConfiguration.ModuleVersion);    
                     }
 
                     //inject the module into the panel

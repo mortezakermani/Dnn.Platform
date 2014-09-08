@@ -1257,15 +1257,15 @@ namespace DotNetNuke.Entities.Portals
         private ArrayList GetVersionedModules(int tabId, string version)
         {
             var versionTab = TabVersionController.Instance.GetTabVersion(int.Parse(version), tabId);
-            // FIXME: uncomment:
+            // TODO: uncommend an delete the mock data.
             //var details = TabVersionDetailController.Instance.GetTabVersionDetails(versionTab.TabVersionId);
-            // FIXME: to be deleted.
             var details = new List<TabVersionDetail>
             {
                  new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
                  new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane", ModuleVersion = 62},
                  new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
                  new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
+
             };
 
             var objPaneModules = new Dictionary<string, int>();
@@ -1284,7 +1284,6 @@ namespace DotNetNuke.Entities.Portals
                 ModuleInfo cloneModule = module.Clone();
                 ConfigureModule(cloneModule);
                 cloneModule.ModuleVersion = detail.ModuleVersion;
-                cloneModule.Version = detail.ModuleVersion.ToString();
 
                 if (objPaneModules.ContainsKey(cloneModule.PaneName) == false)
                 {
