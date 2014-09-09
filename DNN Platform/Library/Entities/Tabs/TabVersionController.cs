@@ -41,7 +41,7 @@ namespace DotNetNuke.Entities.Tabs
 
         public TabVersion GetCurrentTabVersion(int tabId, bool ignoreCache = false)
         {
-            return GetTabVersions(tabId, ignoreCache).Where(tv => tv.IsPublished).OrderByDescending(tv => tv.CreatedOnDate).First();
+            return GetTabVersions(tabId, ignoreCache).Where(tv => tv.IsPublished).OrderByDescending(tv => tv.CreatedOnDate).FirstOrDefault();
         }
 
         public IEnumerable<TabVersion> GetTabVersions(int tabId, bool ignoreCache = false)

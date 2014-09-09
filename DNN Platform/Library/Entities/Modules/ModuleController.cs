@@ -1489,7 +1489,19 @@ namespace DotNetNuke.Entities.Modules
             return CBO.GetCachedObject<Dictionary<int, ModuleInfo>>(new CacheItemArgs(cacheKey,
                                                                             DataCache.TabModuleCacheTimeOut,
                                                                             DataCache.TabModuleCachePriority),
-                                                                    c => CBO.FillDictionary("ModuleID", dataProvider.GetTabModules(tabId), new Dictionary<int, ModuleInfo>()));
+                                                                    c => GetModulesCurrentPage(tabId));
+        }
+
+        private Dictionary<int, ModuleInfo> GetModulesCurrentPage(int tabId)
+        {
+            var modules = TabVersionMaker.Instance.GetCurrentModules(tabId, true);
+            
+            var dictionary = new Dictionary<int, ModuleInfo>();
+            foreach (var module in modules)
+            {
+                dictionary[module.ModuleID] = module;
+            }
+            return dictionary;
         }
 
         /// <summary>
