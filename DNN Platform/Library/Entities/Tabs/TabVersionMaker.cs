@@ -165,6 +165,18 @@ namespace DotNetNuke.Entities.Tabs
                                                             });
         }
 
+        public IEnumerable<ModuleInfo> GetLastUnPublishedVersionModules(int tabId)
+        {
+            var tab = TabVersionController.Instance.GetLastUnPublishedVersionModules(tabId);
+            if (tab == null)
+            {
+                return CBO.FillCollection<ModuleInfo>(DataProvider.Instance().GetTabModules(tabId));
+            }
+
+            var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, tab.TabVersionId);
+            return convertToModuleInfo(GetSnapShot(tabVersionDetails), true);
+        }
+
         public IEnumerable<ModuleInfo> GetCurrentModules(int tabId, bool ignoreCache = false)
         {
             //if we are not using the cache

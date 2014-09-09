@@ -39,6 +39,11 @@ namespace DotNetNuke.Entities.Tabs
             return GetTabVersions(tabId, ignoreCache).SingleOrDefault(tv => tv.TabVersionId == tabVersionId);
         }
 
+        public TabVersion GetLastUnPublishedVersionModules(int tabId)
+        {
+            return GetTabVersions(tabId, true).Where(tv => !tv.IsPublished).OrderByDescending(tv => tv.CreatedOnDate).FirstOrDefault();
+        }
+
         public TabVersion GetCurrentTabVersion(int tabId, bool ignoreCache = false)
         {
             return GetTabVersions(tabId, ignoreCache).Where(tv => tv.IsPublished).OrderByDescending(tv => tv.CreatedOnDate).FirstOrDefault();

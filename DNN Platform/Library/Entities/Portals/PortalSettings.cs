@@ -1262,10 +1262,7 @@ namespace DotNetNuke.Entities.Portals
             }
             else if (editView)
             {
-                // TODO: when maker is done. 
-                // Edit mode. The last one is needed. At the moment, we get the same call result
-                modules = ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone());
-
+                modules = TabVersionMaker.Instance.GetLastUnPublishedVersionModules(tabId);
             }
             else
             {
