@@ -275,6 +275,7 @@
     <Compile Include="Entities\IPFilter\IPFilterController.cs" />
     <Compile Include="Entities\IPFilter\IPFilterInfo.cs" />
     <Compile Include="Entities\Modules\IVersionable.cs" />
+    <Compile Include="Entities\Modules\IVersionableControl.cs" />
     <Compile Include="Entities\Portals\PortalCreatedEventArgs.cs" />
     <Compile Include="Entities\Portals\IPortalEventHandlers.cs" />
     <Compile Include="Entities\Profile\IProfileEventHandlers.cs" />
