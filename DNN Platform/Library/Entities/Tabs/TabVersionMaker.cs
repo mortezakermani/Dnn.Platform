@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
+using DotNetNuke.Entities.Modules;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Tabs
@@ -145,27 +146,56 @@ namespace DotNetNuke.Entities.Tabs
             }
         }
 
-        public IEnumerable<TabVersionDetail> GetVersionModules(int tabId, int version, bool ignoreCache = false)
+        public IEnumerable<ModuleInfo> GetVersionModules(int tabId, int version, bool ignoreCache = false)
         {
             //if we are not using the cache
             if (ignoreCache || Host.Host.PerformanceSetting == Globals.PerformanceSettings.NoCaching)
             {
-                return GetVersionModulesInternal(tabId, version);
+                return convertToModuleInfo(GetVersionModulesInternal(tabId, version));
             }
 
             string cacheKey = string.Format(DataCache.TabVersionModulesCacheKey, tabId, version);
-            return CBO.GetCachedObject<List<TabVersionDetail>>(new CacheItemArgs(cacheKey,
+            return CBO.GetCachedObject<List<ModuleInfo>>(new CacheItemArgs(cacheKey,
                                                                     DataCache.TabVersionModulesTimeOut,
                                                                     DataCache.TabVersionModulesPriority),
                                                             c =>
                                                             {
-                                                                return GetVersionModulesInternal(tabId, version);
+                                                                return convertToModuleInfo(GetVersionModulesInternal(tabId, version));
                                                             });
+        }
+
+        private IEnumerable<ModuleInfo> convertToModuleInfo(IEnumerable<TabVersionDetail> details)
+        {
+            var modules = new List<ModuleInfo>();
+            foreach (var detail in details)
+            {
+                var module = ModuleController.Instance.GetModule(detail.ModuleId, Null.NullInteger, false);
+                if (module == null)
+                {
+                    continue;
+                }
+
+                ModuleInfo cloneModule = module.Clone();
+                cloneModule.ModuleVersion = detail.ModuleVersion;
+                cloneModule.PaneName = detail.PaneName;
+                cloneModule.ModuleOrder = detail.ModuleOrder;
+                modules.Add(cloneModule);
+            };
+
+            return modules;
         }
 
         private IEnumerable<TabVersionDetail> GetVersionModulesInternal(int tabId, int version)
         {
             var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, version);
+            // TODO: delete the mock data.
+            tabVersionDetails = new List<TabVersionDetail>
+            {
+                 new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+                 new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane", ModuleVersion = 62},
+                 new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+                 new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
+            };
 
             var versionModules = new Dictionary<int, TabVersionDetail>();
             foreach (var tabVersionDetail in tabVersionDetails)

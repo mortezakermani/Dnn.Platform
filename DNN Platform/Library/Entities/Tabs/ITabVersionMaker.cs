@@ -32,9 +32,9 @@ namespace DotNetNuke.Entities.Tabs
         TabVersion CreateNewVersion(int tabId, int createdByUserID);
         
         /// <summary>
-        /// Get all Modules and their Module version contained in specific Tab Version
+        /// Get all Modules Info associated with an specific version
         /// </summary>        
-        IEnumerable<TabVersionDetail> GetVersionModules(int tabId, int version, bool ignoreCache = false);
+        IEnumerable<ModuleInfo> GetVersionModules(int tabId, int version, bool ignoreCache = false);
         
         /// <summary>
         /// Rolls back an existing version
