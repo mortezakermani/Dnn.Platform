@@ -31,13 +31,19 @@ namespace DotNetNuke.Entities.Tabs
 {
     public class TabVersionController: ServiceLocator<ITabVersionController, TabVersionController>, ITabVersionController
     {
+
         private static readonly DataProvider Provider = DataProvider.Instance();
 
         public TabVersion GetTabVersion(int tabVersionId, int tabId, bool ignoreCache = false)
         {
             return GetTabVersions(tabId, ignoreCache).SingleOrDefault(tv => tv.TabVersionId == tabVersionId);
         }
-        
+
+        public TabVersion GetCurrentTabVersion(int tabId, bool ignoreCache = false)
+        {
+            return GetTabVersions(tabId, ignoreCache).Where(tv => tv.IsPublished).OrderByDescending(tv => tv.CreatedOnDate).First();
+        }
+
         public IEnumerable<TabVersion> GetTabVersions(int tabId, bool ignoreCache = false)
         {
             //if we are not using the cache

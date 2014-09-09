@@ -41,6 +41,11 @@ namespace DotNetNuke.Entities.Tabs
         /// <returns></returns>
         //IEnumerable<TabVersionDetail> GetVersionModules(int tabId, int version);
 
+        /// <summary>
+        /// Get all the last pusblished version of the page
+        /// </summary>
+        /// <param name="tabId">The Tab Id to be queried</param>  
+        TabVersion GetCurrentTabVersion(int tabId, bool ignoreCache = false);
 
         /// <summary>
         /// Gets all Tab Versions of an existing Tab
