@@ -37,6 +37,12 @@ namespace DotNetNuke.Entities.Tabs
         void TrackModuleModification(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion);
 
         /// <summary>
+        /// Tracks a modified module into a Tab Version
+        /// </summary>
+        void TrackModuleModification(int tabId, int createdByUserID, int moduleId, string paneName, int moduleOrder, int moduleVersion);
+
+
+        /// <summary>
         ///  Tracks a deleted module into a Tab Version
         /// </summary>
         void TrackModuleDeletion(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion);

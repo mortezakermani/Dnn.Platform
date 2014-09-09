@@ -58,9 +58,23 @@ namespace DotNetNuke.Entities.Tabs
 
         public void TrackModuleModification(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion)
         {
+            TrackModuleModification(tabId, createdByUserID, module.ModuleID, module.PaneName, module.ModuleOrder, moduleVersion);
+        }
+
+        public void TrackModuleModification(int tabId, int createdByUserID, int moduleId, string paneName, int moduleOrder, int moduleVersion)
+        {
             bool newTabVersion;
             var unPublishedVersion = GetUnPublishedTabVersion(tabId, createdByUserID, out newTabVersion);
-            TabVersionDetail tabVersionDetail = GetTabVersionDetailFromModule(unPublishedVersion.TabVersionId, module, moduleVersion, TabVersionDetailAction.Modified);
+            TabVersionDetail tabVersionDetail = GetTabVersionDetailFromModule(unPublishedVersion.TabVersionId, moduleId, paneName, moduleOrder, moduleVersion, TabVersionDetailAction.Modified);
+            if (TabVersionDetailController.Instance.GetTabVersionDetails(unPublishedVersion.TabVersionId).Any(tvd => tvd.ModuleId == moduleId))
+            {
+                var existingTabDetail = TabVersionDetailController.Instance.GetTabVersionDetails(unPublishedVersion.TabVersionId).SingleOrDefault(tvd => tvd.ModuleId == moduleId);
+                tabVersionDetail.TabVersionDetailId = existingTabDetail.TabVersionDetailId;
+                if (moduleVersion == Null.NullInteger)
+                {
+                    tabVersionDetail.ModuleVersion = existingTabDetail.ModuleVersion;
+                }
+            }
 
             TabVersionDetailController.Instance.SaveTabVersionDetail(tabVersionDetail, createdByUserID);
         }
@@ -71,6 +85,13 @@ namespace DotNetNuke.Entities.Tabs
             var unPublishedVersion = GetUnPublishedTabVersion(tabId, createdByUserID, out newTabVersion);
             TabVersionDetail tabVersionDetail = GetTabVersionDetailFromModule(unPublishedVersion.TabVersionId, module, moduleVersion, TabVersionDetailAction.Deleted);
             
+            if (TabVersionDetailController.Instance.GetTabVersionDetails(unPublishedVersion.TabVersionId).Any(tvd => tvd.ModuleId == module.ModuleID))
+            {
+                var existingTabDetail = TabVersionDetailController.Instance.GetTabVersionDetails(unPublishedVersion.TabVersionId).SingleOrDefault(tvd => tvd.ModuleId == module.ModuleID);
+                TabVersionDetailController.Instance.DeleteTabVersionDetail(existingTabDetail.TabVersionId, existingTabDetail.TabVersionDetailId);
+                return;
+            }
+
             TabVersionDetailController.Instance.SaveTabVersionDetail(tabVersionDetail, createdByUserID);
         }
         
@@ -99,6 +120,21 @@ namespace DotNetNuke.Entities.Tabs
                 ModuleOrder = module.ModuleOrder,
                 PaneName = module.PaneName,
                 Action = action              
+            };
+
+        }
+
+        private TabVersionDetail GetTabVersionDetailFromModule(int tabVersionId, int moduleId, string paneName, int moduleOrder, int moduleVersion, TabVersionDetailAction action)
+        {
+            return new TabVersionDetail
+            {
+                TabVersionDetailId = 0,
+                TabVersionId = tabVersionId,
+                ModuleId = moduleId,
+                ModuleVersion = moduleVersion,
+                ModuleOrder = moduleOrder,
+                PaneName = paneName,
+                Action = action
             };
 
         }

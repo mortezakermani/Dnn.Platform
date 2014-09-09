@@ -1832,7 +1832,7 @@ namespace DotNetNuke.Entities.Modules
                     ModuleOrder += 2;
                 }
                 dataProvider.UpdateModuleOrder(TabId, ModuleId, ModuleOrder, PaneName);
-                TabVersionTracker.Instance.TrackModuleModification(TabId, PortalSettings.Current.UserId, GetModule(ModuleId, TabId), Null.NullInteger);
+                TabVersionTracker.Instance.TrackModuleModification(TabId, PortalSettings.Current.UserId, GetModule(ModuleId, TabId, true), Null.NullInteger);
                 //clear cache
                 ClearCache(TabId);
             }
@@ -1869,6 +1869,10 @@ namespace DotNetNuke.Entities.Modules
                         {
                             moduleCounter += 1;
                             dataProvider.UpdateModuleOrder(TabId, Convert.ToInt32(dr2["ModuleID"]), (moduleCounter * 2) - 1, Convert.ToString(dr["PaneName"]));
+                            if (!Convert.ToBoolean(dr2["IsDeleted"]))
+                            {
+                                TabVersionTracker.Instance.TrackModuleModification(TabId, PortalSettings.Current.UserId, Convert.ToInt32(dr2["ModuleID"]), Convert.ToString(dr["PaneName"]), (moduleCounter * 2) - 1, Null.NullInteger);                                
+                            }
                         }
                     }
                     catch (Exception ex2)

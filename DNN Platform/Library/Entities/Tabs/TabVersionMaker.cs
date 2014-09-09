@@ -205,31 +205,32 @@ namespace DotNetNuke.Entities.Tabs
 
         private IEnumerable<TabVersionDetail> GetCurrentModulesInternal(int tabId)
         {
-            var tab = TabVersionController.Instance.GetCurrentTabVersion(tabId);
-            var tabVersionDetails = TabVersionDetailController.Instance.GetTabVersionDetails(tab.TabVersionId);
-            // TODO: delete the mock data.
-            tabVersionDetails = new List<TabVersionDetail>
-            {
-                 new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-                 new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane"},
-                 new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-                 new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
-            };
+            var tabVersion = TabVersionController.Instance.GetCurrentTabVersion(tabId);
+            //var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId,tabVersion.Version);
 
-            return GetSnapShot(tabVersionDetails);
+            // TODO: delete the mock data.
+            //tabVersionDetails = new List<TabVersionDetail>
+            //{
+            //     new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+            //     new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane"},
+            //     new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+            //     new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
+            //};
+
+            return GetVersionModulesInternal(tabId, tabVersion.Version);
         }
 
         private IEnumerable<TabVersionDetail> GetVersionModulesInternal(int tabId, int version)
         {
             var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, version);
             // TODO: delete the mock data.
-            tabVersionDetails = new List<TabVersionDetail>
-            {
-                 new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-                 new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane", ModuleVersion = 62},
-                 new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-                 new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
-            };
+            //tabVersionDetails = new List<TabVersionDetail>
+            //{
+            //     new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+            //     new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane", ModuleVersion = 62},
+            //     new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+            //     new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
+            //};
 
             return GetSnapShot(tabVersionDetails);
         }
@@ -245,7 +246,7 @@ namespace DotNetNuke.Entities.Tabs
                     case TabVersionDetailAction.Modified:
                         if (versionModules.ContainsKey(tabVersionDetail.ModuleId))
                         {
-                            versionModules[tabVersionDetail.ModuleId] = tabVersionDetail;
+                            versionModules[tabVersionDetail.ModuleId] = JoinVersionDetails(versionModules[tabVersionDetail.ModuleId], tabVersionDetail);
                         }
                         else
                         {
@@ -267,6 +268,16 @@ namespace DotNetNuke.Entities.Tabs
             return versionModules.Values.ToList();
         }
 
+        private static TabVersionDetail JoinVersionDetails(TabVersionDetail tabVersionDetail, TabVersionDetail newVersionDetail)
+        {
+            //Movement changes have not ModuleVersion
+            if (newVersionDetail.ModuleVersion == Null.NullInteger)
+            {
+                newVersionDetail.ModuleVersion = tabVersionDetail.ModuleVersion;
+            }
+
+            return newVersionDetail;
+        }
 
         protected override Func<ITabVersionMaker> GetFactory()
         {
