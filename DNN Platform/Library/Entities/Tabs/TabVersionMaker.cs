@@ -31,6 +31,27 @@ namespace DotNetNuke.Entities.Tabs
 {
     public class TabVersionMaker : ServiceLocator<ITabVersionMaker, TabVersionMaker>, ITabVersionMaker
     {
+        public void DeleteVersion(int tabId, int createdByUserID, int version)
+        {
+            var tabVersions = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
+            if (tabVersions.FirstOrDefault().Version == version)
+            {
+                TabVersionController.Instance.DeleteTabVersion(tabId, tabVersions.FirstOrDefault().TabVersionId);
+            }
+            else
+            {
+                for (int i = 1; i < tabVersions.Count(); i++)
+                {
+                    if (tabVersions.ElementAtOrDefault(i).Version == version)
+                    {
+                        CreateSnapshotOverVersion(tabId, tabVersions.ElementAtOrDefault(i-1));
+                        TabVersionController.Instance.DeleteTabVersion(tabId, tabVersions.ElementAtOrDefault(i).TabVersionId);
+                        return;
+                    }
+                }
+            }
+        }
+
         public TabVersion RollBackVesion(int tabId, int createdByUserID, int version)
         {
             var rollbackDetails = CopyVersionDetails(GetVersionModulesInternal(tabId, version));

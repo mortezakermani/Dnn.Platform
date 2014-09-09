@@ -41,6 +41,10 @@ namespace DotNetNuke.Entities.Tabs
         /// </summary>
         TabVersion RollBackVesion(int tabId, int createdByUserID, int version);
 
+        /// <summary>
+        /// Deletes an existing Tab Version
+        /// </summary>
+        void DeleteVersion(int tabId, int createdByUserID, int version);
 
     }
 }
