@@ -151,7 +151,7 @@ namespace DotNetNuke.Entities.Tabs
             //if we are not using the cache
             if (ignoreCache || Host.Host.PerformanceSetting == Globals.PerformanceSettings.NoCaching)
             {
-                return convertToModuleInfo(GetVersionModulesInternal(tabId, version));
+                return convertToModuleInfo(GetVersionModulesInternal(tabId, version), ignoreCache);
             }
 
             string cacheKey = string.Format(DataCache.TabVersionModulesCacheKey, tabId, version);
@@ -160,16 +160,34 @@ namespace DotNetNuke.Entities.Tabs
                                                                     DataCache.TabVersionModulesPriority),
                                                             c =>
                                                             {
-                                                                return convertToModuleInfo(GetVersionModulesInternal(tabId, version));
+                                                                return convertToModuleInfo(GetVersionModulesInternal(tabId, version), ignoreCache);
                                                             });
         }
 
-        private IEnumerable<ModuleInfo> convertToModuleInfo(IEnumerable<TabVersionDetail> details)
+        public IEnumerable<ModuleInfo> GetCurrentModules(int tabId, bool ignoreCache = false)
+        {
+            //if we are not using the cache
+            if (ignoreCache || Host.Host.PerformanceSetting == Globals.PerformanceSettings.NoCaching)
+            {
+                return convertToModuleInfo(GetCurrentModulesInternal(tabId), ignoreCache);
+            }
+
+            string cacheKey = string.Format(DataCache.TabVersionModulesCacheKey, tabId);
+            return CBO.GetCachedObject<List<ModuleInfo>>(new CacheItemArgs(cacheKey,
+                                                                    DataCache.TabVersionModulesTimeOut,
+                                                                    DataCache.TabVersionModulesPriority),
+                                                            c =>
+                                                            {
+                                                                return convertToModuleInfo(GetCurrentModulesInternal(tabId), true);
+                                                            });
+        }
+
+        private IEnumerable<ModuleInfo> convertToModuleInfo(IEnumerable<TabVersionDetail> details, bool ignoreCache)
         {
             var modules = new List<ModuleInfo>();
             foreach (var detail in details)
             {
-                var module = ModuleController.Instance.GetModule(detail.ModuleId, Null.NullInteger, false);
+                var module = ModuleController.Instance.GetModule(detail.ModuleId, Null.NullInteger, ignoreCache);
                 if (module == null)
                 {
                     continue;
@@ -185,6 +203,22 @@ namespace DotNetNuke.Entities.Tabs
             return modules;
         }
 
+        private IEnumerable<TabVersionDetail> GetCurrentModulesInternal(int tabId)
+        {
+            var tab = TabVersionController.Instance.GetCurrentTabVersion(tabId);
+            var tabVersionDetails = TabVersionDetailController.Instance.GetTabVersionDetails(tab.TabVersionId);
+            // TODO: delete the mock data.
+            tabVersionDetails = new List<TabVersionDetail>
+            {
+                 new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+                 new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane"},
+                 new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
+                 new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
+            };
+
+            return GetSnapShot(tabVersionDetails);
+        }
+
         private IEnumerable<TabVersionDetail> GetVersionModulesInternal(int tabId, int version)
         {
             var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, version);
@@ -197,6 +231,11 @@ namespace DotNetNuke.Entities.Tabs
                  new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
             };
 
+            return GetSnapShot(tabVersionDetails);
+        }
+
+        private static IEnumerable<TabVersionDetail> GetSnapShot(IEnumerable<TabVersionDetail> tabVersionDetails)
+        {
             var versionModules = new Dictionary<int, TabVersionDetail>();
             foreach (var tabVersionDetail in tabVersionDetails)
             {

@@ -35,6 +35,11 @@ namespace DotNetNuke.Entities.Tabs
         /// Get all Modules Info associated with an specific version
         /// </summary>        
         IEnumerable<ModuleInfo> GetVersionModules(int tabId, int version, bool ignoreCache = false);
+
+        /// <summary>
+        /// Get all Modules Info associated with the last published version of the page
+        /// </summary>        
+        IEnumerable<ModuleInfo> GetCurrentModules(int tabId, bool ignoreCache = false);
         
         /// <summary>
         /// Rolls back an existing version
