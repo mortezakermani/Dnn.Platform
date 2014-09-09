@@ -785,6 +785,8 @@ namespace DotNetNuke.Entities.Modules
                     //Restore Module
                     RestoreModule(module);
 
+                    TabVersionTracker.Instance.TrackModuleAddition(module.TabID, PortalSettings.Current.UserId, module, 1);
+
                     //Set Module Order as expected
                     UpdateModuleOrder(module.TabID, module.ModuleID, order, pane);
                     UpdateTabModuleOrder(module.TabID);
@@ -832,6 +834,9 @@ namespace DotNetNuke.Entities.Modules
                 log.LogProperties.Add(new LogDetailInfo("TabId", module.TabID.ToString()));
                 log.LogProperties.Add(new LogDetailInfo("ModuleID", module.ModuleID.ToString()));
                 LogController.Instance.AddLog(log);
+
+                TabVersionTracker.Instance.TrackModuleAddition(module.TabID, PortalSettings.Current.UserId, module, 1);
+
                 if (module.ModuleOrder == -1)
                 {
                     //position module at bottom of pane
@@ -854,6 +859,7 @@ namespace DotNetNuke.Entities.Modules
                 module.TabModuleID = tmpModule.TabModuleID;
             }
             UpdateTabModuleSettings(module);
+
             ClearCache(module.TabID);
             return module.ModuleID;
         }
@@ -1161,6 +1167,7 @@ namespace DotNetNuke.Entities.Modules
                     //hard delete the module
                     DeleteModule(moduleId);
                 }
+                TabVersionTracker.Instance.TrackModuleDeletion(tabId, PortalSettings.Current.UserId, objModule, Null.NullInteger);
             }
             ClearCache(tabId);
         }
@@ -1825,7 +1832,7 @@ namespace DotNetNuke.Entities.Modules
                     ModuleOrder += 2;
                 }
                 dataProvider.UpdateModuleOrder(TabId, ModuleId, ModuleOrder, PaneName);
-
+                TabVersionTracker.Instance.TrackModuleModification(TabId, PortalSettings.Current.UserId, GetModule(ModuleId, TabId), Null.NullInteger);
                 //clear cache
                 ClearCache(TabId);
             }
