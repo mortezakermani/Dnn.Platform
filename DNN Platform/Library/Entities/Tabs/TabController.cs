@@ -563,6 +563,17 @@ namespace DotNetNuke.Entities.Tabs
                 ModuleController.Instance.DeleteTabModule(m.TabID, m.ModuleID, false);
             }
 
+            //Delete all Tab Versions
+            var tabVersions = TabVersionController.Instance.GetTabVersions(tabId);
+            if (tabVersions != null)
+            {
+                for (int i = tabVersions.Count()-1; i >= 0; i--)
+                {
+                    TabVersionController.Instance.DeleteTabVersion(tabId, tabVersions.ElementAt(i).TabVersionId);
+                }
+            }
+            
+
             //Delete Tab
             Provider.DeleteTab(tabId);
 
