@@ -2337,7 +2337,7 @@ namespace DotNetNuke.Entities.Tabs
                 if (((excludeTabId < 0) || (objTab.TabID != excludeTabId)) &&
                     (!objTab.IsSuperTab || objUserInfo.IsSuperUser))
                 {
-                    if ((objTab.IsVisible || includeHidden) && (objTab.IsDeleted == false || includeDeleted) &&
+                    if ((objTab.IsVisibleAndPublished || includeHidden) && (objTab.IsDeleted == false || includeDeleted) &&
                         (objTab.TabType == TabType.Normal || includeURL))
                     {
                         //Check if User has View/Edit Permission for this tab

@@ -166,6 +166,30 @@ namespace DotNetNuke.Entities.Tabs
         [XmlElement("visible")]
         public bool IsVisible { get; set; }
 
+        [XmlIgnore]
+        public bool IsVisibleAndPublished 
+        {
+            get
+            {
+                if (!IsVisible)
+                {
+                    return false;
+                }
+
+                // TODO: disable when versioning is off.
+                var versions = TabVersionController.Instance.GetTabVersions(TabID);
+                var unpublished = versions.Count() == 1 && !versions.ElementAt(0).IsPublished;
+                if (unpublished)
+                {
+                    return CanSeeUnpublishPages();
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         [XmlElement("keywords")]
         public string KeyWords { get; set; }
 
@@ -770,6 +794,13 @@ namespace DotNetNuke.Entities.Tabs
         #endregion
 
         #region Private Methods
+
+        private bool CanSeeUnpublishPages()
+        {
+            // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
+            return TabPermissionController.HasTabPermission(this.TabPermissions, "EDIT,CONTENT,MANAGE");
+
+        }
 
         /// <summary>
         /// Look for skin level doctype configuration file, and inject the value into the top of default.aspx

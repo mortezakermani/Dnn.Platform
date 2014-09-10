@@ -40,6 +40,7 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
+using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Personalization;
@@ -1224,7 +1225,7 @@ namespace DotNetNuke.Entities.Portals
 
             if (!isVerified)
             {
-                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && t.IsVisible select t).FirstOrDefault();
+                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && t.IsVisibleAndPublished select t).FirstOrDefault();
 
                 if (tab != null)
                 {

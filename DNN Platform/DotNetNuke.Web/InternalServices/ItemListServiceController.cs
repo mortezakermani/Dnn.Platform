@@ -516,7 +516,7 @@ namespace DotNetNuke.Web.InternalServices
 
                 tabs = TabController.Instance.GetTabsByPortal(portalId).Where(tab =>
                                         (includeActive || tab.Value.TabID != PortalSettings.ActiveTab.TabID)
-                                        && (includeHiddenTabs || tab.Value.IsVisible)
+                                        && (includeHiddenTabs || tab.Value.IsVisibleAndPublished)
                                         && (includeDisabled || !tab.Value.DisableLink) 
                                         && (includeAllTypes || tab.Value.TabType == TabType.Normal) 
                                         && searchFunc(tab.Value))
