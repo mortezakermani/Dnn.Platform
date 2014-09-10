@@ -785,7 +785,7 @@ namespace DotNetNuke.Entities.Modules
                     //Restore Module
                     RestoreModule(module);
 
-                    TabVersionTracker.Instance.TrackModuleAddition(module.TabID, PortalSettings.Current.UserId, module, 1);
+                    TabVersionTracker.Instance.TrackModuleAddition(module.TabID, UserController.Instance.GetCurrentUserInfo().UserID, module, 1);
 
                     //Set Module Order as expected
                     UpdateModuleOrder(module.TabID, module.ModuleID, order, pane);
@@ -835,7 +835,7 @@ namespace DotNetNuke.Entities.Modules
                 log.LogProperties.Add(new LogDetailInfo("ModuleID", module.ModuleID.ToString()));
                 LogController.Instance.AddLog(log);
 
-                TabVersionTracker.Instance.TrackModuleAddition(module.TabID, PortalSettings.Current.UserId, module, 1);
+                TabVersionTracker.Instance.TrackModuleAddition(module.TabID, UserController.Instance.GetCurrentUserInfo().UserID, module, 1);
 
                 if (module.ModuleOrder == -1)
                 {
@@ -1167,7 +1167,7 @@ namespace DotNetNuke.Entities.Modules
                     //hard delete the module
                     DeleteModule(moduleId);
                 }
-                TabVersionTracker.Instance.TrackModuleDeletion(tabId, PortalSettings.Current.UserId, objModule, Null.NullInteger);
+                TabVersionTracker.Instance.TrackModuleDeletion(tabId, UserController.Instance.GetCurrentUserInfo().UserID, objModule, Null.NullInteger);
             }
             ClearCache(tabId);
         }
@@ -1844,7 +1844,7 @@ namespace DotNetNuke.Entities.Modules
                     ModuleOrder += 2;
                 }
                 dataProvider.UpdateModuleOrder(TabId, ModuleId, ModuleOrder, PaneName);
-                TabVersionTracker.Instance.TrackModuleModification(TabId, PortalSettings.Current.UserId, GetModule(ModuleId, TabId, true), Null.NullInteger);
+                TabVersionTracker.Instance.TrackModuleModification(TabId, UserController.Instance.GetCurrentUserInfo().UserID, GetModule(ModuleId, TabId, true), Null.NullInteger);
                 //clear cache
                 ClearCache(TabId);
             }
@@ -1883,7 +1883,7 @@ namespace DotNetNuke.Entities.Modules
                             dataProvider.UpdateModuleOrder(TabId, Convert.ToInt32(dr2["ModuleID"]), (moduleCounter * 2) - 1, Convert.ToString(dr["PaneName"]));
                             if (!Convert.ToBoolean(dr2["IsDeleted"]))
                             {
-                                TabVersionTracker.Instance.TrackModuleModification(TabId, PortalSettings.Current.UserId, Convert.ToInt32(dr2["ModuleID"]), Convert.ToString(dr["PaneName"]), (moduleCounter * 2) - 1, Null.NullInteger);                                
+                                TabVersionTracker.Instance.TrackModuleModification(TabId, UserController.Instance.GetCurrentUserInfo().UserID, Convert.ToInt32(dr2["ModuleID"]), Convert.ToString(dr["PaneName"]), (moduleCounter * 2) - 1, Null.NullInteger);                                
                             }
                         }
                     }
