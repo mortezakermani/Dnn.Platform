@@ -57,16 +57,27 @@ namespace DotNetNuke.Entities.Tabs
                                                                 return CBO.FillCollection<TabVersion>(Provider.GetTabVersions(tabId));                                                                    
                                                             });            
         }
-        
-        public void SaveTabVersion(TabVersion tabVersion)
+
+        public void SaveTabVersion(TabVersion tabVersion, int createdByUserID)
         {
-            var tabVersionId = Provider.SaveTabVersion(tabVersion.TabVersionId, tabVersion.TabId, tabVersion.TimeStamp,
-                tabVersion.Version, tabVersion.IsPublished, tabVersion.CreatedByUserID, tabVersion.LastModifiedByUserID);
+            SaveTabVersion(tabVersion, createdByUserID, createdByUserID);
+        }
+
+        public void SaveTabVersion(TabVersion tabVersion, int createdByUserID, int modifiedByUserID)
+        {
+            var tabVersionId = Provider.SaveTabVersion(tabVersion.TabVersionId, tabVersion.TabId, tabVersion.TimeStamp, tabVersion.Version, tabVersion.IsPublished, createdByUserID,
+                modifiedByUserID);
+
             if (tabVersion.TabVersionId != tabVersionId)
             {
                 ClearCache(tabVersion.TabId);
             }
             tabVersion.TabVersionId = tabVersionId;
+        }
+
+        public void SaveTabVersion(TabVersion tabVersion)
+        {
+            SaveTabVersion(tabVersion, tabVersion.CreatedByUserID, tabVersion.LastModifiedByUserID);
         }
 
         public TabVersion CreateTabVersion(int tabId, int createdByUserID, bool isPublished = false)

@@ -33,6 +33,51 @@ namespace DotNetNuke.Entities.Tabs
 {
     public class TabVersionMaker : ServiceLocator<ITabVersionMaker, TabVersionMaker>, ITabVersionMaker
     {
+        public void PublishVersion(int tabId, int createdByUserID, int version)
+        {
+            var tabVersion = TabVersionController.Instance.GetTabVersions(tabId).SingleOrDefault(tv => tv.Version == version);
+            if (tabVersion.IsPublished)
+            {
+                //TODO Localize Exception message
+                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, version));
+            }
+            tabVersion.IsPublished = true;
+            
+            TabVersionController.Instance.SaveTabVersion(tabVersion, tabVersion.CreatedByUserID, createdByUserID);
+        }
+
+        public void DiscardVersion(int tabId, int createdByUserID, int version)
+        {
+            var tabVersion = TabVersionController.Instance.GetTabVersions(tabId).SingleOrDefault(tv => tv.Version == version);
+            if (tabVersion.IsPublished)
+            {
+                //TODO Localize Exception message
+                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, version));
+            }
+
+            var unPublishedDetails = TabVersionDetailController.Instance.GetTabVersionDetails(tabVersion.TabVersionId);
+            var publishedChanges = GetVersionModulesInternal(tabId, GetCurrentVersion(tabId).Version);
+            foreach (var unPublishedDetail in unPublishedDetails)
+            {
+                if (unPublishedDetail.Action == TabVersionDetailAction.Deleted)
+                {
+                    var restoredModule = ModuleController.Instance.GetModule(unPublishedDetail.ModuleId, tabId, true);
+                    ModuleController.Instance.RestoreModule(restoredModule);
+                    var restoredModuleDetail = publishedChanges.SingleOrDefault(tv => tv.ModuleId == restoredModule.ModuleID);
+                    restoredModule.PaneName = restoredModuleDetail.PaneName;
+                    restoredModule.ModuleOrder = restoredModuleDetail.ModuleOrder;
+                    ModuleController.Instance.UpdateModule(restoredModule);
+                    continue;
+                }
+                if (publishedChanges.All(tv => tv.ModuleId != unPublishedDetail.ModuleId))
+                {
+                    ModuleController.Instance.DeleteTabModule(tabId, unPublishedDetail.ModuleId, true);
+                }
+            }
+
+            TabVersionController.Instance.DeleteTabVersion(tabId, tabVersion.TabVersionId);
+        }
+
         public void DeleteVersion(int tabId, int createdByUserID, int version)
         {
             if (GetUnPublishedVersion(tabId) != null)

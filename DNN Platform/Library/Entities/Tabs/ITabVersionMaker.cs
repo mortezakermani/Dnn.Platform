@@ -30,7 +30,18 @@ namespace DotNetNuke.Entities.Tabs
         /// Creates a new Tab Version 
         /// </summary>        
         TabVersion CreateNewVersion(int tabId, int createdByUserID);
-        
+
+        /// <summary>
+        /// Publish a Tab Version
+        /// </summary>
+        void PublishVersion(int tabId, int createdByUserID, int version);
+
+        /// <summary>
+        /// Discards a Tab Version
+        /// </summary>
+        void DiscardVersion(int tabId, int createdByUserID, int version);
+
+
         /// <summary>
         /// Get all Modules Info associated with an specific version
         /// </summary>        
