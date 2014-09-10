@@ -1262,7 +1262,7 @@ namespace DotNetNuke.Entities.Portals
             }
             else if (editView)
             {
-                modules = TabVersionMaker.Instance.GetLastUnPublishedVersionModules(tabId);
+                modules = TabVersionMaker.Instance.GetUnPublishedVersionModules(tabId);
             }
             else
             {

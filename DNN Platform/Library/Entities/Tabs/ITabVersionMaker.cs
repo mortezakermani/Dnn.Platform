@@ -37,9 +37,23 @@ namespace DotNetNuke.Entities.Tabs
         IEnumerable<ModuleInfo> GetVersionModules(int tabId, int version, bool ignoreCache = false);
 
         /// <summary>
+        /// Get the current pusblished version of the page
+        /// </summary>
+        /// <param name="tabId">The Tab Id to be queried</param>  
+        TabVersion GetCurrentVersion(int tabId, bool ignoreCache = false);
+
+
+        /// <summary>
+        /// Get the unpublished version or Null if Tab has not any unpublished version
+        /// </summary>
+        /// <param name="tabId"></param>
+        /// <returns></returns>
+        TabVersion GetUnPublishedVersion(int tabId);
+        
+        /// <summary>
         /// Get all Modules Info associated with the last unpublished version of a page.
         /// </summary>        
-        IEnumerable<ModuleInfo> GetLastUnPublishedVersionModules(int tabId);
+        IEnumerable<ModuleInfo> GetUnPublishedVersionModules(int tabId);
 
         /// <summary>
         /// Get all Modules Info associated with the last published version of the page

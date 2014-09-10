@@ -35,6 +35,12 @@ namespace DotNetNuke.Entities.Tabs
     {
         public void DeleteVersion(int tabId, int createdByUserID, int version)
         {
+            if (GetUnPublishedVersion(tabId) != null)
+            {
+                //TODO Localize Exception message
+                throw new Exception(String.Format("For Tab {0}, the version {1} cannot be deleted because an unpublished version exists", tabId, version));
+            }
+
             var tabVersions = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
             if (tabVersions.FirstOrDefault().Version == version)
             {
@@ -56,6 +62,12 @@ namespace DotNetNuke.Entities.Tabs
 
         public TabVersion RollBackVesion(int tabId, int createdByUserID, int version)
         {
+            if (GetUnPublishedVersion(tabId) != null)
+            {
+                //TODO Localize Exception message
+                throw new Exception(String.Format("For Tab {0}, the version {1} cannot be rolled back because an unpublished version exists", tabId, version));
+            }
+
             var rollbackDetails = CopyVersionDetails(GetVersionModulesInternal(tabId, version));
             
             var newVersion = CreateNewVersion(tabId, createdByUserID);
@@ -165,16 +177,26 @@ namespace DotNetNuke.Entities.Tabs
                                                             });
         }
 
-        public IEnumerable<ModuleInfo> GetLastUnPublishedVersionModules(int tabId)
+        public IEnumerable<ModuleInfo> GetUnPublishedVersionModules(int tabId)
         {
-            var tab = TabVersionController.Instance.GetLastUnPublishedVersionModules(tabId);
-            if (tab == null)
+            var unPublishedVersion = GetUnPublishedVersion(tabId);
+            if (unPublishedVersion == null)
             {
                 return CBO.FillCollection<ModuleInfo>(DataProvider.Instance().GetTabModules(tabId));
             }
 
-            var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, tab.TabVersionId);
+            var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, unPublishedVersion.TabVersionId);
             return convertToModuleInfo(GetSnapShot(tabVersionDetails), true);
+        }
+
+        public TabVersion GetCurrentVersion(int tabId, bool ignoreCache = false)
+        {
+            return TabVersionController.Instance.GetTabVersions(tabId, ignoreCache).Where(tv => tv.IsPublished).OrderByDescending(tv => tv.CreatedOnDate).FirstOrDefault();
+        }
+
+        public TabVersion GetUnPublishedVersion(int tabId)
+        {
+            return TabVersionController.Instance.GetTabVersions(tabId, true).SingleOrDefault(tv => !tv.IsPublished);
         }
 
         public IEnumerable<ModuleInfo> GetCurrentModules(int tabId, bool ignoreCache = false)
@@ -218,24 +240,14 @@ namespace DotNetNuke.Entities.Tabs
 
         private IEnumerable<ModuleInfo> GetCurrentModulesInternal(int tabId, bool ignoreCache)
         {
-            var tabVersion = TabVersionController.Instance.GetCurrentTabVersion(tabId);
+            var currentVersion = GetCurrentVersion(tabId);
 
-            if (tabVersion == null)
+            if (currentVersion == null) //Only when a tab is on a first version and it is not published, the currentVersion object can be null
             {
                 return CBO.FillCollection <ModuleInfo>(DataProvider.Instance().GetTabModules(tabId));
             }
-
-            var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId,tabVersion.Version);
-            // TODO: delete the mock data.
-            //tabVersionDetails = new List<TabVersionDetail>
-            //{
-            //     new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-            //     new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane"},
-            //     new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-            //     new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
-            //};
-
-            return convertToModuleInfo(GetSnapShot(tabVersionDetails), ignoreCache);
+            
+            return convertToModuleInfo(GetVersionModulesInternal(tabId, currentVersion.Version), ignoreCache);
         }
 
         private IEnumerable<TabVersionDetail> GetVersionModulesInternal(int tabId, int version)

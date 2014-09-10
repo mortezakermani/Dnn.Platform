@@ -97,7 +97,8 @@ namespace DotNetNuke.Entities.Tabs
         
         private TabVersion GetUnPublishedTabVersion(int tabId, int createdByUserID, out bool newTabVersion)
         {
-            if (TabVersionController.Instance.GetTabVersions(tabId).All(tv => tv.IsPublished))
+            var unPublishedVersion = TabVersionMaker.Instance.GetUnPublishedVersion(tabId);
+            if (unPublishedVersion == null)
             {
                 newTabVersion = true;
                 return TabVersionMaker.Instance.CreateNewVersion(tabId, createdByUserID);
@@ -106,8 +107,6 @@ namespace DotNetNuke.Entities.Tabs
             return TabVersionController.Instance.GetTabVersions(tabId).SingleOrDefault(tv => !tv.IsPublished);
         }
 
-        
-        
         
         private TabVersionDetail GetTabVersionDetailFromModule(int tabVersionId, ModuleInfo module, int moduleVersion, TabVersionDetailAction action)
         {
