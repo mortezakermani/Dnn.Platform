@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -38,9 +39,12 @@ using DotNetNuke.Entities.Host;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
 using DotNetNuke.Entities.Modules.Communications;
+using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework;
 using DotNetNuke.Framework.JavaScriptLibraries;
+using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
@@ -449,12 +453,38 @@ namespace DotNetNuke.UI.Skins
             }
             return success;
         }
+        private bool IsDraftPage()
+        {
+            var versions = TabVersionController.Instance.GetTabVersions(TabController.CurrentPage.TabID);
+            return versions.Count() == 1 && !versions.ElementAt(0).IsPublished;
+        }
+        private bool CanSeeUnpublishPages()
+        {
+            // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
+            var principal = Thread.CurrentPrincipal;
+            if (!principal.Identity.IsAuthenticated)
+            {
+                return false;
+            }
+
+            var currentPortal = PortalController.Instance.GetCurrentPortalSettings();
+
+            bool isAdminUser = currentPortal.UserInfo.IsSuperUser || PortalSecurity.IsInRole(currentPortal.AdministratorRoleName);
+            if (isAdminUser) return true;
+
+            return TabPermissionController.HasTabPermission(TabController.CurrentPage.TabPermissions, "EDIT,CONTENT,MANAGE");
+        }
 
         private bool ProcessMasterModules()
         {
             bool success = true;
             if (TabPermissionController.CanViewPage())
             {
+                if (IsDraftPage() && !CanSeeUnpublishPages())
+                {
+                    Response.Redirect(Globals.NavigateURL(PortalSettings.ErrorPage404, string.Empty, "status=404"));
+                }
+
                 //check portal expiry date
                 if (!CheckExpired())
                 {
