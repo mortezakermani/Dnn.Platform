@@ -33,28 +33,58 @@ namespace DotNetNuke.Entities.Tabs
 {
     public class TabVersionMaker : ServiceLocator<ITabVersionMaker, TabVersionMaker>, ITabVersionMaker
     {
-        public void PublishVersion(int tabId, int createdByUserID, int version)
+
+        public void Publish(int tabId, int createdByUserID)
         {
-            var tabVersion = TabVersionController.Instance.GetTabVersions(tabId).SingleOrDefault(tv => tv.Version == version);
+            var tabVersion = GetUnPublishedVersion(tabId);
+            if (tabVersion == null)
+            {
+                //TODO Localize Exception message
+                throw new Exception(String.Format("Tha tab {0} has not an unpublished version", tabId));
+            }
             if (tabVersion.IsPublished)
             {
                 //TODO Localize Exception message
-                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, version));
+                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, tabVersion.Version));
             }
+            PublishVersion(tabId, createdByUserID, tabVersion);
+
+        }
+
+        private void PublishVersion(int tabId, int createdByUserID, TabVersion tabVersion)
+        {
+            
             tabVersion.IsPublished = true;
+            var unPublishedDetails = TabVersionDetailController.Instance.GetTabVersionDetails(tabVersion.TabVersionId);
+            foreach (var unPublishedDetail in unPublishedDetails)
+            {
+                if (unPublishedDetail.ModuleVersion != Null.NullInteger)
+                {
+                    PublishDetail(tabId, unPublishedDetail);
+                }
+            }
             
             TabVersionController.Instance.SaveTabVersion(tabVersion, tabVersion.CreatedByUserID, createdByUserID);
         }
 
-        public void DiscardVersion(int tabId, int createdByUserID, int version)
+        public void Discard(int tabId, int createdByUserID)
         {
-            var tabVersion = TabVersionController.Instance.GetTabVersions(tabId).SingleOrDefault(tv => tv.Version == version);
+            var tabVersion = GetUnPublishedVersion(tabId);
+            if (tabVersion == null)
+            {
+                //TODO Localize Exception message
+                throw new Exception(String.Format("Tha tab {0} has not an unpublished version", tabId));
+            }
             if (tabVersion.IsPublished)
             {
                 //TODO Localize Exception message
-                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, version));
+                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, tabVersion.Version));
             }
+            DiscardVersion(tabId, createdByUserID, tabVersion);
+        }
 
+        public void DiscardVersion(int tabId, int createdByUserID, TabVersion tabVersion)
+        {
             var unPublishedDetails = TabVersionDetailController.Instance.GetTabVersionDetails(tabVersion.TabVersionId);
             var publishedChanges = GetVersionModulesInternal(tabId, GetCurrentVersion(tabId).Version);
             foreach (var unPublishedDetail in unPublishedDetails)
@@ -69,9 +99,16 @@ namespace DotNetNuke.Entities.Tabs
                     ModuleController.Instance.UpdateModule(restoredModule);
                     continue;
                 }
+                
                 if (publishedChanges.All(tv => tv.ModuleId != unPublishedDetail.ModuleId))
                 {
                     ModuleController.Instance.DeleteTabModule(tabId, unPublishedDetail.ModuleId, true);
+                    continue;
+                }
+                
+                if (unPublishedDetail.ModuleVersion != Null.NullInteger)
+                {
+                    DiscardDetail(tabId, unPublishedDetail);
                 }
             }
 
@@ -308,6 +345,43 @@ namespace DotNetNuke.Entities.Tabs
             //};
 
             return GetSnapShot(tabVersionDetails);
+        }
+
+        private void PublishDetail(int tabId, TabVersionDetail unPublishedDetail)
+        {
+            var moduleInfo = ModuleController.Instance.GetModule(unPublishedDetail.ModuleId, tabId, true);
+
+            var versionableController = GetVersionableController(moduleInfo);
+            if (versionableController != null)
+            {
+                versionableController.PublishVersion(unPublishedDetail.ModuleId, unPublishedDetail.ModuleVersion);
+            }
+        }
+
+        private void DiscardDetail(int tabId, TabVersionDetail unPublishedDetail)
+        {
+            var moduleInfo = ModuleController.Instance.GetModule(unPublishedDetail.ModuleId, tabId, true);
+
+            var versionableController = GetVersionableController(moduleInfo);
+            if (versionableController != null)
+            {
+                versionableController.DeleteVersion(unPublishedDetail.ModuleId, unPublishedDetail.ModuleVersion);                
+            }
+        }
+
+        private IVersionable GetVersionableController(ModuleInfo moduleInfo)
+        {
+            if (String.IsNullOrEmpty(moduleInfo.DesktopModule.BusinessControllerClass))
+            {
+                return null;
+            }
+            
+            object controller = Reflection.CreateObject(moduleInfo.DesktopModule.BusinessControllerClass, "");
+            if (controller is IVersionable)
+            {
+                return controller as IVersionable;
+            }
+            return null;
         }
 
         private static IEnumerable<TabVersionDetail> GetSnapShot(IEnumerable<TabVersionDetail> tabVersionDetails)

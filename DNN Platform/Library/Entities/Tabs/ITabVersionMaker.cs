@@ -34,12 +34,12 @@ namespace DotNetNuke.Entities.Tabs
         /// <summary>
         /// Publish a Tab Version
         /// </summary>
-        void PublishVersion(int tabId, int createdByUserID, int version);
+        void Publish(int tabId, int createdByUserID);
 
         /// <summary>
         /// Discards a Tab Version
         /// </summary>
-        void DiscardVersion(int tabId, int createdByUserID, int version);
+        void Discard(int tabId, int createdByUserID);
 
 
         /// <summary>
