@@ -33,6 +33,10 @@ namespace DotNetNuke.Entities.Tabs
     {
         public void TrackModuleAddition(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion)
         {
+            if (!TabVersionSettings.Instance.VersioningEnabled)
+            {
+                return;
+            }
             bool newTabVersion;
             var unPublishedVersion = GetUnPublishedTabVersion(tabId, createdByUserID, out newTabVersion);
             TabVersionDetail tabVersionDetail;
@@ -63,6 +67,10 @@ namespace DotNetNuke.Entities.Tabs
 
         public void TrackModuleModification(int tabId, int createdByUserID, int moduleId, string paneName, int moduleOrder, int moduleVersion)
         {
+            if (!TabVersionSettings.Instance.VersioningEnabled)
+            {
+                return;
+            }
             bool newTabVersion;
             var unPublishedVersion = GetUnPublishedTabVersion(tabId, createdByUserID, out newTabVersion);
             TabVersionDetail tabVersionDetail = GetTabVersionDetailFromModule(unPublishedVersion.TabVersionId, moduleId, paneName, moduleOrder, moduleVersion, TabVersionDetailAction.Modified);
@@ -81,6 +89,10 @@ namespace DotNetNuke.Entities.Tabs
 
         public void TrackModuleDeletion(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion)
         {
+            if (!TabVersionSettings.Instance.VersioningEnabled)
+            {
+                return;
+            }
             bool newTabVersion;
             var unPublishedVersion = GetUnPublishedTabVersion(tabId, createdByUserID, out newTabVersion);
             TabVersionDetail tabVersionDetail = GetTabVersionDetailFromModule(unPublishedVersion.TabVersionId, module, moduleVersion, TabVersionDetailAction.Deleted);

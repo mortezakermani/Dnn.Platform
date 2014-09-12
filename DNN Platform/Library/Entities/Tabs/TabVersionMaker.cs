@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
@@ -36,6 +35,8 @@ namespace DotNetNuke.Entities.Tabs
 
         public void Publish(int tabId, int createdByUserID)
         {
+            CheckVersioningEnabled();
+
             var tabVersion = GetUnPublishedVersion(tabId);
             if (tabVersion == null)
             {
@@ -69,6 +70,8 @@ namespace DotNetNuke.Entities.Tabs
 
         public void Discard(int tabId, int createdByUserID)
         {
+            CheckVersioningEnabled();
+
             var tabVersion = GetUnPublishedVersion(tabId);
             if (tabVersion == null)
             {
@@ -117,6 +120,8 @@ namespace DotNetNuke.Entities.Tabs
 
         public void DeleteVersion(int tabId, int createdByUserID, int version)
         {
+            CheckVersioningEnabled();
+
             if (GetUnPublishedVersion(tabId) != null)
             {
                 //TODO Localize Exception message
@@ -144,6 +149,8 @@ namespace DotNetNuke.Entities.Tabs
 
         public TabVersion RollBackVesion(int tabId, int createdByUserID, int version)
         {
+            CheckVersioningEnabled();
+
             if (GetUnPublishedVersion(tabId) != null)
             {
                 //TODO Localize Exception message
@@ -188,8 +195,9 @@ namespace DotNetNuke.Entities.Tabs
 
         public TabVersion CreateNewVersion(int tabId, int createdByUserID) 
         {
-            //TODO Get this value from Settings
-            var maxVersionsAllowed = 5;
+            CheckVersioningEnabled();
+
+            var maxVersionsAllowed = TabVersionSettings.Instance.MaximunNumberOfVersions;
             var tabVersionsOrdered = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
             var tabVersionCount = tabVersionsOrdered.Count();
             if (tabVersionCount >= maxVersionsAllowed)
@@ -201,6 +209,15 @@ namespace DotNetNuke.Entities.Tabs
             }
 
             return TabVersionController.Instance.CreateTabVersion(tabId, createdByUserID);
+        }
+
+        private void CheckVersioningEnabled()
+        {
+            if (!TabVersionSettings.Instance.VersioningEnabled)
+            {
+                //TODO Localize Exception message
+                throw new Exception("Tab Versioning is not enabled");
+            }
         }
 
         private void CreateSnapshotOverVersion(int tabId, TabVersion snapshoTabVersion)
@@ -335,15 +352,7 @@ namespace DotNetNuke.Entities.Tabs
         private IEnumerable<TabVersionDetail> GetVersionModulesInternal(int tabId, int version)
         {
             var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, version);
-            // TODO: delete the mock data.
-            //tabVersionDetails = new List<TabVersionDetail>
-            //{
-            //     new TabVersionDetail {ModuleId = 368, ModuleOrder = 2,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-            //     new TabVersionDetail {ModuleId = 485, ModuleOrder = 1,PaneName = "ContentPane", ModuleVersion = 62},
-            //     new TabVersionDetail {ModuleId = 483, ModuleOrder = 3,PaneName = "ContentPane", ModuleVersion = Null.NullInteger},
-            //     new TabVersionDetail {ModuleId = 484, ModuleOrder = 1,PaneName = "leftPane", ModuleVersion = Null.NullInteger},
-            //};
-
+            
             return GetSnapShot(tabVersionDetails);
         }
 

@@ -289,6 +289,8 @@
     <Compile Include="Entities\Tabs\TabVersionDetail.cs" />
     <Compile Include="Entities\Tabs\TabVersion.cs" />
     <Compile Include="Entities\Tabs\TabVersionMaker.cs" />
+    <Compile Include="Entities\Tabs\ITabVersionSettings.cs" />
+    <Compile Include="Entities\Tabs\TabVersionSettings.cs" />
     <Compile Include="Entities\Tabs\TabVersionTracker.cs" />
     <Compile Include="Entities\Users\IUserEventHandlers.cs" />
     <Compile Include="Common\Internal\IEventHandlersContainer.cs" />
