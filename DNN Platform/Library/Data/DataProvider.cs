@@ -1002,6 +1002,11 @@ namespace DotNetNuke.Data
             ExecuteNonQuery("UpdateTabTranslationStatus", tabId, localizedVersionGuid, lastModifiedByUserID);
         }
 
+        public virtual void PublishTab(int tabId)
+        {
+            ExecuteNonQuery("PublishTab", tabId);
+        }
+
         public virtual void UpdateTabVersion(int tabId, Guid versionGuid)
         {
             ExecuteNonQuery("UpdateTabVersion", tabId, versionGuid);

@@ -91,7 +91,6 @@ namespace DotNetNuke.Entities.Tabs
             
             var tabVersionId = Provider.SaveTabVersion(0, tabId, DateTime.UtcNow,
                 newVersion, isPublished, createdByUserID, createdByUserID);
-
             ClearCache(tabId);
 
             return GetTabVersion(tabVersionId, tabId);

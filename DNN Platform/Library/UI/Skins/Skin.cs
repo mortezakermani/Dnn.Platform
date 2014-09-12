@@ -453,11 +453,7 @@ namespace DotNetNuke.UI.Skins
             }
             return success;
         }
-        private bool IsDraftPage()
-        {
-            var versions = TabVersionController.Instance.GetTabVersions(TabController.CurrentPage.TabID);
-            return versions.Count() == 1 && !versions.ElementAt(0).IsPublished;
-        }
+
         private bool CanSeeUnpublishPages()
         {
             // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
@@ -480,7 +476,7 @@ namespace DotNetNuke.UI.Skins
             bool success = true;
             if (TabPermissionController.CanViewPage())
             {
-                if (IsDraftPage() && !CanSeeUnpublishPages())
+                if (!TabController.CurrentPage.HasBeenPublished && !CanSeeUnpublishPages())
                 {
                     Response.Redirect(Globals.NavigateURL(PortalSettings.ErrorPage404, string.Empty, "status=404"));
                 }

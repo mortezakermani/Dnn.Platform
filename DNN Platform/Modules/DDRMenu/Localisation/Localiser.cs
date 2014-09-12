@@ -53,7 +53,7 @@ namespace DotNetNuke.Web.DDRMenu.Localisation
 					node.TabId = tab.TabID;
 					node.Text = tab.TabName;
 					node.Enabled = !tab.DisableLink;
-                    if (!tab.IsVisibleAndPublished)
+                    if (!(tab.IsVisible && tab.HasBeenPublished))
 					{
 						node.TabId = -1;
 					}

@@ -264,7 +264,7 @@ namespace DotNetNuke.Entities.Tabs
             var unPublishedVersion = GetUnPublishedVersion(tabId);
             if (unPublishedVersion == null)
             {
-                return CBO.FillCollection<ModuleInfo>(DataProvider.Instance().GetTabModules(tabId));
+                return CBO.FillCollection<ModuleInfo>(DataProvider.Instance().GetTabModules(tabId)).Select(t => t.Clone());
             }
 
             var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, unPublishedVersion.TabVersionId);
@@ -326,7 +326,7 @@ namespace DotNetNuke.Entities.Tabs
 
             if (currentVersion == null) //Only when a tab is on a first version and it is not published, the currentVersion object can be null
             {
-                return CBO.FillCollection <ModuleInfo>(DataProvider.Instance().GetTabModules(tabId));
+                return CBO.FillCollection<ModuleInfo>(DataProvider.Instance().GetTabModules(tabId)).Select(t => t.Clone());
             }
             
             return convertToModuleInfo(GetVersionModulesInternal(tabId, currentVersion.Version), ignoreCache);

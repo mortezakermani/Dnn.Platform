@@ -123,6 +123,7 @@ namespace DotNetNuke.Entities.Tabs
             DefaultLanguageGuid = Null.NullGuid;
 
             IsVisible = true;
+            HasBeenPublished = true;
             DisableLink = false;
         }
 
@@ -166,29 +167,8 @@ namespace DotNetNuke.Entities.Tabs
         [XmlElement("visible")]
         public bool IsVisible { get; set; }
 
-        [XmlIgnore]
-        public bool IsVisibleAndPublished 
-        {
-            get
-            {
-                if (!IsVisible)
-                {
-                    return false;
-                }
-
-                // TODO: disable when versioning is off.
-                var versions = TabVersionController.Instance.GetTabVersions(TabID);
-                var unpublished = versions.Count() == 1 && !versions.ElementAt(0).IsPublished;
-                if (unpublished)
-                {
-                    return CanSeeUnpublishPages();
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
+        [XmlElement("hasBeenPublished")]
+        public bool HasBeenPublished { get; set; }
 
         [XmlElement("keywords")]
         public string KeyWords { get; set; }
@@ -895,6 +875,7 @@ namespace DotNetNuke.Entities.Tabs
                 PortalID = PortalID,
                 TabName = TabName,
                 IsVisible = IsVisible,
+                HasBeenPublished = HasBeenPublished,
                 ParentId = ParentId,
                 Level = Level,
                 IconFile = _iconFileRaw,
@@ -967,6 +948,7 @@ namespace DotNetNuke.Entities.Tabs
             PortalID = Null.SetNullInteger(dr["PortalID"]);
             TabName = Null.SetNullString(dr["TabName"]);
             IsVisible = Null.SetNullBoolean(dr["IsVisible"]);
+            HasBeenPublished = Null.SetNullBoolean(dr["HasBeenPublished"]);
             ParentId = Null.SetNullInteger(dr["ParentId"]);
             Level = Null.SetNullInteger(dr["Level"]);
             IconFile = Null.SetNullString(dr["IconFile"]);

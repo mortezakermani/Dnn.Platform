@@ -1225,7 +1225,7 @@ namespace DotNetNuke.Entities.Portals
 
             if (!isVerified)
             {
-                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && t.IsVisibleAndPublished select t).FirstOrDefault();
+                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && (t.IsVisible && t.HasBeenPublished) select t).FirstOrDefault();
 
                 if (tab != null)
                 {
@@ -1253,7 +1253,8 @@ namespace DotNetNuke.Entities.Portals
         {
             var version = HttpContext.Current.Request.QueryString["version"];
             var versionInt = Null.NullInteger;
-            var showVersionMode = !version.IsEmpty() && int.TryParse(version, out versionInt) && tabId != Null.NullInteger;
+            var validVersion = !version.IsEmpty() && int.TryParse(version, out versionInt);
+            var showVersionMode = validVersion;// && CanSeeUnpublishPages();
             var editView = UserMode != Mode.View;
 
             IEnumerable<ModuleInfo> modules = null;
@@ -1270,6 +1271,12 @@ namespace DotNetNuke.Entities.Portals
                 modules = ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone());
             }
             return modules;
+        }
+
+        private bool CanSeeUnpublishPages()
+        {
+            // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
+            return TabPermissionController.HasTabPermission(ActiveTab.TabPermissions, "EDIT,CONTENT,MANAGE");
         }
 
         private bool VerifySpecialTab(int portalId, int tabId)
