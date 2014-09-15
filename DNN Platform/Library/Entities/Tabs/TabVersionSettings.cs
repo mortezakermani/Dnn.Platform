@@ -21,6 +21,8 @@
 
 using System;
 using System.Globalization;
+using System.Web;
+using System.Web.WebPages;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Framework;
@@ -65,6 +67,17 @@ namespace DotNetNuke.Entities.Tabs
 
                 PortalController.UpdatePortalSetting(portalId, "TabVersionsEnabled", value.ToString(CultureInfo.InvariantCulture));                
             }
+        }
+
+        public bool TryGetUrlVersion(out int versionInt)
+        {
+            var version = HttpContext.Current.Request.QueryString["version"];
+            if (version.IsEmpty())
+            {
+                versionInt = Null.NullInteger;
+                return false;
+            }
+            return int.TryParse(version, out versionInt);
         }
 
         private static int GetPortalId()

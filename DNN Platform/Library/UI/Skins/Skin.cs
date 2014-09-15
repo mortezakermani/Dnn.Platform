@@ -454,7 +454,7 @@ namespace DotNetNuke.UI.Skins
             return success;
         }
 
-        private bool CanSeeUnpublishPages()
+        private bool CanSeeVersionedPages()
         {
             // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
             var principal = Thread.CurrentPrincipal;
@@ -476,9 +476,29 @@ namespace DotNetNuke.UI.Skins
             bool success = true;
             if (TabPermissionController.CanViewPage())
             {
-                if (!TabController.CurrentPage.HasBeenPublished && !CanSeeUnpublishPages())
+                // Versioning checks.
+                if (!TabController.CurrentPage.HasBeenPublished && !CanSeeVersionedPages())
                 {
                     Response.Redirect(Globals.NavigateURL(PortalSettings.ErrorPage404, string.Empty, "status=404"));
+                }
+
+                int urlVersion;
+                if (TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion))
+                {
+                    if (!CanSeeVersionedPages())
+                    {
+                        AddPageMessage(this, "", Localization.GetString("TabAccess.Error"),
+                            ModuleMessage.ModuleMessageType.YellowWarning);
+                        return true;
+                    }
+                    else
+                    {
+                        if (TabVersionController.Instance.GetTabVersion(urlVersion, TabController.CurrentPage.TabID) ==
+                            null)
+                        {
+                            Response.Redirect(Globals.NavigateURL(PortalSettings.ErrorPage404, string.Empty, "status=404"));
+                        }
+                    }
                 }
 
                 //check portal expiry date

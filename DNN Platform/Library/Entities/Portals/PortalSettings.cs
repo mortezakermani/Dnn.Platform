@@ -1249,18 +1249,18 @@ namespace DotNetNuke.Entities.Portals
             return isVerified;
         }
 
+
         private IEnumerable<ModuleInfo> GetModules(int tabId)
         {
-            var version = HttpContext.Current.Request.QueryString["version"];
-            var versionInt = Null.NullInteger;
-            var validVersion = !version.IsEmpty() && int.TryParse(version, out versionInt);
+            int urlVersion;
+            bool validVersion = TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion);
             var showVersionMode = validVersion;// && CanSeeUnpublishPages();
             var editView = UserMode != Mode.View;
 
             IEnumerable<ModuleInfo> modules = null;
             if (showVersionMode)
             {
-                modules = TabVersionMaker.Instance.GetVersionModules(tabId, versionInt, true);
+                modules = TabVersionMaker.Instance.GetVersionModules(tabId, urlVersion, true);
             }
             else if (editView)
             {

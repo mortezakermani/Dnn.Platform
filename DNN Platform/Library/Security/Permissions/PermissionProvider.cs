@@ -307,7 +307,9 @@ namespace DotNetNuke.Security.Permissions
         {
             return (PortalSecurity.IsInRoles(tab.TabPermissions.ToString(permissionKey))
                     || PortalSecurity.IsInRoles(tab.TabPermissions.ToString(AdminPagePermissionKey)))
-                   && !PortalSecurity.IsDenied(tab.TabPermissions.ToString(permissionKey));
+                   && !PortalSecurity.IsDenied(tab.TabPermissions.ToString(permissionKey)
+                   //&& !PortalSecurity.IsNotAllowedToVersioning(tab)
+                   );
             //Deny on Edit permission on page shouldn't take away any other explicitly Allowed
             //&&!PortalSecurity.IsDenied(tab.TabPermissions.ToString(AdminPagePermissionKey));
         }

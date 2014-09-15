@@ -33,5 +33,7 @@ namespace DotNetNuke.Entities.Tabs
         int MaximunNumberOfVersions { get; set; }
 
         bool VersioningEnabled { get; set; }
+
+        bool TryGetUrlVersion(out int versionInt);
     }
 }
