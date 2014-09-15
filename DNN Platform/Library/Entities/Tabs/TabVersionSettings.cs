@@ -20,10 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Framework;
 
@@ -31,23 +29,47 @@ namespace DotNetNuke.Entities.Tabs
 {
     public class TabVersionSettings: ServiceLocator<ITabVersionSettings, TabVersionSettings>, ITabVersionSettings
     {
-        private int portalId = PortalSettings.Current.PortalId;
+        private const int TabVersionsMaxNumber = 5;
+
         public int MaximunNumberOfVersions
         {
-            get { return PortalController.GetPortalSettingAsInteger("TabVersionsMaxNumber", portalId, 5); }
+            get
+            {
+                var portalId = GetPortalId();
+                if (portalId == Null.NullInteger) return TabVersionsMaxNumber;
+
+                return PortalController.GetPortalSettingAsInteger("TabVersionsMaxNumber", portalId, TabVersionsMaxNumber);
+            }
             set
             {
+                var portalId = GetPortalId();
+                if (portalId == Null.NullInteger) return;
+
                 PortalController.UpdatePortalSetting(portalId, "TabVersionsMaxNumber", value.ToString(CultureInfo.InvariantCulture));
             }
         }
 
         public bool VersioningEnabled
         {
-            get { return Convert.ToBoolean(PortalController.GetPortalSetting("TabVersionsEnabled", portalId, Boolean.FalseString)); }
+            get
+            {
+                var portalId = GetPortalId();
+                if (portalId == Null.NullInteger) return false;
+
+                return Convert.ToBoolean(PortalController.GetPortalSetting("TabVersionsEnabled", portalId, Boolean.FalseString));
+            }
             set
             {
+                var portalId = GetPortalId();
+                if (portalId == Null.NullInteger) return;
+
                 PortalController.UpdatePortalSetting(portalId, "TabVersionsEnabled", value.ToString(CultureInfo.InvariantCulture));                
             }
+        }
+
+        private static int GetPortalId()
+        {
+            return PortalSettings.Current == null ? Null.NullInteger : PortalSettings.Current.PortalId;
         }
 
         protected override Func<ITabVersionSettings> GetFactory()
