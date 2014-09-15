@@ -493,8 +493,7 @@ namespace DotNetNuke.UI.Skins
                     }
                     else
                     {
-                        if (TabVersionController.Instance.GetTabVersion(urlVersion, TabController.CurrentPage.TabID) ==
-                            null)
+                        if (!TabVersionMaker.Instance.GetVersionModules(TabController.CurrentPage.TabID, urlVersion).Any())
                         {
                             Response.Redirect(Globals.NavigateURL(PortalSettings.ErrorPage404, string.Empty, "status=404"));
                         }
