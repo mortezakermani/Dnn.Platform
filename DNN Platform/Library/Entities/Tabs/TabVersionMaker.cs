@@ -136,7 +136,21 @@ namespace DotNetNuke.Entities.Tabs
             var tabVersions = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
             if (tabVersions.FirstOrDefault().Version == version)
             {
-                TabVersionController.Instance.DeleteTabVersion(tabId, tabVersions.FirstOrDefault().TabVersionId);
+                var tabVersion = tabVersions.FirstOrDefault();
+                var unPublishedDetails = TabVersionDetailController.Instance.GetTabVersionDetails(tabVersion.TabVersionId);
+                foreach (var unPublishedDetail in unPublishedDetails)
+                {
+                    if (unPublishedDetail.Action == TabVersionDetailAction.Added)
+                    {
+                        ModuleController.Instance.DeleteTabModule(tabId, unPublishedDetail.ModuleId, true);
+                        continue;
+                    }
+                    if (unPublishedDetail.ModuleVersion != Null.NullInteger && unPublishedDetail.Action == TabVersionDetailAction.Modified)
+                    {
+                        DiscardDetail(tabId, unPublishedDetail);
+                    }    
+                }
+                TabVersionController.Instance.DeleteTabVersion(tabId, tabVersion.TabVersionId);
             }
             else
             {
