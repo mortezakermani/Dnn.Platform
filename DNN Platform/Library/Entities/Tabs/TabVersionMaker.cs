@@ -83,6 +83,11 @@ namespace DotNetNuke.Entities.Tabs
                 //TODO Localize Exception message
                 throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, tabVersion.Version));
             }
+            if (TabVersionController.Instance.GetTabVersions(tabId).Count() == 1)
+            {
+                //TODO Localize Exception message
+                throw new Exception(String.Format("The tab {0} has only one version created. It cannot be discarded", tabId, tabVersion.Version));
+            }
             DiscardVersion(tabId, createdByUserID, tabVersion);
         }
 
