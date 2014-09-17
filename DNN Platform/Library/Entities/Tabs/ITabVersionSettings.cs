@@ -35,5 +35,9 @@ namespace DotNetNuke.Entities.Tabs
         bool VersioningEnabled { get; set; }
 
         bool TryGetUrlVersion(out int versionInt);
+
+        bool CanSeeVersionedPages();
+
+        bool CanSeeVersionedPages(TabInfo tab);
     }
 }

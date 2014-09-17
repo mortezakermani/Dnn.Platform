@@ -4090,7 +4090,7 @@ namespace DotNetNuke.Common
             {
                 if (!tab.IsSuperTab)
                 {
-                    if (((tab.IsVisible && tab.HasBeenPublished) || blnHidden) && (tab.IsDeleted == false) && (tab.TabType == TabType.Normal))
+                    if (((tab.IsVisible && tab.HasAVisibleVersion) || blnHidden) && (tab.IsDeleted == false) && (tab.TabType == TabType.Normal))
                     {
                         TabInfo tabTemp = tab.Clone();
                         tabTemp.TabName = tabTemp.IndentedTabName;
@@ -4122,7 +4122,7 @@ namespace DotNetNuke.Common
             {
                 if (!tab.IsSuperTab)
                 {
-                    if (((tab.IsVisible && tab.HasBeenPublished) || blnHidden) && (tab.IsDeleted == false || blnDeleted) && (tab.TabType == TabType.Normal || blnURL))
+                    if (((tab.IsVisible && tab.HasAVisibleVersion) || blnHidden) && (tab.IsDeleted == false || blnDeleted) && (tab.TabType == TabType.Normal || blnURL))
                     {
                         TabInfo tabTemp = tab.Clone();
                         tabTemp.TabName = tabTemp.IndentedTabName;
@@ -4154,7 +4154,7 @@ namespace DotNetNuke.Common
             {
                 if (((currentTab < 0) || (tab.TabID != currentTab)) && !tab.IsSuperTab)
                 {
-                    if (((tab.IsVisible && tab.HasBeenPublished) || blnHidden) && (tab.IsDeleted == false || blnDeleted) && (tab.TabType == TabType.Normal || blnURL))
+                    if (((tab.IsVisible && tab.HasAVisibleVersion) || blnHidden) && (tab.IsDeleted == false || blnDeleted) && (tab.TabType == TabType.Normal || blnURL))
                     {
                         TabInfo tabTemp = tab.Clone();
                         tabTemp.TabName = tabTemp.IndentedTabName;

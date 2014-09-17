@@ -21,11 +21,14 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
 using System.Web;
 using System.Web.WebPages;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Framework;
+using DotNetNuke.Security;
+using DotNetNuke.Security.Permissions;
 
 namespace DotNetNuke.Entities.Tabs
 {
@@ -78,6 +81,33 @@ namespace DotNetNuke.Entities.Tabs
                 return false;
             }
             return int.TryParse(version, out versionInt);
+        }
+
+        public bool CanSeeVersionedPages()
+        {
+            return CanSeeVersionedPages(TabController.CurrentPage);
+        }
+
+        public bool CanSeeVersionedPages(TabInfo tab)
+        {
+            //if (!VersioningEnabled)
+            //{
+            //    return true;
+            //}
+
+            // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
+            var principal = Thread.CurrentPrincipal;
+            if (!principal.Identity.IsAuthenticated)
+            {
+                return false;
+            }
+
+            var currentPortal = PortalController.Instance.GetCurrentPortalSettings();
+
+            bool isAdminUser = currentPortal.UserInfo.IsSuperUser || PortalSecurity.IsInRole(currentPortal.AdministratorRoleName);
+            if (isAdminUser) return true;
+
+            return TabPermissionController.HasTabPermission(tab.TabPermissions, "EDIT,CONTENT,MANAGE");
         }
 
         private static int GetPortalId()

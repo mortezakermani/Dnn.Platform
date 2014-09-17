@@ -1225,7 +1225,7 @@ namespace DotNetNuke.Entities.Portals
 
             if (!isVerified)
             {
-                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && (t.IsVisible && t.HasBeenPublished) select t).FirstOrDefault();
+                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && (t.IsVisible && t.HasAVisibleVersion) select t).FirstOrDefault();
 
                 if (tab != null)
                 {

@@ -454,30 +454,13 @@ namespace DotNetNuke.UI.Skins
             return success;
         }
 
-        private bool CanSeeVersionedPages()
-        {
-            // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
-            var principal = Thread.CurrentPrincipal;
-            if (!principal.Identity.IsAuthenticated)
-            {
-                return false;
-            }
-
-            var currentPortal = PortalController.Instance.GetCurrentPortalSettings();
-
-            bool isAdminUser = currentPortal.UserInfo.IsSuperUser || PortalSecurity.IsInRole(currentPortal.AdministratorRoleName);
-            if (isAdminUser) return true;
-
-            return TabPermissionController.HasTabPermission(TabController.CurrentPage.TabPermissions, "EDIT,CONTENT,MANAGE");
-        }
-
         private bool ProcessMasterModules()
         {
             bool success = true;
             if (TabPermissionController.CanViewPage())
             {
                 // Versioning checks.
-                if (!TabController.CurrentPage.HasBeenPublished && !CanSeeVersionedPages())
+                if (!TabController.CurrentPage.HasAVisibleVersion)
                 {
                     Response.Redirect(Globals.NavigateURL(PortalSettings.ErrorPage404, string.Empty, "status=404"));
                 }
@@ -485,7 +468,7 @@ namespace DotNetNuke.UI.Skins
                 int urlVersion;
                 if (TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion))
                 {
-                    if (!CanSeeVersionedPages())
+                    if (!TabVersionSettings.Instance.CanSeeVersionedPages())
                     {
                         AddPageMessage(this, "", Localization.GetString("TabAccess.Error"),
                             ModuleMessage.ModuleMessageType.YellowWarning);
@@ -493,7 +476,7 @@ namespace DotNetNuke.UI.Skins
                     }
                     else
                     {
-                        if (!TabVersionMaker.Instance.GetVersionModules(TabController.CurrentPage.TabID, urlVersion).Any())
+                        if (TabVersionController.Instance.GetTabVersions(TabController.CurrentPage.TabID).All(tabVersion => tabVersion.Version != urlVersion))
                         {
                             Response.Redirect(Globals.NavigateURL(PortalSettings.ErrorPage404, string.Empty, "status=404"));
                         }

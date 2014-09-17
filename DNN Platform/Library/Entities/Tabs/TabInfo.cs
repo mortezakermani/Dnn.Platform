@@ -170,6 +170,18 @@ namespace DotNetNuke.Entities.Tabs
         [XmlElement("hasBeenPublished")]
         public bool HasBeenPublished { get; set; }
 
+        [XmlIgnore]
+        public bool HasAVisibleVersion {
+            get
+            {
+                if (!TabVersionSettings.Instance.VersioningEnabled)
+                {
+                    return true;
+                }
+			    return this.HasBeenPublished || TabVersionSettings.Instance.CanSeeVersionedPages(this);
+            }
+        }
+
         [XmlElement("keywords")]
         public string KeyWords { get; set; }
 
