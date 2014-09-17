@@ -491,6 +491,37 @@ namespace DotNetNuke.UI.Skins
                         //dynamically populate the panes with modules
                         if (PortalSettings.ActiveTab.Modules.Count > 0)
                         {
+                            var versionedModules = GetModules(TabController.CurrentPage.TabID);
+                            if (versionedModules != null)
+                            {
+                                PortalSettings.ActiveTab.Modules.Clear();
+                                var objPaneModules = new Dictionary<string, int>();
+
+                                foreach (var versionedModule in versionedModules)
+                                {
+                                    PortalSettings.ConfigureModule(versionedModule);
+
+                                    if (objPaneModules.ContainsKey(versionedModule.PaneName) == false)
+                                    {
+                                        objPaneModules.Add(versionedModule.PaneName, 0);
+                                    }
+                                    versionedModule.PaneModuleCount = 0;
+                                    if (!versionedModule.IsDeleted)
+                                    {
+                                        objPaneModules[versionedModule.PaneName] = objPaneModules[versionedModule.PaneName] + 1;
+                                        versionedModule.PaneModuleIndex = objPaneModules[versionedModule.PaneName] - 1;
+                                    }
+
+                                    PortalSettings.ActiveTab.Modules.Add(versionedModule);
+                                }
+
+                                foreach (ModuleInfo module in PortalSettings.ActiveTab.Modules)
+                                {
+                                    module.PaneModuleCount = objPaneModules[module.PaneName];
+                                }
+
+                            }
+
                             foreach (ModuleInfo objModule in PortalSettings.ActiveTab.Modules)
                             {
                                 success = ProcessModule(objModule);
@@ -517,6 +548,24 @@ namespace DotNetNuke.UI.Skins
             return success;
         }
 
+        private IEnumerable<ModuleInfo> GetModules(int tabId)
+        {
+            int urlVersion;
+            bool validVersion = TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion);
+            var showVersionMode = validVersion;// && CanSeeUnpublishPages();
+            var editView = PortalSettings.UserMode != PortalSettings.Mode.View;
+
+            if (showVersionMode)
+            {
+                return TabVersionMaker.Instance.GetVersionModules(tabId, urlVersion, true);
+            }
+            else if (editView)
+            {
+                return TabVersionMaker.Instance.GetUnPublishedVersionModules(tabId);
+            }
+
+            return null;
+        }
         private void ProcessPanes()
         {
             foreach (KeyValuePair<string, Pane> kvp in Panes)

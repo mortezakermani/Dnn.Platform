@@ -1035,7 +1035,7 @@ namespace DotNetNuke.Entities.Portals
             ActiveTab.BreadCrumbs = crumbs;
         }
 
-        private void ConfigureModule(ModuleInfo cloneModule)
+        public void ConfigureModule(ModuleInfo cloneModule)
         {
             if (Null.IsNull(cloneModule.StartDate))
             {
@@ -1156,7 +1156,7 @@ namespace DotNetNuke.Entities.Portals
             {
                 var objPaneModules = new Dictionary<string, int>();
 
-                IEnumerable<ModuleInfo> modules = GetModules(tabID);
+                IEnumerable<ModuleInfo> modules = ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone());//GetModules(tabID);
 
                 foreach (ModuleInfo cloneModule in modules)
                 {
