@@ -27,6 +27,7 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Framework;
+using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Tabs
 {
@@ -37,16 +38,14 @@ namespace DotNetNuke.Entities.Tabs
         {
             CheckVersioningEnabled();
 
-            var tabVersion = GetUnPublishedVersion(tabId);
+            var tabVersion = GetUnPublishedVersion(tabId);            
             if (tabVersion == null)
-            {
-                //TODO Localize Exception message
-                throw new Exception(String.Format("Tha tab {0} has not an unpublished version", tabId));
+            {                
+                throw new Exception(String.Format(Localization.GetString("TabHasNotAnUnpublishedVersion", Localization.ExceptionsResourceFile), tabId));
             }
             if (tabVersion.IsPublished)
             {
-                //TODO Localize Exception message
-                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, tabVersion.Version));
+                throw new Exception(String.Format(Localization.GetString("TabVersionAlreadyPublished", Localization.ExceptionsResourceFile), tabId, tabVersion.Version));
             }
             PublishVersion(tabId, createdByUserID, tabVersion);
 
@@ -72,21 +71,18 @@ namespace DotNetNuke.Entities.Tabs
         {
             CheckVersioningEnabled();
 
-            var tabVersion = GetUnPublishedVersion(tabId);
+            var tabVersion = GetUnPublishedVersion(tabId);            
             if (tabVersion == null)
             {
-                //TODO Localize Exception message
-                throw new Exception(String.Format("Tha tab {0} has not an unpublished version", tabId));
+                throw new Exception(String.Format(Localization.GetString("TabHasNotAnUnpublishedVersion", Localization.ExceptionsResourceFile), tabId));
             }
             if (tabVersion.IsPublished)
             {
-                //TODO Localize Exception message
-                throw new Exception(String.Format("For Tab {0}, the version {1} is already published", tabId, tabVersion.Version));
+                throw new Exception(String.Format(Localization.GetString("TabVersionAlreadyPublished", Localization.ExceptionsResourceFile), tabId, tabVersion.Version));
             }
             if (TabVersionController.Instance.GetTabVersions(tabId).Count() == 1)
-            {
-                //TODO Localize Exception message
-                throw new Exception(String.Format("The tab {0} has only one version created. It cannot be discarded", tabId, tabVersion.Version));
+            {                
+                throw new Exception(String.Format(Localization.GetString("TabVersionCannotBeDiscarded_OnlyOneVersion", Localization.ExceptionsResourceFile), tabId, tabVersion.Version));
             }
             DiscardVersion(tabId, createdByUserID, tabVersion);
         }
@@ -128,9 +124,8 @@ namespace DotNetNuke.Entities.Tabs
             CheckVersioningEnabled();
 
             if (GetUnPublishedVersion(tabId) != null)
-            {
-                //TODO Localize Exception message
-                throw new Exception(String.Format("For Tab {0}, the version {1} cannot be deleted because an unpublished version exists", tabId, version));
+            {                
+                throw new Exception(String.Format(Localization.GetString("TabVersionCannotBeDeleted_UnpublishedVersionExists", Localization.ExceptionsResourceFile), tabId, version));
             }
 
             var tabVersions = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
@@ -171,9 +166,8 @@ namespace DotNetNuke.Entities.Tabs
             CheckVersioningEnabled();
 
             if (GetUnPublishedVersion(tabId) != null)
-            {
-                //TODO Localize Exception message
-                throw new Exception(String.Format("For Tab {0}, the version {1} cannot be rolled back because an unpublished version exists", tabId, version));
+            {                
+                throw new Exception(String.Format(Localization.GetString("TabVersionCannotBeRolledBack_UnpublishedVersionExists", Localization.ExceptionsResourceFile), tabId, version));
             }
 
             var rollbackDetails = CopyVersionDetails(GetVersionModulesInternal(tabId, version));
@@ -238,7 +232,7 @@ namespace DotNetNuke.Entities.Tabs
             if (!TabVersionSettings.Instance.VersioningEnabled)
             {
                 //TODO Localize Exception message
-                throw new Exception("Tab Versioning is not enabled");
+                throw new Exception(Localization.GetString("TabVersioningNotEnabled", Localization.ExceptionsResourceFile));
             }
         }
 

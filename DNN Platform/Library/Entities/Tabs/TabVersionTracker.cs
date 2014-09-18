@@ -26,6 +26,7 @@ using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Framework;
+using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Tabs
 {
@@ -49,9 +50,8 @@ namespace DotNetNuke.Entities.Tabs
             }
             
             if (TabVersionDetailController.Instance.GetTabVersionDetails(unPublishedVersion.TabVersionId).Any(tvd => tvd.ModuleId == module.ModuleID))
-            {
-                //TODO localize Exception messages
-                throw new Exception(String.Format("For Tab {0}, the unpublished Version already contains a version of the module {1}", tabId, module.ModuleID));
+            {                
+                throw new Exception(String.Format(Localization.GetString("ModuleAlreadyExistsOnUnpublishedVersion", Localization.ExceptionsResourceFile), tabId, module.ModuleID));
             }
 
             tabVersionDetail = GetTabVersionDetailFromModule(unPublishedVersion.TabVersionId, module, moduleVersion, TabVersionDetailAction.Added);
