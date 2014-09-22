@@ -1030,7 +1030,7 @@ namespace DotNetNuke.Entities.Portals
             ActiveTab.ContainerPath = SkinController.FormatSkinPath(ActiveTab.ContainerSrc);
 
             ActiveTab.Panes = new ArrayList();
-            ActiveTab.Modules = new ArrayList();
+            //ActiveTab.Modules = new ArrayList();
             var crumbs = new ArrayList();
             GetBreadCrumbsRecursively(ref crumbs, ActiveTab.TabID);
             ActiveTab.BreadCrumbs = crumbs;
@@ -1153,34 +1153,34 @@ namespace DotNetNuke.Entities.Portals
                     ConfigureActiveTab();
                 }
             }
-            if (ActiveTab != null)
-            {
-                var objPaneModules = new Dictionary<string, int>();
+            //if (ActiveTab != null && HttpContext.Current.Request.IsAuthenticated)
+            //{
+            //    var objPaneModules = new Dictionary<string, int>();
 
-                IEnumerable<ModuleInfo> modules = ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone());//GetModules(tabID);
+            //    IEnumerable<ModuleInfo> modules = HttpContext.Current.Request.IsAuthenticated ? GetModules(tabID) : ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone());
 
-                foreach (ModuleInfo cloneModule in modules)
-                {
-                    ConfigureModule(cloneModule);
+            //    foreach (ModuleInfo cloneModule in modules)
+            //    {
+            //        ConfigureModule(cloneModule);
 
-                    if (objPaneModules.ContainsKey(cloneModule.PaneName) == false)
-                    {
-                        objPaneModules.Add(cloneModule.PaneName, 0);
-                    }
-                    cloneModule.PaneModuleCount = 0;
-                    if (!cloneModule.IsDeleted)
-                    {
-                        objPaneModules[cloneModule.PaneName] = objPaneModules[cloneModule.PaneName] + 1;
-                        cloneModule.PaneModuleIndex = objPaneModules[cloneModule.PaneName] - 1;
-                    }
+            //        if (objPaneModules.ContainsKey(cloneModule.PaneName) == false)
+            //        {
+            //            objPaneModules.Add(cloneModule.PaneName, 0);
+            //        }
+            //        cloneModule.PaneModuleCount = 0;
+            //        if (!cloneModule.IsDeleted)
+            //        {
+            //            objPaneModules[cloneModule.PaneName] = objPaneModules[cloneModule.PaneName] + 1;
+            //            cloneModule.PaneModuleIndex = objPaneModules[cloneModule.PaneName] - 1;
+            //        }
 
-                    ActiveTab.Modules.Add(cloneModule);
-                }
-                foreach (ModuleInfo module in ActiveTab.Modules)
-                {
-                    module.PaneModuleCount = objPaneModules[module.PaneName];
-                }
-            }
+            //        ActiveTab.Modules.Add(cloneModule);
+            //    }
+            //    foreach (ModuleInfo module in ActiveTab.Modules)
+            //    {
+            //        module.PaneModuleCount = objPaneModules[module.PaneName];
+            //    }
+            //}
         }
 
         

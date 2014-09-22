@@ -492,36 +492,36 @@ namespace DotNetNuke.UI.Skins
                         //dynamically populate the panes with modules
                         if (PortalSettings.ActiveTab.Modules.Count > 0)
                         {
-                            var versionedModules = GetModules(TabController.CurrentPage.TabID);
-                            if (versionedModules != null)
-                            {
-                                PortalSettings.ActiveTab.Modules.Clear();
-                                var objPaneModules = new Dictionary<string, int>();
+                            //var versionedModules = GetModules(TabController.CurrentPage.TabID);
+                            //if (versionedModules != null)
+                            //{
+                            //    PortalSettings.ActiveTab.Modules.Clear();
+                            //    var objPaneModules = new Dictionary<string, int>();
 
-                                foreach (var versionedModule in versionedModules)
-                                {
-                                    PortalSettings.ConfigureModule(versionedModule);
+                            //    foreach (var versionedModule in versionedModules)
+                            //    {
+                            //        PortalSettings.ConfigureModule(versionedModule);
 
-                                    if (objPaneModules.ContainsKey(versionedModule.PaneName) == false)
-                                    {
-                                        objPaneModules.Add(versionedModule.PaneName, 0);
-                                    }
-                                    versionedModule.PaneModuleCount = 0;
-                                    if (!versionedModule.IsDeleted)
-                                    {
-                                        objPaneModules[versionedModule.PaneName] = objPaneModules[versionedModule.PaneName] + 1;
-                                        versionedModule.PaneModuleIndex = objPaneModules[versionedModule.PaneName] - 1;
-                                    }
+                            //        if (objPaneModules.ContainsKey(versionedModule.PaneName) == false)
+                            //        {
+                            //            objPaneModules.Add(versionedModule.PaneName, 0);
+                            //        }
+                            //        versionedModule.PaneModuleCount = 0;
+                            //        if (!versionedModule.IsDeleted)
+                            //        {
+                            //            objPaneModules[versionedModule.PaneName] = objPaneModules[versionedModule.PaneName] + 1;
+                            //            versionedModule.PaneModuleIndex = objPaneModules[versionedModule.PaneName] - 1;
+                            //        }
 
-                                    PortalSettings.ActiveTab.Modules.Add(versionedModule);
-                                }
+                            //        PortalSettings.ActiveTab.Modules.Add(versionedModule);
+                            //    }
 
-                                foreach (ModuleInfo module in PortalSettings.ActiveTab.Modules)
-                                {
-                                    module.PaneModuleCount = objPaneModules[module.PaneName];
-                                }
+                            //    foreach (ModuleInfo module in PortalSettings.ActiveTab.Modules)
+                            //    {
+                            //        module.PaneModuleCount = objPaneModules[module.PaneName];
+                            //    }
 
-                            }
+                            //}
 
                             foreach (ModuleInfo objModule in PortalSettings.ActiveTab.Modules)
                             {

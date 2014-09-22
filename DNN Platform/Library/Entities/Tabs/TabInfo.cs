@@ -48,6 +48,7 @@ using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Tokens;
+using DotNetNuke.UI.Skins;
 
 #endregion
 
@@ -78,6 +79,8 @@ namespace DotNetNuke.Entities.Tabs
         private List<TabAliasSkinInfo> _aliasSkins;
         private Dictionary<string, string> _customAliases;
         private List<TabUrlInfo> _tabUrls;
+        private ArrayList _modules;
+
 
         #endregion
 
@@ -126,6 +129,7 @@ namespace DotNetNuke.Entities.Tabs
             IsVisible = true;
             HasBeenPublished = true;
             DisableLink = false;
+           
         }
 
         #endregion
@@ -192,8 +196,25 @@ namespace DotNetNuke.Entities.Tabs
         [XmlElement("localizedVersionGuid")]
         public Guid LocalizedVersionGuid { get; set; }
 
+
         [XmlIgnore]
-        public ArrayList Modules { get; set; }
+        public ArrayList Modules {
+            get
+            {
+                if (_modules == null)
+                {
+                    _modules = SkinModuleController.Instance.GetConfiguredModules(this);
+                    return _modules;
+                }
+                if (Globals.IsEditMode())
+                {
+                    _modules = null;
+                    return SkinModuleController.Instance.GetConfiguredModules(this);
+                }
+                return _modules;
+            }
+            set { _modules = value; } 
+        }
 
         [XmlElement("pageheadtext")]
         public string PageHeadText { get; set; }
@@ -933,7 +954,7 @@ namespace DotNetNuke.Entities.Tabs
             clonedTab.CultureCode = CultureCode;
 
             clonedTab.Panes = new ArrayList();
-            clonedTab.Modules = new ArrayList();
+            clonedTab.Modules = _modules; //new ArrayList();
 
             return clonedTab;
         }
