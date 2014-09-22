@@ -455,7 +455,11 @@ namespace DotNetNuke.Entities.Tabs
                 }
             }
 
-            return versionModules.Values.ToList();
+            // Return Snapshot ordering by PaneName and ModuleOrder (this is required as Skin.cs does not order by these fields)
+            return versionModules.Values
+                .OrderBy(m => m.PaneName)
+                .ThenBy(m => m.ModuleOrder)
+                .ToList();
         }
 
         private static TabVersionDetail JoinVersionDetails(TabVersionDetail tabVersionDetail, TabVersionDetail newVersionDetail)
