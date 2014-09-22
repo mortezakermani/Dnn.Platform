@@ -34,7 +34,7 @@ namespace DotNetNuke.Entities.Tabs
         /// <summary>
         /// Publish a Tab Version
         /// </summary>
-        void Publish(int tabId, int createdByUserID);
+        void Publish(int portalId, int tabId, int createdByUserID);
 
         /// <summary>
         /// Discards a Tab Version

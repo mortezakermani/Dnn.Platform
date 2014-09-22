@@ -1628,7 +1628,7 @@ namespace DotNetNuke.Entities.Tabs
         }
 
         /// <summary>
-        /// Publishes the tab.
+        /// Publishes the tab. Set the VIEW permission
         /// </summary>
         /// <param name="publishTab">The publish tab.</param>
         public void PublishTab(TabInfo publishTab)
@@ -1914,6 +1914,18 @@ namespace DotNetNuke.Entities.Tabs
 
             //Clear Tab Caches
             ClearCache(localizedTab.PortalID);
+        }
+
+        /// <summary>
+        /// It marks a page as published at least once
+        /// </summary>
+        /// <param name="tab">The Tab to be marked</param>
+        public void MarkAsPublished(TabInfo tab)
+        {
+            Provider.MarkAsPublished(tab.TabID);
+            
+            //Clear Tab Caches
+            ClearCache(tab.PortalID);            
         }
 
         #endregion

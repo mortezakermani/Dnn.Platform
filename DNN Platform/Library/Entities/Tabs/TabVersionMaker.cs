@@ -34,7 +34,7 @@ namespace DotNetNuke.Entities.Tabs
     public class TabVersionMaker : ServiceLocator<ITabVersionMaker, TabVersionMaker>, ITabVersionMaker
     {
 
-        public void Publish(int tabId, int createdByUserID)
+        public void Publish(int portalId, int tabId, int createdByUserID)
         {
             CheckVersioningEnabled();
 
@@ -47,11 +47,11 @@ namespace DotNetNuke.Entities.Tabs
             {
                 throw new Exception(String.Format(Localization.GetString("TabVersionAlreadyPublished", Localization.ExceptionsResourceFile), tabId, tabVersion.Version));
             }
-            PublishVersion(tabId, createdByUserID, tabVersion);
+            PublishVersion(portalId, tabId, createdByUserID, tabVersion);
 
         }
 
-        private void PublishVersion(int tabId, int createdByUserID, TabVersion tabVersion)
+        private void PublishVersion(int portalId, int tabId, int createdByUserID, TabVersion tabVersion)
         {
             
             tabVersion.IsPublished = true;
@@ -65,6 +65,11 @@ namespace DotNetNuke.Entities.Tabs
             }
             
             TabVersionController.Instance.SaveTabVersion(tabVersion, tabVersion.CreatedByUserID, createdByUserID);
+            var tab = TabController.Instance.GetTab(tabId, portalId);
+            if (!tab.HasBeenPublished)
+            {
+                TabController.Instance.MarkAsPublished(tab);
+            }
         }
 
         public void Discard(int tabId, int createdByUserID)
