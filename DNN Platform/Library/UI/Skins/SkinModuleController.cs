@@ -30,6 +30,7 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
+using DotNetNuke.Entities.Tabs.TabVersions;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.UI.Skins
@@ -88,7 +89,7 @@ namespace DotNetNuke.UI.Skins
         private IEnumerable<ModuleInfo> GetModules(TabInfo tab)
         {
             int urlVersion;
-            bool validVersion = TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion);
+            bool validVersion = TabVersionUtils.TryGetUrlVersion(out urlVersion);
             var showVersionMode = validVersion;
             var editView = Globals.IsEditMode();
 
