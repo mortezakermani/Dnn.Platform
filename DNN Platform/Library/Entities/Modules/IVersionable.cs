@@ -23,10 +23,26 @@ namespace DotNetNuke.Entities.Modules
 {
     public interface IVersionable
     {
-        void DeleteVersion(int moduleId, int versionId);
+        /// <summary>
+        /// This method deletes a concrete version of the module
+        /// </summary>
+        /// <param name="moduleId">ModuleId</param>
+        /// <param name="version">Version number</param>
+        void DeleteVersion(int moduleId, int version);
 
-        void RollBackVersion(int moduleId, int versionId);
+        /// <summary>
+        /// This method performs a rollback of a concrete version of the module
+        /// </summary>
+        /// <param name="moduleId">Module Id</param>
+        /// <param name="version">Version number that need to be rollback</param>
+        /// <returns>New version number created after the rollback process</returns>
+        int RollBackVersion(int moduleId, int version);
 
-        void PublishVersion(int moduleId, int versionId);
+        /// <summary>
+        /// This method publishes a version of the module
+        /// </summary>
+        /// <param name="moduleId">Module Id</param>
+        /// <param name="version">Version number</param>
+        void PublishVersion(int moduleId, int version);
     }
 }

@@ -190,8 +190,8 @@ namespace DotNetNuke.Entities.Tabs
             foreach (var rollbackDetail in rollbackDetails)
             {
                 rollbackDetail.TabVersionId = newVersion.TabVersionId;
+                rollbackDetail.ModuleVersion = RollBackDetail(tabId, rollbackDetail);
                 TabVersionDetailController.Instance.SaveTabVersionDetail(rollbackDetail, createdByUserID);
-                RollBackDetail(tabId, rollbackDetail);
             }
 
             return newVersion;
@@ -377,15 +377,14 @@ namespace DotNetNuke.Entities.Tabs
             return GetSnapShot(tabVersionDetails);
         }
 
-        private void RollBackDetail(int tabId, TabVersionDetail unPublishedDetail)
+        private int RollBackDetail(int tabId, TabVersionDetail unPublishedDetail)
         {
             var moduleInfo = ModuleController.Instance.GetModule(unPublishedDetail.ModuleId, tabId, true);
 
             var versionableController = GetVersionableController(moduleInfo);
-            if (versionableController != null)
-            {
-                versionableController.RollBackVersion(unPublishedDetail.ModuleId, unPublishedDetail.ModuleVersion);
-            }
+            if (versionableController == null) return Null.NullInteger;
+            
+            return versionableController.RollBackVersion(unPublishedDetail.ModuleId, unPublishedDetail.ModuleVersion);
         }
 
         private void PublishDetail(int tabId, TabVersionDetail unPublishedDetail)
