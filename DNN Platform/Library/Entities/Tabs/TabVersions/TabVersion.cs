@@ -20,24 +20,20 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using DotNetNuke.Entities.Portals;
 
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
-    public interface ITabVersionSettings
-    {
-        int MaximunNumberOfVersions { get; set; }
-
-        bool VersioningEnabled { get; set; }
-
-        bool TryGetUrlVersion(out int versionInt);
-
-        bool CanSeeVersionedPages();
-
-        bool CanSeeVersionedPages(TabInfo tab);
+    ///<summary>
+    ///Class to represent a Tab Version object
+    ///</summary>    
+    public class TabVersion: BaseEntityInfo
+    {       
+        #region Public Properties        
+        public int TabVersionId { get; set; }
+        public int TabId { get; set; }
+        public int Version { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public bool IsPublished { get; set; }
+        #endregion
     }
 }

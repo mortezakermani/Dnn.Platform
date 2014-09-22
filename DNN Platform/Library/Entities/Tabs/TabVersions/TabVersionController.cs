@@ -27,18 +27,17 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Framework;
 
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
     public class TabVersionController: ServiceLocator<ITabVersionController, TabVersionController>, ITabVersionController
     {
-
         private static readonly DataProvider Provider = DataProvider.Instance();
 
+        #region Public Methods
         public TabVersion GetTabVersion(int tabVersionId, int tabId, bool ignoreCache = false)
         {
             return GetTabVersions(tabId, ignoreCache).SingleOrDefault(tv => tv.TabVersionId == tabVersionId);
         }
-
         
         public IEnumerable<TabVersion> GetTabVersions(int tabId, bool ignoreCache = false)
         {
@@ -52,12 +51,9 @@ namespace DotNetNuke.Entities.Tabs
             return CBO.GetCachedObject<List<TabVersion>>(new CacheItemArgs(cacheKey,
                                                                     DataCache.TabVersionsCacheTimeOut,
                                                                     DataCache.TabVersionsCachePriority),
-                                                            c =>
-                                                            {
-                                                                return CBO.FillCollection<TabVersion>(Provider.GetTabVersions(tabId));                                                                    
-                                                            });            
+                                                            c => CBO.FillCollection<TabVersion>(Provider.GetTabVersions(tabId)));            
         }
-
+        
         public void SaveTabVersion(TabVersion tabVersion, int createdByUserID)
         {
             SaveTabVersion(tabVersion, createdByUserID, createdByUserID);
@@ -97,14 +93,15 @@ namespace DotNetNuke.Entities.Tabs
             Provider.DeleteTabVersion(tabVersionId);
             ClearCache(tabId);
         }
-        
+        #endregion
+
         private void ClearCache(int tabId)
         {
             string cacheKey = string.Format(DataCache.TabVersionsCacheKey, tabId);
             DataCache.RemoveCache(cacheKey);
         }
 
-        protected override System.Func<ITabVersionController> GetFactory()
+        protected override Func<ITabVersionController> GetFactory()
         {
             return () => new TabVersionController();
         }

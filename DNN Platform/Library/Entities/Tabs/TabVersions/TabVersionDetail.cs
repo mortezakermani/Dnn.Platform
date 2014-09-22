@@ -19,33 +19,32 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System.Collections.Generic;
-using DotNetNuke.Entities.Modules;
-
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
-    public interface ITabVersionTracker
+    ///<summary>
+    ///Class to represent a Tab Version object
+    ///</summary>    
+    public class TabVersionDetail: BaseEntityInfo
     {
-        /// <summary>
-        /// Tracks an added module into a Tab Version
-        /// </summary>
-        void TrackModuleAddition(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion);
+      #region Public Properties
 
-        /// <summary>
-        /// Tracks a modified module into a Tab Version
-        /// </summary>
-        void TrackModuleModification(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion);
+        public int TabVersionDetailId { get; set; }
+        public int TabVersionId { get; set; }
+        public int ModuleId { get; set; }
+        public int ModuleVersion { get; set; }
+        public string PaneName { get; set; }
+        public int ModuleOrder { get; set; }
+        public TabVersionDetailAction Action { get; set; }
 
-        /// <summary>
-        /// Tracks a modified module into a Tab Version
-        /// </summary>
-        void TrackModuleModification(int tabId, int createdByUserID, int moduleId, string paneName, int moduleOrder, int moduleVersion);
-
-
-        /// <summary>
-        ///  Tracks a deleted module into a Tab Version
-        /// </summary>
-        void TrackModuleDeletion(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion);
+        #endregion
         
+    }
+
+    public enum TabVersionDetailAction
+    {
+        Added,
+        Modified,
+        Deleted,
+        Reset
     }
 }

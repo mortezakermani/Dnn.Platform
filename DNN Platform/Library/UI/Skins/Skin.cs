@@ -41,6 +41,7 @@ using DotNetNuke.Entities.Modules.Actions;
 using DotNetNuke.Entities.Modules.Communications;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
+using DotNetNuke.Entities.Tabs.TabVersions;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework;
 using DotNetNuke.Framework.JavaScriptLibraries;
@@ -466,9 +467,9 @@ namespace DotNetNuke.UI.Skins
                 }
 
                 int urlVersion;
-                if (TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion))
+                if (TabVersionUtils.TryGetUrlVersion(out urlVersion))
                 {
-                    if (!TabVersionSettings.Instance.CanSeeVersionedPages())
+                    if (!TabVersionUtils.CanSeeVersionedPages())
                     {
                         AddPageMessage(this, "", Localization.GetString("TabAccess.Error"),
                             ModuleMessage.ModuleMessageType.YellowWarning);
@@ -551,7 +552,7 @@ namespace DotNetNuke.UI.Skins
         private IEnumerable<ModuleInfo> GetModules(int tabId)
         {
             int urlVersion;
-            bool validVersion = TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion);
+            bool validVersion = TabVersionUtils.TryGetUrlVersion(out urlVersion);
             var showVersionMode = validVersion;// && CanSeeUnpublishPages();
             var editView = PortalSettings.UserMode != PortalSettings.Mode.View;
 

@@ -21,8 +21,11 @@
 
 using System.Collections.Generic;
 
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
+    /// <summary>
+    /// Interface controller responsible to manage the tab version details
+    /// </summary>
     public interface ITabVersionDetailController
     {
         /// <summary>
@@ -39,8 +42,7 @@ namespace DotNetNuke.Entities.Tabs
         /// <param name="tabId">The Tab Id to be queried</param>
         /// <param name="version">The Tab Id to be queried</param>        
         IEnumerable<TabVersionDetail> GetVersionHistory(int tabId, int version);
-
-
+        
         /// <summary>
         /// Gets all Tab Version Details of an existing Tab Version
         /// </summary>        
@@ -52,17 +54,16 @@ namespace DotNetNuke.Entities.Tabs
         /// Saves a Tab Version Detail object. Adds or updates an existing one
         /// </summary>      
         void SaveTabVersionDetail(TabVersionDetail tabVersionDetail);
-
+        
+        /// <summary>
+        /// Saves a Tab Version Detail object. Adds or updates an existing one
+        /// </summary>        
+        void SaveTabVersionDetail(TabVersionDetail tabVersionDetail, int createdByUserId);
 
         /// <summary>
         /// Saves a Tab Version Detail object. Adds or updates an existing one
         /// </summary>        
-        void SaveTabVersionDetail(TabVersionDetail tabVersionDetail, int createdByUserID);
-
-        /// <summary>
-        /// Saves a Tab Version Detail object. Adds or updates an existing one
-        /// </summary>        
-        void SaveTabVersionDetail(TabVersionDetail tabVersionDetail, int createdByUserID, int modifiedByUserID);
+        void SaveTabVersionDetail(TabVersionDetail tabVersionDetail, int createdByUserId, int modifiedByUserId);
 
         /// <summary>
         /// Deletes a Tab Version Detail
@@ -70,6 +71,5 @@ namespace DotNetNuke.Entities.Tabs
         /// <param name="tabVersionId">The Tab Version Id to be queried</param>
         /// <param name="tabVersionDetailId">The Tab Version Detail Id to be deleted</param>
         void DeleteTabVersionDetail(int tabVersionId, int tabVersionDetailId);
-
     }
 }

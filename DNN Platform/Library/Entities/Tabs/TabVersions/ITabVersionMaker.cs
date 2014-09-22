@@ -22,26 +22,25 @@
 using System.Collections.Generic;
 using DotNetNuke.Entities.Modules;
 
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
     public interface ITabVersionMaker
     {
         /// <summary>
         /// Creates a new Tab Version 
         /// </summary>        
-        TabVersion CreateNewVersion(int tabId, int createdByUserID);
+        TabVersion CreateNewVersion(int tabId, int createdByUserId);
 
         /// <summary>
         /// Publish a Tab Version
         /// </summary>
-        void Publish(int portalId, int tabId, int createdByUserID);
+        void Publish(int portalId, int tabId, int createdByUserId);
 
         /// <summary>
         /// Discards a Tab Version
         /// </summary>
-        void Discard(int tabId, int createdByUserID);
-
-
+        void Discard(int tabId, int createdByUserId);
+        
         /// <summary>
         /// Get all Modules Info associated with an specific version
         /// </summary>        
@@ -52,8 +51,7 @@ namespace DotNetNuke.Entities.Tabs
         /// </summary>
         /// <param name="tabId">The Tab Id to be queried</param>  
         TabVersion GetCurrentVersion(int tabId, bool ignoreCache = false);
-
-
+        
         /// <summary>
         /// Get the unpublished version or Null if Tab has not any unpublished version
         /// </summary>
@@ -74,12 +72,11 @@ namespace DotNetNuke.Entities.Tabs
         /// <summary>
         /// Rolls back an existing version
         /// </summary>
-        TabVersion RollBackVesion(int tabId, int createdByUserID, int version);
+        TabVersion RollBackVesion(int tabId, int createdByUserId, int version);
 
         /// <summary>
         /// Deletes an existing Tab Version
         /// </summary>
-        void DeleteVersion(int tabId, int createdByUserID, int version);
-
+        void DeleteVersion(int tabId, int createdByUserId, int version);
     }
 }

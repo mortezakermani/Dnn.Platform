@@ -21,15 +21,18 @@
 
 using System.Collections.Generic;
 
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
+    /// <summary>
+    /// Controller interface responsible to manage tab versions
+    /// </summary>
     public interface ITabVersionController
     {
         /// <summary>
         /// Gets a Tab Version object of an existing Tab
         /// </summary>     
         /// <param name="tabVersionId">The Tab Version Id to be get</param>        
-        /// <param name="tabID">The Tab Id to be queried</param>        
+        /// <param name="tabId">The Tab Id to be queried</param>        
         /// <param name="ignoreCache">If true, the method will not use the Caching Storage</param>        
         TabVersion GetTabVersion(int tabVersionId, int tabId, bool ignoreCache = false);
 
@@ -43,14 +46,13 @@ namespace DotNetNuke.Entities.Tabs
         /// <summary>
         /// Saves a Tab Version object. Adds or updates an existing one
         /// </summary>        
-        void SaveTabVersion(TabVersion tabVersion, int createdByUserID);
+        void SaveTabVersion(TabVersion tabVersion, int createdByUserId);
 
         /// <summary>
         /// Saves a Tab Version object. Adds or updates an existing one
         /// </summary>        
-        void SaveTabVersion(TabVersion tabVersion, int createdByUserID, int modifiedByUserID);
-
-
+        void SaveTabVersion(TabVersion tabVersion, int createdByUserId, int modifiedByUserId);
+        
         /// <summary>
         /// Saves a Tab Version object. Adds or updates an existing one
         /// </summary>        
@@ -60,12 +62,11 @@ namespace DotNetNuke.Entities.Tabs
         /// Creates a new version for a existing Tab
         /// </summary>
         /// <param name="tabId">The Tab Id to be queried</param>
-        /// <param name="createdByUserID">User Id who creates the version</param>
+        /// <param name="createdByUserId">User Id who creates the version</param>
         /// <param name="isPublished">If true, the version is automatically published</param>
         /// <returns></returns>
-        TabVersion CreateTabVersion(int tabId, int createdByUserID, bool isPublished = false);
-
-
+        TabVersion CreateTabVersion(int tabId, int createdByUserId, bool isPublished = false);
+        
         /// <summary>
         /// Deletes a Tab Version
         /// </summary>

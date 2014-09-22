@@ -26,7 +26,7 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Framework;
 
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
     public class TabVersionDetailController: ServiceLocator<ITabVersionDetailController, TabVersionDetailController>, ITabVersionDetailController
     {

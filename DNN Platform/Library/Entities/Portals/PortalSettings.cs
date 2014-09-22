@@ -39,6 +39,7 @@ using DotNetNuke.Entities.Controllers;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
+using DotNetNuke.Entities.Tabs.TabVersions;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.FileSystem;
@@ -1253,7 +1254,7 @@ namespace DotNetNuke.Entities.Portals
         private IEnumerable<ModuleInfo> GetModules(int tabId)
         {
             int urlVersion;
-            bool validVersion = TabVersionSettings.Instance.TryGetUrlVersion(out urlVersion);
+            bool validVersion = TabVersionUtils.TryGetUrlVersion(out urlVersion);
             var showVersionMode = validVersion;// && CanSeeUnpublishPages();
             var editView = UserMode != Mode.View;
 

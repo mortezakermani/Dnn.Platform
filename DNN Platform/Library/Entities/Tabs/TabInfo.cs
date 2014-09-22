@@ -41,6 +41,7 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Content;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Tabs.TabVersions;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
@@ -178,7 +179,7 @@ namespace DotNetNuke.Entities.Tabs
                 {
                     return true;
                 }
-			    return this.HasBeenPublished || TabVersionSettings.Instance.CanSeeVersionedPages(this);
+			    return this.HasBeenPublished || TabVersionUtils.CanSeeVersionedPages(this);
             }
         }
 

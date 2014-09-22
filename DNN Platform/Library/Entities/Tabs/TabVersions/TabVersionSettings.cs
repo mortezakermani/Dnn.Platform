@@ -30,7 +30,7 @@ using DotNetNuke.Framework;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
     public class TabVersionSettings: ServiceLocator<ITabVersionSettings, TabVersionSettings>, ITabVersionSettings
     {
@@ -72,49 +72,11 @@ namespace DotNetNuke.Entities.Tabs
             }
         }
 
-        public bool TryGetUrlVersion(out int versionInt)
-        {
-            var version = HttpContext.Current.Request.QueryString["version"];
-            if (version.IsEmpty())
-            {
-                versionInt = Null.NullInteger;
-                return false;
-            }
-            return int.TryParse(version, out versionInt);
-        }
-
-        public bool CanSeeVersionedPages()
-        {
-            return CanSeeVersionedPages(TabController.CurrentPage);
-        }
-
-        public bool CanSeeVersionedPages(TabInfo tab)
-        {
-            //if (!VersioningEnabled)
-            //{
-            //    return true;
-            //}
-
-            // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
-            var principal = Thread.CurrentPrincipal;
-            if (!principal.Identity.IsAuthenticated)
-            {
-                return false;
-            }
-
-            var currentPortal = PortalController.Instance.GetCurrentPortalSettings();
-
-            bool isAdminUser = currentPortal.UserInfo.IsSuperUser || PortalSecurity.IsInRole(currentPortal.AdministratorRoleName);
-            if (isAdminUser) return true;
-
-            return TabPermissionController.HasTabPermission(tab.TabPermissions, "EDIT,CONTENT,MANAGE");
-        }
-
         private static int GetPortalId()
         {
             return PortalSettings.Current == null ? Null.NullInteger : PortalSettings.Current.PortalId;
         }
-
+        
         protected override Func<ITabVersionSettings> GetFactory()
         {
             return () => new TabVersionSettings();

@@ -19,24 +19,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-
-namespace DotNetNuke.Entities.Tabs
+namespace DotNetNuke.Entities.Tabs.TabVersions
 {
-    ///<summary>
-    ///Class to represent a Tab Version object
-    ///</summary>    
-    public class TabVersion: BaseEntityInfo
-    {       
+    public interface ITabVersionSettings
+    {
+        int MaximunNumberOfVersions { get; set; }
 
-        #region Public Properties
-        
-        public int TabVersionId { get; set; }
-        public int TabId { get; set; }
-        public int Version { get; set; }
-        public DateTime TimeStamp { get; set; }
-        public bool IsPublished { get; set; }
-        #endregion
-
+        bool VersioningEnabled { get; set; }
     }
 }
