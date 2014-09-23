@@ -30,19 +30,14 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web;
-using System.Web.WebPages;
 using DotNetNuke.Application;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Controllers;
 using DotNetNuke.Entities.Modules;
-using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
-using DotNetNuke.Entities.Tabs.TabVersions;
 using DotNetNuke.Entities.Users;
-using DotNetNuke.Security.Permissions;
-using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Personalization;
 using DotNetNuke.Services.Tokens;
@@ -1030,7 +1025,6 @@ namespace DotNetNuke.Entities.Portals
             ActiveTab.ContainerPath = SkinController.FormatSkinPath(ActiveTab.ContainerSrc);
 
             ActiveTab.Panes = new ArrayList();
-            //ActiveTab.Modules = new ArrayList();
             var crumbs = new ArrayList();
             GetBreadCrumbsRecursively(ref crumbs, ActiveTab.TabID);
             ActiveTab.BreadCrumbs = crumbs;
@@ -1153,34 +1147,6 @@ namespace DotNetNuke.Entities.Portals
                     ConfigureActiveTab();
                 }
             }
-            //if (ActiveTab != null && HttpContext.Current.Request.IsAuthenticated)
-            //{
-            //    var objPaneModules = new Dictionary<string, int>();
-
-            //    IEnumerable<ModuleInfo> modules = HttpContext.Current.Request.IsAuthenticated ? GetModules(tabID) : ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone());
-
-            //    foreach (ModuleInfo cloneModule in modules)
-            //    {
-            //        ConfigureModule(cloneModule);
-
-            //        if (objPaneModules.ContainsKey(cloneModule.PaneName) == false)
-            //        {
-            //            objPaneModules.Add(cloneModule.PaneName, 0);
-            //        }
-            //        cloneModule.PaneModuleCount = 0;
-            //        if (!cloneModule.IsDeleted)
-            //        {
-            //            objPaneModules[cloneModule.PaneName] = objPaneModules[cloneModule.PaneName] + 1;
-            //            cloneModule.PaneModuleIndex = objPaneModules[cloneModule.PaneName] - 1;
-            //        }
-
-            //        ActiveTab.Modules.Add(cloneModule);
-            //    }
-            //    foreach (ModuleInfo module in ActiveTab.Modules)
-            //    {
-            //        module.PaneModuleCount = objPaneModules[module.PaneName];
-            //    }
-            //}
         }
 
         
@@ -1248,36 +1214,6 @@ namespace DotNetNuke.Entities.Portals
             }
 
             return isVerified;
-        }
-
-
-        private IEnumerable<ModuleInfo> GetModules(int tabId)
-        {
-            int urlVersion;
-            bool validVersion = TabVersionUtils.TryGetUrlVersion(out urlVersion);
-            var showVersionMode = validVersion;// && CanSeeUnpublishPages();
-            var editView = UserMode != Mode.View;
-
-            IEnumerable<ModuleInfo> modules = null;
-            if (showVersionMode)
-            {
-                modules = TabVersionMaker.Instance.GetVersionModules(tabId, urlVersion, true);
-            }
-            else if (editView)
-            {
-                modules = TabVersionMaker.Instance.GetUnPublishedVersionModules(tabId);
-            }
-            else
-            {
-                modules = ActiveTab.ChildModules.Select(kvp => kvp.Value.Clone());
-            }
-            return modules;
-        }
-
-        private bool CanSeeUnpublishPages()
-        {
-            // TODO: review, can't be used due to reference problem: PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE"); 
-            return TabPermissionController.HasTabPermission(ActiveTab.TabPermissions, "EDIT,CONTENT,MANAGE");
         }
 
         private bool VerifySpecialTab(int portalId, int tabId)

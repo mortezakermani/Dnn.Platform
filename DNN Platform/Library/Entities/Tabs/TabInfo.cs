@@ -198,22 +198,16 @@ namespace DotNetNuke.Entities.Tabs
 
 
         [XmlIgnore]
-        public ArrayList Modules {
+        public ArrayList Modules 
+        {
             get
             {
-                if (_modules == null)
-                {
-                    _modules = SkinModuleController.Instance.GetConfiguredModules(this);
-                    return _modules;
-                }
-                if (Globals.IsEditMode())
-                {
-                    _modules = null;
-                    return SkinModuleController.Instance.GetConfiguredModules(this);
-                }
-                return _modules;
+                return _modules ?? (_modules = SkinModuleController.Instance.GetConfiguredModules(this));
             }
-            set { _modules = value; } 
+            set
+            {
+                _modules = value;
+            } 
         }
 
         [XmlElement("pageheadtext")]
