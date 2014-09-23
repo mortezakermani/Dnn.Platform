@@ -44,7 +44,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         /// <summary>
         /// Get all Modules Info associated with an specific version
         /// </summary>        
-        IEnumerable<ModuleInfo> GetVersionModules(int tabId, int version, bool ignoreCache = false);
+        IEnumerable<ModuleInfo> GetVersionModules(int tabId, int version);
 
         /// <summary>
         /// Get the current pusblished version of the page
@@ -67,7 +67,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         /// <summary>
         /// Get all Modules Info associated with the last published version of the page
         /// </summary>        
-        IEnumerable<ModuleInfo> GetCurrentModules(int tabId, bool ignoreCache = false);
+        IEnumerable<ModuleInfo> GetCurrentModules(int tabId);
         
         /// <summary>
         /// Rolls back an existing version

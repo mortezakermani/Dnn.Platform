@@ -92,7 +92,7 @@ namespace DotNetNuke.UI.Skins
             int urlVersion;
             if (TabVersionUtils.TryGetUrlVersion(out urlVersion))
             {
-                return TabVersionMaker.Instance.GetVersionModules(tab.TabID, urlVersion, true);
+                return TabVersionMaker.Instance.GetVersionModules(tab.TabID, urlVersion);
             }
             
             if (Globals.IsEditMode())

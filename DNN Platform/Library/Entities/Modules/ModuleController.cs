@@ -1495,7 +1495,7 @@ namespace DotNetNuke.Entities.Modules
 
         private Dictionary<int, ModuleInfo> GetModulesCurrentPage(int tabId)
         {
-            var modules = TabVersionMaker.Instance.GetCurrentModules(tabId, true);
+            var modules = TabVersionMaker.Instance.GetCurrentModules(tabId);
             
             var dictionary = new Dictionary<int, ModuleInfo>();
             foreach (var module in modules)
