@@ -190,8 +190,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 
             return TabVersionController.Instance.CreateTabVersion(tabId, createdByUserID);
         }
-
-
+        
         public IEnumerable<ModuleInfo> GetUnPublishedVersionModules(int tabId)
         {
             var unPublishedVersion = GetUnPublishedVersion(tabId);
@@ -226,8 +225,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 
             return GetVersionModules(tabId, currentVersion.Version);
         }
-
-
+        
         public IEnumerable<ModuleInfo> GetVersionModules(int tabId, int version)
         {
             return ConvertToModuleInfo(GetVersionModulesDetails(tabId, version));
@@ -243,7 +241,6 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 
         private void PublishVersion(int portalId, int tabId, int createdByUserID, TabVersion tabVersion)
         {
-            tabVersion.IsPublished = true;
             var unPublishedDetails = TabVersionDetailController.Instance.GetTabVersionDetails(tabVersion.TabVersionId);
             foreach (var unPublishedDetail in unPublishedDetails)
             {
@@ -253,12 +250,14 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
                 }
             }
 
+            tabVersion.IsPublished = true;
             TabVersionController.Instance.SaveTabVersion(tabVersion, tabVersion.CreatedByUserID, createdByUserID);
             var tab = TabController.Instance.GetTab(tabId, portalId);
             if (!tab.HasBeenPublished)
             {
                 TabController.Instance.MarkAsPublished(tab);
             }
+            ModuleController.Instance.ClearCache(tabId);
         }
 
         private IEnumerable<TabVersionDetail> CopyVersionDetails(IEnumerable<TabVersionDetail> tabVersionDetails)
