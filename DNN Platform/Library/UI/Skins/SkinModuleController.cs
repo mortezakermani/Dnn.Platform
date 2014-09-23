@@ -23,8 +23,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Web;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
@@ -37,13 +35,14 @@ namespace DotNetNuke.UI.Skins
 {
     public class SkinModuleController: ServiceLocator<ISkinModuleController, SkinModuleController>, ISkinModuleController
     {
+        #region Public Methods
         public ArrayList GetConfiguredModules(TabInfo tab)
         {
             var objPaneModules = new Dictionary<string, int>();
 
-            IEnumerable<ModuleInfo> modules = GetModules(tab);
+            var modules = GetModules(tab);
             var configuredModules = new ArrayList();
-            foreach (ModuleInfo configuringModule in modules)
+            foreach (var configuringModule in modules)
             {
                 ConfigureModule(configuringModule, tab);
 
@@ -66,7 +65,9 @@ namespace DotNetNuke.UI.Skins
 
             return configuredModules;
         }
+        #endregion
 
+        #region Private Methods
         private void ConfigureModule(ModuleInfo cloneModule, TabInfo tab)
         {
             if (Null.IsNull(cloneModule.StartDate))
@@ -89,25 +90,19 @@ namespace DotNetNuke.UI.Skins
         private IEnumerable<ModuleInfo> GetModules(TabInfo tab)
         {
             int urlVersion;
-            bool validVersion = TabVersionUtils.TryGetUrlVersion(out urlVersion);
-            var showVersionMode = validVersion;
-            var editView = Globals.IsEditMode();
+            if (TabVersionUtils.TryGetUrlVersion(out urlVersion))
+            {
+                return TabVersionMaker.Instance.GetVersionModules(tab.TabID, urlVersion, true);
+            }
+            
+            if (Globals.IsEditMode())
+            {
+                return TabVersionMaker.Instance.GetUnPublishedVersionModules(tab.TabID);
+            }
 
-            IEnumerable<ModuleInfo> modules = null;
-            if (showVersionMode)
-            {
-                modules = TabVersionMaker.Instance.GetVersionModules(tab.TabID, urlVersion, true);
-            }
-            else if (editView)
-            {
-                modules = TabVersionMaker.Instance.GetUnPublishedVersionModules(tab.TabID);
-            }
-            else
-            {
-                modules = tab.ChildModules.Select(kvp => kvp.Value.Clone());
-            }
-            return modules;
+            return  tab.ChildModules.Select(kvp => kvp.Value.Clone());
         }
+        #endregion
 
         protected override Func<ISkinModuleController> GetFactory()
         {

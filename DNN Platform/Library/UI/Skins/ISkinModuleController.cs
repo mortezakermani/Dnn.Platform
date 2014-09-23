@@ -29,8 +29,7 @@ namespace DotNetNuke.UI.Skins
         /// <summary>
         /// Returns an array of Modules well configured to be used into a Skin
         /// </summary>
-        /// <param name="tab"></param>       
+        /// <param name="tab">TabInfo object</param>       
         ArrayList GetConfiguredModules(TabInfo tab);
-
     }
 }
