@@ -32,6 +32,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
     {
         private static readonly DataProvider Provider = DataProvider.Instance();
 
+        #region Public Methods
         public TabVersionDetail GetTabVersionDetail(int tabVersionDetailId, int tabVersionId, bool ignoreCache = false)
         {
             return GetTabVersionDetails(tabVersionId, ignoreCache).SingleOrDefault(tvd => tvd.TabVersionDetailId == tabVersionDetailId);
@@ -44,15 +45,11 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
             {
                 return CBO.FillCollection<TabVersionDetail>(Provider.GetTabVersionDetails(tabVersionId));
             }
-            
-            string cacheKey = string.Format(DataCache.TabVersionDetailsCacheKey, tabVersionId);
-            return CBO.GetCachedObject<List<TabVersionDetail>>(new CacheItemArgs(cacheKey,
+
+            return CBO.GetCachedObject<List<TabVersionDetail>>(new CacheItemArgs(GetTabVersionDetailCacheKey(tabVersionId),
                                                                     DataCache.TabVersionDetailsCacheTimeOut,
                                                                     DataCache.TabVersionDetailsCachePriority),
-                                                            c =>
-                                                            {
-                                                                return CBO.FillCollection<TabVersionDetail>(Provider.GetTabVersionDetails(tabVersionId));
-                                                            });            
+                                                            c => CBO.FillCollection<TabVersionDetail>(Provider.GetTabVersionDetails(tabVersionId)));            
         }
 
         public IEnumerable<TabVersionDetail> GetVersionHistory(int tabId, int version)
@@ -72,17 +69,11 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         
         public void SaveTabVersionDetail(TabVersionDetail tabVersionDetail, int createdByUserID, int modifiedByUserID)
         {
-            var tabVersionDetailId = Provider.SaveTabVersionDetail(tabVersionDetail.TabVersionDetailId,
+            tabVersionDetail.TabVersionDetailId = Provider.SaveTabVersionDetail(tabVersionDetail.TabVersionDetailId,
                 tabVersionDetail.TabVersionId, tabVersionDetail.ModuleId, tabVersionDetail.ModuleVersion,
                 tabVersionDetail.PaneName, tabVersionDetail.ModuleOrder, (int)tabVersionDetail.Action, createdByUserID,
                 modifiedByUserID);
-
-            if (tabVersionDetail.TabVersionDetailId != tabVersionDetailId)
-            {
-                ClearCache(tabVersionDetail.TabVersionId);
-            }
-
-            tabVersionDetail.TabVersionDetailId = tabVersionDetailId;
+            ClearCache(tabVersionDetail.TabVersionId);
         }
 
         public void DeleteTabVersionDetail(int tabVersionId, int tabVersionDetailId)
@@ -90,12 +81,20 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
             Provider.DeleteTabVersionDetail(tabVersionDetailId);
             ClearCache(tabVersionId);
         }
+        #endregion
 
+        #region Private Methods
         private void ClearCache(int tabVersionId)
         {
-            string cacheKey = string.Format(DataCache.TabVersionDetailsCacheKey, tabVersionId);
-            DataCache.RemoveCache(cacheKey);
+            DataCache.RemoveCache(GetTabVersionDetailCacheKey(tabVersionId));
         }
+
+        private static string GetTabVersionDetailCacheKey(int tabVersionId)
+        {
+            return string.Format(DataCache.TabVersionDetailsCacheKey, tabVersionId);
+        }
+
+        #endregion
 
         protected override System.Func<ITabVersionDetailController> GetFactory()
         {
