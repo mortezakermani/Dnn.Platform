@@ -124,9 +124,6 @@ namespace DotNetNuke.Common.Utilities
         public const string TabVersionDetailsCacheKey = "Tab_TabVersionDetails{0}";
         public const CacheItemPriority TabVersionDetailsCachePriority = CacheItemPriority.High;
         public const int TabVersionDetailsCacheTimeOut = 20;
-        public const string TabVersionModulesCacheKey = "Tab_TabVersionModules{0}_{1}";
-        public const CacheItemPriority TabVersionModulesPriority = CacheItemPriority.High;
-        public const int TabVersionModulesTimeOut = 20;
         
         public const string AuthenticationServicesCacheKey = "AuthenticationServices";
         public const CacheItemPriority AuthenticationServicesCachePriority = CacheItemPriority.NotRemovable;
