@@ -164,6 +164,12 @@ namespace DotNetNuke.Entities.Tabs
                 AddAllTabsModules(tab);
             }
 
+            //Check Tab Versioning
+            if (!TabVersionSettings.Instance.VersioningEnabled)
+            {
+                MarkAsPublished(tab);
+            }
+
             return tab.TabID;
         }
 
