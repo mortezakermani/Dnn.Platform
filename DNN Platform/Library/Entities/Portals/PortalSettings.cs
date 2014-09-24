@@ -1030,25 +1030,6 @@ namespace DotNetNuke.Entities.Portals
             ActiveTab.BreadCrumbs = crumbs;
         }
 
-        public void ConfigureModule(ModuleInfo cloneModule)
-        {
-            if (Null.IsNull(cloneModule.StartDate))
-            {
-                cloneModule.StartDate = DateTime.MinValue;
-            }
-            if (Null.IsNull(cloneModule.EndDate))
-            {
-                cloneModule.EndDate = DateTime.MaxValue;
-            }
-            if (String.IsNullOrEmpty(cloneModule.ContainerSrc))
-            {
-                cloneModule.ContainerSrc = ActiveTab.ContainerSrc;
-            }
-
-            cloneModule.ContainerSrc = SkinController.FormatSkinSrc(cloneModule.ContainerSrc, this);
-            cloneModule.ContainerPath = SkinController.FormatSkinPath(cloneModule.ContainerSrc);
-        }
-
         private void GetBreadCrumbsRecursively(ref ArrayList breadCrumbs, int tabId)
         {
             TabInfo tab;
@@ -1192,7 +1173,7 @@ namespace DotNetNuke.Entities.Portals
 
             if (!isVerified)
             {
-                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && (t.IsVisible && t.HasAVisibleVersion) select t).FirstOrDefault();
+                TabInfo tab = (from TabInfo t in portalTabs.AsList() where !t.IsDeleted && t.IsVisible && t.HasAVisibleVersion select t).FirstOrDefault();
 
                 if (tab != null)
                 {

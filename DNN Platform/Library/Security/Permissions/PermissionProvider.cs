@@ -24,7 +24,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.ComponentModel;
 using DotNetNuke.Data;
@@ -307,9 +306,7 @@ namespace DotNetNuke.Security.Permissions
         {
             return (PortalSecurity.IsInRoles(tab.TabPermissions.ToString(permissionKey))
                     || PortalSecurity.IsInRoles(tab.TabPermissions.ToString(AdminPagePermissionKey)))
-                   && !PortalSecurity.IsDenied(tab.TabPermissions.ToString(permissionKey)
-                   //&& !PortalSecurity.IsNotAllowedToVersioning(tab)
-                   );
+                   && !PortalSecurity.IsDenied(tab.TabPermissions.ToString(permissionKey));
             //Deny on Edit permission on page shouldn't take away any other explicitly Allowed
             //&&!PortalSecurity.IsDenied(tab.TabPermissions.ToString(AdminPagePermissionKey));
         }

@@ -183,7 +183,7 @@ namespace DotNetNuke.Entities.Tabs
                 {
                     return true;
                 }
-			    return this.HasBeenPublished || TabVersionUtils.CanSeeVersionedPages(this);
+			    return HasBeenPublished || TabVersionUtils.CanSeeVersionedPages(this);
             }
         }
 
