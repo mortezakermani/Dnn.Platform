@@ -33,7 +33,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
     {
         internal static bool TryGetUrlVersion(out int versionInt)
         {
-            var version = HttpContext.Current.Request.QueryString["version"];
+            var version = HttpContext.Current.Request.QueryString[TabVersionSettings.Instance.TabVersionParameter];
             if (version.IsEmpty())
             {
                 versionInt = Null.NullInteger;

@@ -23,8 +23,13 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 {
     public interface ITabVersionSettings
     {
+        //Get or Set the maximum number allowed for Tab Versions
         int MaximunNumberOfVersions { get; set; }
 
+        //Get or Set if Tab Versioning is enable
         bool VersioningEnabled { get; set; }
+
+        //Get or Set the parameter name to especify a Tab Version
+        string TabVersionParameter { get; set; }
     }
 }
