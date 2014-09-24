@@ -77,12 +77,8 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
             {
                 if (unPublishedDetail.Action == TabVersionDetailAction.Deleted)
                 {
-                    var restoredModule = ModuleController.Instance.GetModule(unPublishedDetail.ModuleId, tabId, true);
-                    ModuleController.Instance.RestoreModule(restoredModule);
-                    var restoredModuleDetail = publishedChanges.SingleOrDefault(tv => tv.ModuleId == restoredModule.ModuleID);
-                    restoredModule.PaneName = restoredModuleDetail.PaneName;
-                    restoredModule.ModuleOrder = restoredModuleDetail.ModuleOrder;
-                    ModuleController.Instance.UpdateModule(restoredModule);
+                    var restoredModuleDetail = publishedChanges.SingleOrDefault(tv => tv.ModuleId == unPublishedDetail.ModuleId);
+                    RestoreModuleInfo(tabId, restoredModuleDetail);                    
                     continue;
                 }
                 
@@ -148,29 +144,43 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
             CheckVersioningEnabled();
 
             if (GetUnPublishedVersion(tabId) != null)
-            {
+            {                
                 throw new InvalidOperationException(String.Format(Localization.GetString("TabVersionCannotBeRolledBack_UnpublishedVersionExists", Localization.ExceptionsResourceFile), tabId, version));
             }
 
+            var tabVersion = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version).FirstOrDefault();
+            var publishedDetails = GetVersionModulesDetails(tabId, tabVersion.Version);
+
+            var newVersion = CreateNewVersion(tabId, createdByUserID);
             var rollbackDetails = CopyVersionDetails(GetVersionModulesDetails(tabId, version));
             
-            var newVersion = CreateNewVersion(tabId, createdByUserID);
-            TabVersionDetailController.Instance.SaveTabVersionDetail( new TabVersionDetail
-            {
-                PaneName = "none_resetAction",
-                TabVersionId = newVersion.TabVersionId,
-                Action = TabVersionDetailAction.Reset,
-                ModuleId = Null.NullInteger,
-                ModuleVersion = Null.NullInteger
-            }, createdByUserID);
-
+            //Save Reset detail
+            TabVersionDetailController.Instance.SaveTabVersionDetail(GetResetTabVersionDetail(newVersion), createdByUserID);
+            
             foreach (var rollbackDetail in rollbackDetails)
             {
                 rollbackDetail.TabVersionId = newVersion.TabVersionId;
                 rollbackDetail.ModuleVersion = RollBackDetail(tabId, rollbackDetail);
                 TabVersionDetailController.Instance.SaveTabVersionDetail(rollbackDetail, createdByUserID);
-            }
 
+                //Check if restoring version contains modules to restore
+
+                if (publishedDetails.All(tv => tv.ModuleId != rollbackDetail.ModuleId))
+                {
+                    RestoreModuleInfo(tabId, rollbackDetail);
+                }
+                else
+                {
+                    UpdateModuleOrder(tabId, rollbackDetail);
+                }               
+            }
+            
+            //Check if current version contains modules not existing in restoring version 
+            foreach (var publishedDetail in publishedDetails.Where(publishedDetail => rollbackDetails.All(tvd => tvd.ModuleId != publishedDetail.ModuleId)))
+            {
+                ModuleController.Instance.DeleteTabModule(tabId, publishedDetail.ModuleId, true);
+            }
+            
             return newVersion;
         }
         public TabVersion CreateNewVersion(int tabId, int createdByUserID)
@@ -233,6 +243,39 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         #endregion
 
         #region Private Methods
+
+        private void UpdateModuleOrder(int tabId, TabVersionDetail detailToRestore)
+        {
+            var restoredModule = ModuleController.Instance.GetModule(detailToRestore.ModuleId, tabId, true);            
+            UpdateModuleInfoOrder(restoredModule, detailToRestore);
+        }
+
+        private void UpdateModuleInfoOrder(ModuleInfo module, TabVersionDetail detailToRestore)
+        {
+            module.PaneName = detailToRestore.PaneName;
+            module.ModuleOrder = detailToRestore.ModuleOrder;
+            ModuleController.Instance.UpdateModule(module);
+        }
+
+        private TabVersionDetail GetResetTabVersionDetail(TabVersion tabVersion)
+        {
+            return new TabVersionDetail
+            {
+                PaneName = "none_resetAction",
+                TabVersionId = tabVersion.TabVersionId,
+                Action = TabVersionDetailAction.Reset,
+                ModuleId = Null.NullInteger,
+                ModuleVersion = Null.NullInteger
+            };
+        }
+
+        private void RestoreModuleInfo(int tabId, TabVersionDetail detailsToRestore )
+        {
+            var restoredModule = ModuleController.Instance.GetModule(detailsToRestore.ModuleId, tabId, true);
+            ModuleController.Instance.RestoreModule(restoredModule);            
+            UpdateModuleInfoOrder(restoredModule, detailsToRestore);                  
+        }
+
         private IEnumerable<TabVersionDetail> GetVersionModulesDetails(int tabId, int version)
         {
             var tabVersionDetails = TabVersionDetailController.Instance.GetVersionHistory(tabId, version);
