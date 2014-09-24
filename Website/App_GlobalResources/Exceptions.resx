@@ -333,9 +333,6 @@
   <data name="PublishPagePermissionsNotMet" xml:space="preserve">
     <value>Permissions are not met. The page has not been published.</value>
   </data>
-  <data name="ModuleAlreadyExistsOnUnpublishedVersion.Text" xml:space="preserve">
-    <value>For Tab {0}, the unpublished Version already contains a version of the module {1}</value>
-  </data>
   <data name="TabHasNotAnUnpublishedVersion.Text" xml:space="preserve">
     <value>Tha tab {0} has not an unpublished version</value>
   </data>
