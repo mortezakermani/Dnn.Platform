@@ -21,14 +21,9 @@
 
 using System;
 using System.Globalization;
-using System.Threading;
-using System.Web;
-using System.Web.WebPages;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Framework;
-using DotNetNuke.Security;
-using DotNetNuke.Security.Permissions;
 
 namespace DotNetNuke.Entities.Tabs.TabVersions
 {
@@ -69,19 +64,12 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
             }
         }
 
-        public string TabVersionParameter
+        public string TabVersionQueryStringParameter
         {
             get
             {
                 var portalId = GetPortalId();
-                return portalId == Null.NullInteger ? TabVersionQueryStringParam : PortalController.GetPortalSetting("TabVersionParameter", portalId, TabVersionQueryStringParam);
-            }
-            set
-            {
-                var portalId = GetPortalId();
-                if (portalId == Null.NullInteger) return;
-
-                PortalController.UpdatePortalSetting(portalId, "TabVersionParameter", value.ToString(CultureInfo.InvariantCulture));
+                return portalId == Null.NullInteger ? TabVersionQueryStringParam : PortalController.GetPortalSetting("TabVersionQueryStringParameter", portalId, TabVersionQueryStringParam);
             }
         }
 
