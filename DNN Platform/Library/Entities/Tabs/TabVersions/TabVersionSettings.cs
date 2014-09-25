@@ -21,63 +21,48 @@
 
 using System;
 using System.Globalization;
+using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Tabs.TabVersions
 {
-    public class TabVersionSettings: ServiceLocator<ITabVersionSettings, TabVersionSettings>, ITabVersionSettings
+    public class TabVersionSettings : ServiceLocator<ITabVersionSettings, TabVersionSettings>, ITabVersionSettings
     {
         private const int TabVersionsMaxNumber = 5;
         private const string TabVersionQueryStringParam = "DnnTabVersion";
 
-        public int MaximunNumberOfVersions
+        public int GetMaxNumberOfVersions(int portalId)
         {
-            get
-            {
-                var portalId = GetPortalId();
-                return portalId == Null.NullInteger ? TabVersionsMaxNumber : PortalController.GetPortalSettingAsInteger("TabVersionsMaxNumber", portalId, TabVersionsMaxNumber);
-            }
-            set
-            {
-                var portalId = GetPortalId();
-                if (portalId == Null.NullInteger) return;
-
-                PortalController.UpdatePortalSetting(portalId, "TabVersionsMaxNumber", value.ToString(CultureInfo.InvariantCulture));
-            }
+            Requires.NotNegative("portalId", portalId);
+            return portalId == Null.NullInteger ? TabVersionsMaxNumber : PortalController.GetPortalSettingAsInteger("TabVersionsMaxNumber", portalId, TabVersionsMaxNumber);
         }
 
-        public bool VersioningEnabled
+        public void SetMaxNumberOfVersions(int portalId, int maxNumberOfVersions)
         {
-            get
-            {
-                var portalId = GetPortalId();
-                return portalId != Null.NullInteger && Convert.ToBoolean(PortalController.GetPortalSetting("TabVersionsEnabled", portalId, Boolean.FalseString));
-            }
-            set
-            {
-                var portalId = GetPortalId();
-                if (portalId == Null.NullInteger) return;
-
-                PortalController.UpdatePortalSetting(portalId, "TabVersionsEnabled", value.ToString(CultureInfo.InvariantCulture));                
-            }
+            Requires.NotNegative("portalId", portalId);
+            PortalController.UpdatePortalSetting(portalId, "TabVersionsMaxNumber", maxNumberOfVersions.ToString(CultureInfo.InvariantCulture));
         }
 
-        public string TabVersionQueryStringParameter
+        public void SetVersioningEnabled(int portalId, bool enabled)
         {
-            get
-            {
-                var portalId = GetPortalId();
-                return portalId == Null.NullInteger ? TabVersionQueryStringParam : PortalController.GetPortalSetting("TabVersionQueryStringParameter", portalId, TabVersionQueryStringParam);
-            }
+            Requires.NotNegative("portalId", portalId);
+            PortalController.UpdatePortalSetting(portalId, "TabVersionsEnabled", enabled.ToString(CultureInfo.InvariantCulture));
         }
 
-        private static int GetPortalId()
+        public bool IsVersioningEnabled(int portalId)
         {
-            return PortalSettings.Current == null ? Null.NullInteger : PortalSettings.Current.PortalId;
+            Requires.NotNegative("portalId", portalId);
+            return Convert.ToBoolean(PortalController.GetPortalSetting("TabVersionsEnabled", portalId, Boolean.FalseString));
         }
-        
+
+        public string GetTabVersionQueryStringParameter(int portalId)
+        {
+            Requires.NotNegative("portalId", portalId);
+            return PortalController.GetPortalSetting("TabVersionQueryStringParameter", portalId, TabVersionQueryStringParam);
+        }
+
         protected override Func<ITabVersionSettings> GetFactory()
         {
             return () => new TabVersionSettings();

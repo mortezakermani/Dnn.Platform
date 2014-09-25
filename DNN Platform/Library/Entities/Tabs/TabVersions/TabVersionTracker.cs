@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Entities.Portals;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Tabs.TabVersions
@@ -32,7 +33,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         #region Public Methods
         public void TrackModuleAddition(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion)
         {
-            if (!TabVersionSettings.Instance.VersioningEnabled)
+            if (!IsTabVersioningEnabled())
             {
                 return;
             }
@@ -49,7 +50,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 
         public void TrackModuleModification(int tabId, int createdByUserID, int moduleId, string paneName, int moduleOrder, int moduleVersion)
         {
-            if (!TabVersionSettings.Instance.VersioningEnabled)
+            if (!IsTabVersioningEnabled())
             {
                 return;
             }
@@ -72,7 +73,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 
         public void TrackModuleDeletion(int tabId, int createdByUserID, ModuleInfo module, int moduleVersion)
         {
-            if (!TabVersionSettings.Instance.VersioningEnabled)
+            if (!IsTabVersioningEnabled())
             {
                 return;
             }
@@ -127,6 +128,12 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
                 PaneName = paneName,
                 Action = action
             };
+        }
+        
+        private static bool IsTabVersioningEnabled()
+        {
+            var portalId = PortalSettings.Current == null ? Null.NullInteger : PortalSettings.Current.PortalId;
+            return portalId != Null.NullInteger && TabVersionSettings.Instance.IsVersioningEnabled(portalId);
         }
         #endregion
 

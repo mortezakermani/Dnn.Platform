@@ -165,7 +165,7 @@ namespace DotNetNuke.Entities.Tabs
             }
 
             //Check Tab Versioning
-            if (!TabVersionSettings.Instance.VersioningEnabled)
+            if (tab.PortalID == Null.NullInteger || !TabVersionSettings.Instance.IsVersioningEnabled(tab.PortalID))
             {
                 MarkAsPublished(tab);
             }

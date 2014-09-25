@@ -27,18 +27,38 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
     public interface ITabVersionSettings
     {
         /// <summary>
-        /// Get or Set the maximum number allowed for Tab Versions
+        /// Get the maximum number of version that the portal will kept for a tab
         /// </summary>
-        int MaximunNumberOfVersions { get; set; }
+        /// <param name="portalId">Portal Id</param>
+        /// <returns>Max number of version</returns>
+        int GetMaxNumberOfVersions(int portalId);
 
         /// <summary>
-        /// Get or Set if Tab Versioning is enable
+        /// Set the maximum number of version that the portal will kept for a tab
         /// </summary>
-        bool VersioningEnabled { get; set; }
+        /// <param name="portalId">Portal Id</param>
+        /// <param name="maxNumberOfVersions">Max number of version</param>
+        void SetMaxNumberOfVersions(int portalId, int maxNumberOfVersions);
 
         /// <summary>
-        /// Get the query string parameter name to especify a Tab Version
+        /// Set the status of the tab versioning for the portal
         /// </summary>
-        string TabVersionQueryStringParameter { get; }
+        /// <param name="portalId">Portal Id</param>
+        /// <param name="enabled">true for enable it, false otherwise</param>
+        void SetVersioningEnabled(int portalId, bool enabled);
+
+        /// <summary>
+        /// Get the status of the tab versioning for the portal
+        /// </summary>
+        /// <param name="portalId">Portal Id</param>
+        /// <returns>Returns true if tab versioning is enabled for the portal, false otherwise</returns>
+        bool IsVersioningEnabled(int portalId);
+
+        /// <summary>
+        /// Get the query string parameter name to especify a Tab Version using the version number (i.e.: ?version=1)
+        /// </summary>
+        /// <param name="portalId">Portal Id</param>
+        /// <returns>Query string parameter name</returns>
+        string GetTabVersionQueryStringParameter(int portalId);
     }
 }

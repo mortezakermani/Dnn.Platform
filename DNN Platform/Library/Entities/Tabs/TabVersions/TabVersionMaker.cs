@@ -25,6 +25,7 @@ using System.Linq;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Entities.Portals;
 using DotNetNuke.Framework;
 using DotNetNuke.Services.Localization;
 
@@ -183,24 +184,16 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
             
             return newVersion;
         }
+
         public TabVersion CreateNewVersion(int tabId, int createdByUserID)
         {
             CheckVersioningEnabled();
 
-            var maxVersionsAllowed = TabVersionSettings.Instance.MaximunNumberOfVersions;
-            var tabVersionsOrdered = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
-            var tabVersionCount = tabVersionsOrdered.Count();
-            if (tabVersionCount >= maxVersionsAllowed)
-            {
-                //The last existing version is going to be deleted, therefore we need to add the snapshot to the previous one
-                var snapShotTabVersion = tabVersionsOrdered.ElementAtOrDefault(maxVersionsAllowed - 2);
-                CreateSnapshotOverVersion(tabId, snapShotTabVersion);
-                DeleteOldVersions(tabVersionsOrdered, snapShotTabVersion);
-            }
+            DeleteOldestVersionIfTabHasMaxNumberOfVersions(tabId);
 
             return TabVersionController.Instance.CreateTabVersion(tabId, createdByUserID);
         }
-        
+
         public IEnumerable<ModuleInfo> GetUnPublishedVersionModules(int tabId)
         {
             var unPublishedVersion = GetUnPublishedVersion(tabId);
@@ -243,6 +236,24 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         #endregion
 
         #region Private Methods
+        private void DeleteOldestVersionIfTabHasMaxNumberOfVersions(int tabId)
+        {
+            var maxVersionsAllowed = GetMaxNumberOfVersions();
+            var tabVersionsOrdered = TabVersionController.Instance.GetTabVersions(tabId).OrderByDescending(tv => tv.Version);
+
+            if (tabVersionsOrdered.Count() < maxVersionsAllowed) return;
+
+            //The last existing version is going to be deleted, therefore we need to add the snapshot to the previous one
+            var snapShotTabVersion = tabVersionsOrdered.ElementAtOrDefault(maxVersionsAllowed - 2);
+            CreateSnapshotOverVersion(tabId, snapShotTabVersion);
+            DeleteOldVersions(tabVersionsOrdered, snapShotTabVersion);
+        }
+
+        private static int GetMaxNumberOfVersions()
+        {
+            var portalId = GetCurrentPortalId();
+            return TabVersionSettings.Instance.GetMaxNumberOfVersions(portalId);
+        }
 
         private void UpdateModuleOrder(int tabId, TabVersionDetail detailToRestore)
         {
@@ -317,10 +328,16 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 
         private static void CheckVersioningEnabled()
         {
-            if (!TabVersionSettings.Instance.VersioningEnabled)
+            var portalId = GetCurrentPortalId();
+            if (portalId == Null.NullInteger || !TabVersionSettings.Instance.IsVersioningEnabled(portalId))
             {
                 throw new InvalidOperationException(Localization.GetString("TabVersioningNotEnabled", Localization.ExceptionsResourceFile));
             }
+        }
+
+        private static int GetCurrentPortalId()
+        {
+            return PortalSettings.Current == null ? Null.NullInteger : PortalSettings.Current.PortalId;
         }
 
         private void CreateSnapshotOverVersion(int tabId, TabVersion snapshoTabVersion)

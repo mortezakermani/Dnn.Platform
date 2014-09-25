@@ -179,7 +179,7 @@ namespace DotNetNuke.Entities.Tabs
         public bool HasAVisibleVersion {
             get
             {
-                if (!TabVersionSettings.Instance.VersioningEnabled)
+                if (PortalID == Null.NullInteger || !TabVersionSettings.Instance.IsVersioningEnabled(PortalID))
                 {
                     return true;
                 }

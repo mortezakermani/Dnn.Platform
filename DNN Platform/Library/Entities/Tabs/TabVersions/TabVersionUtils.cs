@@ -31,9 +31,10 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 {
     internal static class TabVersionUtils
     {
+        #region Internal Methods
         internal static bool TryGetUrlVersion(out int versionInt)
         {
-            var version = HttpContext.Current.Request.QueryString[TabVersionSettings.Instance.TabVersionQueryStringParameter];
+            var version = GetTabVersionQueryStringValue();
             if (version.IsEmpty())
             {
                 versionInt = Null.NullInteger;
@@ -63,5 +64,16 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
 
             return TabPermissionController.HasTabPermission(tab.TabPermissions, "EDIT,CONTENT,MANAGE");
         }
+        #endregion
+
+        #region Private Methods
+        private static string GetTabVersionQueryStringValue()
+        {
+            var currentPortal = PortalController.Instance.GetCurrentPortalSettings();
+            return currentPortal == null ? 
+                string.Empty : 
+                HttpContext.Current.Request.QueryString[TabVersionSettings.Instance.GetTabVersionQueryStringParameter(currentPortal.PortalId)];
+        }
+        #endregion
     }
 }
