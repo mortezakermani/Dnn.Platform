@@ -21,35 +21,34 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using DotNetNuke.Common.Utilities;
+using DotNetNuke.Data;
+using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public class ContentWorkflow
+    //TODO: add metadata info
+    //TODO: add entities and validation
+    internal class WorkflowLogController : ServiceLocator<IWorkflowLogController, WorkflowLogController> , IWorkflowLogController
     {
-        public int WorkflowID { get; set; }
+        public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
+        {
+            return CBO.FillCollection<ContentWorkflowLog>(DataProvider.Instance().GetContentWorkflowLogs(contentItemId, workflowId));
+        }
 
-        public int PortalID { get; set; }
+        public void DeleteWorkflowLogs(int contentItemId, int workflowId)
+        {
+            DataProvider.Instance().DeleteContentWorkflowLogs(contentItemId, workflowId);
+        }
 
-        [Required]
-        [StringLength(40)]
-        public string WorkflowName { get; set; }
+        public void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId)
+        {
+            DataProvider.Instance().AddContentWorkflowLog(action, comment, userId, workflowId, contentItemId);
+        }
 
-        [StringLength(256)]
-        public string Description { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public bool IsSystem { get; set; } // TODO: new
-
-        public bool IsInUse { get; set; } // TODO: new
-
-        public bool StartAfterCreating { get; set; } //TODO: remove
-
-        public bool StartAfterEditing { get; set; } //TODO: remove
-
-        public bool DispositionEnabled { get; set; } //TODO:remove
-
-        public IEnumerable<ContentWorkflowState> States { get; set; }
+        protected override Func<IWorkflowLogController> GetFactory()
+        {
+            return () => new WorkflowLogController();
+        }
     }
 }

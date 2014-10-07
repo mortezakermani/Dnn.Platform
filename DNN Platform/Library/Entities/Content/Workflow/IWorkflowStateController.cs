@@ -19,37 +19,19 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public class ContentWorkflow
+    //TODO: add metadata info
+    internal interface IWorkflowStateController
     {
-        public int WorkflowID { get; set; }
+        IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId);
 
-        public int PortalID { get; set; }
+        void AddWorkflowState(ContentWorkflowState state);
 
-        [Required]
-        [StringLength(40)]
-        public string WorkflowName { get; set; }
+        void UpdateWorkflowState(ContentWorkflowState state);
 
-        [StringLength(256)]
-        public string Description { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public bool IsSystem { get; set; } // TODO: new
-
-        public bool IsInUse { get; set; } // TODO: new
-
-        public bool StartAfterCreating { get; set; } //TODO: remove
-
-        public bool StartAfterEditing { get; set; } //TODO: remove
-
-        public bool DispositionEnabled { get; set; } //TODO:remove
-
-        public IEnumerable<ContentWorkflowState> States { get; set; }
+        void DeleteWorkflowState(ContentWorkflowState state);
     }
 }

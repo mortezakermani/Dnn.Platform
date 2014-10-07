@@ -19,37 +19,18 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public class ContentWorkflow
+    //TODO: add metadata info
+    internal interface IWorkflowLogController
     {
-        public int WorkflowID { get; set; }
+        void DeleteWorkflowLogs(int workflowId, int contentItemId);
 
-        public int PortalID { get; set; }
-
-        [Required]
-        [StringLength(40)]
-        public string WorkflowName { get; set; }
-
-        [StringLength(256)]
-        public string Description { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public bool IsSystem { get; set; } // TODO: new
-
-        public bool IsInUse { get; set; } // TODO: new
-
-        public bool StartAfterCreating { get; set; } //TODO: remove
-
-        public bool StartAfterEditing { get; set; } //TODO: remove
-
-        public bool DispositionEnabled { get; set; } //TODO:remove
-
-        public IEnumerable<ContentWorkflowState> States { get; set; }
+        // TODO: review if we can use a model for action/comment/userId
+        void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId);
+        
+        IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int workflowId, int contentItemId);
     }
 }

@@ -185,89 +185,12 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             DataProvider.Instance().UpdateContentWorkflow(workflow.WorkflowID, workflow.WorkflowName, workflow.Description, workflow.IsDeleted, workflow.StartAfterCreating, workflow.StartAfterEditing, workflow.DispositionEnabled);
         }
-
-        public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
-        {            
-            return CBO.FillCollection<ContentWorkflowLog>(DataProvider.Instance().GetContentWorkflowLogs(contentItemId, workflowId));
-        }
-
-        public void DeleteWorkflowLogs(int contentItemID, int workflowID)
-        {
-            DataProvider.Instance().DeleteContentWorkflowLogs(contentItemID, workflowID);
-        }
-
-        public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowID)
-        {
-            return CBO.FillCollection<ContentWorkflowState>(DataProvider.Instance().GetContentWorkflowStates(workflowID));            
-        }
-
+        
         public ContentWorkflowSource GetWorkflowSource(int workflowId, string sourceName)
         {
             return CBO.FillObject<ContentWorkflowSource>(DataProvider.Instance().GetContentWorkflowSource(workflowId, sourceName));
         }
-
-        public void AddWorkflowState(ContentWorkflowState state)
-        {
-            var id = DataProvider.Instance().AddContentWorkflowState(state.WorkflowID,
-                                                                state.StateName,
-                                                                state.Order,
-                                                                state.IsActive,
-                                                                state.SendEmail,
-                                                                state.SendMessage,
-                                                                state.IsDisposalState,
-                                                                state.OnCompleteMessageSubject,
-                                                                state.OnCompleteMessageBody,
-                                                                state.OnDiscardMessageSubject,
-                                                                state.OnDiscardMessageBody);
-            state.StateID = id;
-        }
-
-        public void UpdateWorkflowState(ContentWorkflowState state)
-        {
-            DataProvider.Instance().UpdateContentWorkflowState(state.StateID, 
-                                                                state.StateName, 
-                                                                state.Order, 
-                                                                state.IsActive, 
-                                                                state.SendEmail, 
-                                                                state.SendMessage, 
-                                                                state.IsDisposalState, 
-                                                                state.OnCompleteMessageSubject, 
-                                                                state.OnCompleteMessageBody, 
-                                                                state.OnDiscardMessageSubject, 
-                                                                state.OnDiscardMessageBody);       
-        }
-
-        public IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateID)
-        {
-            return CBO.FillCollection<ContentWorkflowStatePermission>(DataProvider.Instance().GetContentWorkflowStatePermissionsByStateID(stateID));
-        }
-
-        public void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserID)
-        {
-            DataProvider.Instance().AddContentWorkflowStatePermission(permission.StateID,
-                                                                       permission.PermissionID,
-                                                                       permission.RoleID,
-                                                                       permission.AllowAccess,
-                                                                       permission.UserID,
-                                                                       lastModifiedByUserID);
-        }
-
-        public void UpdateWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserID)
-        {            
-            DataProvider.Instance().UpdateContentWorkflowStatePermission(permission.WorkflowStatePermissionID, 
-                                                                            permission.StateID,
-                                                                            permission.PermissionID,
-                                                                            permission.RoleID,
-                                                                            permission.AllowAccess,
-                                                                            permission.UserID,
-                                                                            lastModifiedByUserID);       
-        }
-
-        public void DeleteWorkflowStatePermission(int workflowStatePermissionID)
-        {
-            DataProvider.Instance().DeleteContentWorkflowStatePermission(workflowStatePermissionID);
-        }
-
+        
         public bool IsAnyReviewer(int workflowID)
         {
             var workflow = GetWorkflowByID(workflowID);
@@ -311,13 +234,6 @@ namespace DotNetNuke.Entities.Content.Workflow
         public ContentWorkflowState GetWorkflowStateByID(int stateID)
         {            
             return CBO.FillObject<ContentWorkflowState>(DataProvider.Instance().GetContentWorkflowState(stateID));
-        }
-
-        public void AddWorkflowLog(ContentItem item, string action, string comment, int userID)
-        {
-            var workflow = GetWorkflow(item);
-            
-            AddWorkflowLog(workflow != null ? workflow.WorkflowID: Null.NullInteger, item, action, comment, userID);
         }
 
         public void CreateDefaultWorkflows(int portalId)
@@ -456,6 +372,109 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             return result;
         }
+
+        #region Obsolete Methods
+        #region Log
+        [Obsolete("Obsoleted in Platform 7.4.0. Use IWorkflowLogController instead")]
+        public void AddWorkflowLog(ContentItem item, string action, string comment, int userID)
+        {
+            var workflow = GetWorkflow(item);
+
+            AddWorkflowLog(workflow != null ? workflow.WorkflowID : Null.NullInteger, item, action, comment, userID);
+        }
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
+        public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
+        {
+            return CBO.FillCollection<ContentWorkflowLog>(DataProvider.Instance().GetContentWorkflowLogs(contentItemId, workflowId));
+        }
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
+        public void DeleteWorkflowLogs(int contentItemID, int workflowID)
+        {
+            DataProvider.Instance().DeleteContentWorkflowLogs(contentItemID, workflowID);
+        }
+        #endregion
+
+        #region State Permissions
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        public IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateID)
+        {
+            return CBO.FillCollection<ContentWorkflowStatePermission>(DataProvider.Instance().GetContentWorkflowStatePermissionsByStateID(stateID));
+        }
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        public void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserID)
+        {
+            DataProvider.Instance().AddContentWorkflowStatePermission(permission.StateID,
+                                                                       permission.PermissionID,
+                                                                       permission.RoleID,
+                                                                       permission.AllowAccess,
+                                                                       permission.UserID,
+                                                                       lastModifiedByUserID);
+        }
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        public void UpdateWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserID)
+        {
+            DataProvider.Instance().UpdateContentWorkflowStatePermission(permission.WorkflowStatePermissionID,
+                                                                            permission.StateID,
+                                                                            permission.PermissionID,
+                                                                            permission.RoleID,
+                                                                            permission.AllowAccess,
+                                                                            permission.UserID,
+                                                                            lastModifiedByUserID);
+        }
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        public void DeleteWorkflowStatePermission(int workflowStatePermissionID)
+        {
+            DataProvider.Instance().DeleteContentWorkflowStatePermission(workflowStatePermissionID);
+        }
+        #endregion
+
+        #region State
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
+        public void AddWorkflowState(ContentWorkflowState state)
+        {
+            var id = DataProvider.Instance().AddContentWorkflowState(state.WorkflowID,
+                                                                state.StateName,
+                                                                state.Order,
+                                                                state.IsActive,
+                                                                state.SendEmail,
+                                                                state.SendMessage,
+                                                                state.IsDisposalState,
+                                                                state.OnCompleteMessageSubject,
+                                                                state.OnCompleteMessageBody,
+                                                                state.OnDiscardMessageSubject,
+                                                                state.OnDiscardMessageBody);
+            state.StateID = id;
+        }
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
+        public void UpdateWorkflowState(ContentWorkflowState state)
+        {
+            DataProvider.Instance().UpdateContentWorkflowState(state.StateID,
+                                                                state.StateName,
+                                                                state.Order,
+                                                                state.IsActive,
+                                                                state.SendEmail,
+                                                                state.SendMessage,
+                                                                state.IsDisposalState,
+                                                                state.OnCompleteMessageSubject,
+                                                                state.OnCompleteMessageBody,
+                                                                state.OnDiscardMessageSubject,
+                                                                state.OnDiscardMessageBody);
+        }
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
+        public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowID)
+        {
+            return CBO.FillCollection<ContentWorkflowState>(DataProvider.Instance().GetContentWorkflowStates(workflowID));
+        }
+        #endregion
+        #endregion
         #endregion
 
         #region Private Methods

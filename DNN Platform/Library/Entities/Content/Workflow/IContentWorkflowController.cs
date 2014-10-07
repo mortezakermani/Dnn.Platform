@@ -19,6 +19,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Collections.Generic;
 
 using DotNetNuke.Entities.Portals;
@@ -53,26 +54,35 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         void UpdateWorkflow(ContentWorkflow workflow);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
         IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int workflowId, int contentItemId);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
         void DeleteWorkflowLogs(int workflowID, int contentItemID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
         IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowID);
 
         ContentWorkflowSource GetWorkflowSource(int workflowId, string sourceName);
 
         ContentWorkflowState GetWorkflowStateByID(int stateID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
         void AddWorkflowState(ContentWorkflowState state);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
         void UpdateWorkflowState(ContentWorkflowState state);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
         IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
         void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
         void UpdateWorkflowStatePermission(ContentWorkflowStatePermission permission, int lasModifiedByUserId);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
         void DeleteWorkflowStatePermission(int workflowStatePermissionID);
 
         bool IsAnyReviewer(int portalID, int userID, int workflowID);
@@ -87,6 +97,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         bool IsReviewer(int stateID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
         void AddWorkflowLog(ContentItem item, string action, string comment, int userID);
 
         void CreateDefaultWorkflows(int portalId);

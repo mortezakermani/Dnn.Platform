@@ -19,8 +19,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using System.Xml.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -30,17 +29,21 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public int WorkflowID { get; set; }
 
+        [Required]
+        [StringLength(40)]
         public string StateName { get; set; }
 
         public int Order { get; set; }
 
         public bool IsActive { get; set; }
 
-        public bool SendEmail { get; set; }
+        public bool IsSystem { get; set; } // new
 
-        public bool SendMessage { get; set; }
+        public bool SendEmail { get; set; } // TODO: remove
 
-        public bool IsDisposalState { get; set; }
+        public bool SendMessage { get; set; } // TODO:remove
+
+        public bool IsDisposalState { get; set; } //TODO: remove
 
         public string OnCompleteMessageSubject { get; set; }
 
