@@ -19,42 +19,25 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public class ContentWorkflowState 
+    // TODO: add interface metadata documentation
+    internal interface IWorkflowController
     {
-        public int StateID { get; set; }
+        IEnumerable<ContentWorkflow> GetSystemWorkflows(int portalId);
 
-        public int WorkflowID { get; set; }
+        IEnumerable<ContentWorkflow> GetWorkflows(int portalId);
 
-        [Required]
-        [StringLength(40)]
-        public string StateName { get; set; }
+        ContentWorkflow GetWorkflowByID(int workflowId);
 
-        public int Order { get; set; }
+        ContentWorkflow GetWorkflow(ContentItem item);
 
-        public bool IsActive { get; set; }
+        void AddWorkflow(ContentWorkflow workflow);
 
-        public bool IsSystem { get; set; }
+        void UpdateWorkflow(ContentWorkflow workflow);
 
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        public bool SendEmail { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        public bool SendMessage { get; set; } 
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        public bool IsDisposalState { get; set; }
-
-        public string OnCompleteMessageSubject { get; set; }
-
-        public string OnCompleteMessageBody { get; set; }
-
-        public string OnDiscardMessageSubject { get; set; }
-
-        public string OnDiscardMessageBody { get; set; }
+        void DeleteWorkflow(ContentWorkflow workflow);
     }
 }

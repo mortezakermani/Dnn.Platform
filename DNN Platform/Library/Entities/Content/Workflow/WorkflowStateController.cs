@@ -35,6 +35,10 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             return CBO.FillCollection<ContentWorkflowState>(DataProvider.Instance().GetContentWorkflowStates(workflowID));
         }
+        public ContentWorkflowState GetWorkflowStateByID(int stateID)
+        {
+            return CBO.FillObject<ContentWorkflowState>(DataProvider.Instance().GetContentWorkflowState(stateID));
+        }
 
         public void AddWorkflowState(ContentWorkflowState state)
         {

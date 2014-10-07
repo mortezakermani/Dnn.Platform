@@ -30,10 +30,9 @@ namespace DotNetNuke.Entities.Content.Workflow
 {
     public interface IContentWorkflowController
     {
-        IEnumerable<ContentWorkflow> GetWorkflows(int portalID);
-
         void StartWorkflow(int workflowID, int itemID, int userID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0")]
         void CompleteState(int itemID, string subject, string body, string comment, int portalID, int userID);
 
         void CompleteState(int itemID, string subject, string body, string comment, int portalID, int userID, string source, params string[] parameters);
@@ -42,16 +41,36 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         bool IsWorkflowCompleted(int itemID);
 
-        ContentWorkflow GetDefaultWorkflow(int portalID);
-
         bool IsWorkflowOnDraft(int itemID);
+        
+        void SendWorkflowNotification(bool sendEmail, bool sendMessage, PortalSettings settings, IEnumerable<RoleInfo> roles, IEnumerable<UserInfo> users, string subject, string body, string comment,
+                              int userID);
 
+        void DiscardWorkflow(int contentItemId, string comment, int portalId, int userId);
+
+        void CompleteWorkflow(int contentItemId, string comment, int portalId, int userId);
+
+        [Obsolete("Obsoleted in Platform 7.4.0")]
+        string ReplaceNotificationTokens(string text, ContentWorkflow workflow, ContentItem item, ContentWorkflowState state, int portalID, int userID, string comment = "");
+        
+        ContentWorkflowSource GetWorkflowSource(int workflowId, string sourceName);
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowRepository")]
+        IEnumerable<ContentWorkflow> GetWorkflows(int portalID);
+
+        [Obsolete("Obsoleted in Platform 7.4.0")]
+        ContentWorkflow GetDefaultWorkflow(int portalID);
+        
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
         ContentWorkflow GetWorkflowByID(int workflowID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
         ContentWorkflow GetWorkflow(ContentItem item);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
         void AddWorkflow(ContentWorkflow workflow);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
         void UpdateWorkflow(ContentWorkflow workflow);
 
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
@@ -62,9 +81,8 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
         IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowID);
-
-        ContentWorkflowSource GetWorkflowSource(int workflowId, string sourceName);
-
+        
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
         ContentWorkflowState GetWorkflowStateByID(int stateID);
 
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
@@ -85,30 +103,28 @@ namespace DotNetNuke.Entities.Content.Workflow
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
         void DeleteWorkflowStatePermission(int workflowStatePermissionID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
         bool IsAnyReviewer(int portalID, int userID, int workflowID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
         bool IsAnyReviewer(int workflowID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
         bool IsCurrentReviewer(int portalId, int userID, int itemID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
         bool IsCurrentReviewer(int itemID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
         bool IsReviewer(int portalId, int userID, int stateID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
         bool IsReviewer(int stateID);
 
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
         void AddWorkflowLog(ContentItem item, string action, string comment, int userID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0")]
         void CreateDefaultWorkflows(int portalId);
-
-        void SendWorkflowNotification(bool sendEmail, bool sendMessage, PortalSettings settings, IEnumerable<RoleInfo> roles, IEnumerable<UserInfo> users, string subject, string body, string comment,
-                              int userID);
-
-        void DiscardWorkflow(int contentItemId, string comment, int portalId, int userId);
-
-        void CompleteWorkflow(int contentItemId, string comment, int portalId, int userId);
-
-        string ReplaceNotificationTokens(string text, ContentWorkflow workflow, ContentItem item, ContentWorkflowState state, int portalID, int userID, string comment = "");
     }
 }

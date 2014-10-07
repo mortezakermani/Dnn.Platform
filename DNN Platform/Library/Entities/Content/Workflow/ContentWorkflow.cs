@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -38,18 +39,38 @@ namespace DotNetNuke.Entities.Content.Workflow
         [StringLength(256)]
         public string Description { get; set; }
 
+        [Obsolete("Obsoleted in Platform 7.4.0")]
         public bool IsDeleted { get; set; }
 
-        public bool IsSystem { get; set; } // TODO: new
+        public bool IsSystem { get; set; }
 
-        public bool IsInUse { get; set; } // TODO: new
+        public bool IsInUse { get; set; }
 
-        public bool StartAfterCreating { get; set; } //TODO: remove
+        [Obsolete("Obsoleted in Platform 7.4.0")]
+        public bool StartAfterCreating { get; set; }
 
-        public bool StartAfterEditing { get; set; } //TODO: remove
+        [Obsolete("Obsoleted in Platform 7.4.0")]
+        public bool StartAfterEditing { get; set; }
 
-        public bool DispositionEnabled { get; set; } //TODO:remove
+        [Obsolete("Obsoleted in Platform 7.4.0")]
+        public bool DispositionEnabled { get; set; }
 
         public IEnumerable<ContentWorkflowState> States { get; set; }
+
+        public ContentWorkflowState FirstState
+        {
+            get
+            {
+                return States == null || !States.Any() ? null : States.OrderBy(s => s.Order).FirstOrDefault();
+            }
+        }
+
+        public ContentWorkflowState LastState
+        {
+            get
+            {
+                return States == null || !States.Any() ? null : States.OrderBy(s => s.Order).LastOrDefault();
+            }
+        }
     }
 }

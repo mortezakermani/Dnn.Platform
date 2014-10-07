@@ -19,42 +19,18 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using System.ComponentModel.DataAnnotations;
+using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Users;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public class ContentWorkflowState 
+    // TODO: add interface metadata documentation
+    internal interface IWorkflowSecurityController
     {
-        public int StateID { get; set; }
+        bool HasStateReviewerPermission(UserInfo user, PortalSettings settings, int stateId);
 
-        public int WorkflowID { get; set; }
+        bool HasStateReviewerPermission(int portalId, int userId, int stateId);
 
-        [Required]
-        [StringLength(40)]
-        public string StateName { get; set; }
-
-        public int Order { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public bool IsSystem { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        public bool SendEmail { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        public bool SendMessage { get; set; } 
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        public bool IsDisposalState { get; set; }
-
-        public string OnCompleteMessageSubject { get; set; }
-
-        public string OnCompleteMessageBody { get; set; }
-
-        public string OnDiscardMessageSubject { get; set; }
-
-        public string OnDiscardMessageBody { get; set; }
+        bool HasStateReviewerPermission(int stateId);
     }
 }

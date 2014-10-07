@@ -28,6 +28,8 @@ namespace DotNetNuke.Entities.Content.Workflow
     {
         IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId);
 
+        ContentWorkflowState GetWorkflowStateByID(int stateID);
+
         void AddWorkflowState(ContentWorkflowState state);
 
         void UpdateWorkflowState(ContentWorkflowState state);

@@ -269,6 +269,10 @@
     <Compile Include="Entities\Content\Workflow\ContentWorkflowLog.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowState.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowStatePermission.cs" />
+    <Compile Include="Entities\Content\Workflow\WorkflowSecurityController.cs" />
+    <Compile Include="Entities\Content\Workflow\IWorkflowSecurityController.cs" />
+    <Compile Include="Entities\Content\Workflow\WorkflowController.cs" />
+    <Compile Include="Entities\Content\Workflow\IWorkflowController.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowStateController.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowStateController.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowStatePermissionsController.cs" />
