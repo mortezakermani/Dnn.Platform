@@ -42,7 +42,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
                     return;
                 }
 
-                var unPublishedVersion = GetOrCreateUnPublishedTabVersion(module.TabID, userId);
+                var unPublishedVersion = GetOrCreateUnPublishedTabVersion(module.PortalID, module.TabID, userId);
                 var tabVersionDetail = CreateNewTabVersionDetailObjectFromModule(unPublishedVersion.TabVersionId, module,
                     moduleVersion, TabVersionDetailAction.Added);
                 TabVersionDetailController.Instance.SaveTabVersionDetail(tabVersionDetail, userId);
@@ -64,7 +64,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
                     return;
                 }
 
-                var unPublishedVersion = GetOrCreateUnPublishedTabVersion(module.TabID, userId);
+                var unPublishedVersion = GetOrCreateUnPublishedTabVersion(module.PortalID, module.TabID, userId);
                 var tabVersionDetail = CreateNewTabVersionDetailObjectFromModule(unPublishedVersion.TabVersionId, module.ModuleID, module.PaneName, module.ModuleOrder, moduleVersion, TabVersionDetailAction.Modified);
 
                 var existingTabVersionDetail = TabVersionDetailController.Instance.GetTabVersionDetails(unPublishedVersion.TabVersionId).SingleOrDefault(tvd => tvd.ModuleId == module.ModuleID);
@@ -102,7 +102,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
                     return;
                 }
 
-                var unPublishedVersion = GetOrCreateUnPublishedTabVersion(module.TabID, userId);
+                var unPublishedVersion = GetOrCreateUnPublishedTabVersion(module.PortalID, module.TabID, userId);
             
                 var existingTabDetail = TabVersionDetailController.Instance.GetTabVersionDetails(unPublishedVersion.TabVersionId).SingleOrDefault(tvd => tvd.ModuleId == module.ModuleID);
                 if (existingTabDetail != null)
@@ -128,11 +128,11 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
             return module.PortalID != Null.NullInteger && TabVersionSettings.Instance.IsVersioningEnabled(module.PortalID);
         }
 
-        private static TabVersion GetOrCreateUnPublishedTabVersion(int tabId, int createdByUserID)
+        private static TabVersion GetOrCreateUnPublishedTabVersion(int portalId, int tabId, int createdByUserID)
         {
             var unPublishedVersion = TabVersionMaker.Instance.GetUnPublishedVersion(tabId);
-            return unPublishedVersion == null ? 
-                TabVersionMaker.Instance.CreateNewVersion(tabId, createdByUserID) : 
+            return unPublishedVersion == null ?
+                TabVersionMaker.Instance.CreateNewVersion(portalId, tabId, createdByUserID) :
                 TabVersionController.Instance.GetTabVersions(tabId).SingleOrDefault(tv => !tv.IsPublished);
         }
 
