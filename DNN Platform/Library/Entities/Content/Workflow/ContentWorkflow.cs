@@ -26,6 +26,7 @@ using System.Linq;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
+    [PetaPoco.PrimaryKey("WorkflowID")]
     public class ContentWorkflow
     {
         public int WorkflowID { get; set; }
@@ -40,19 +41,21 @@ namespace DotNetNuke.Entities.Content.Workflow
         public string Description { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
+        [PetaPoco.Ignore]
         public bool IsDeleted { get; set; }
 
         public bool IsSystem { get; set; }
-
-        public bool IsInUse { get; set; }
-
+        
         [Obsolete("Obsoleted in Platform 7.4.0")]
+        [PetaPoco.Ignore]
         public bool StartAfterCreating { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
+        [PetaPoco.Ignore]
         public bool StartAfterEditing { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
+        [PetaPoco.Ignore]
         public bool DispositionEnabled { get; set; }
 
         public IEnumerable<ContentWorkflowState> States { get; set; }

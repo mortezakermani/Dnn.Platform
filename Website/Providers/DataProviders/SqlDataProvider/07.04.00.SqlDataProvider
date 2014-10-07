@@ -347,6 +347,42 @@ BEGIN
         WHERE TabID = @TabID
 END
 GO
+
+/**************************/
+/** Workflow API Changes **/
+/**************************/
+
+/* Added IsSystem column to define System Workflows (i.e.: Default Workflows) */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD [IsSystem] [bit] NOT NULL DEFAULT (0) 
+GO
+
+/* Added IsSystem column to define System Workflow States (i.e.: Draft, Published) */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD [IsSystem] [bit] NOT NULL DEFAULT (0) 
+GO
+
+/* Added SendNotification column */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD [SendNotification] [bit] NOT NULL DEFAULT (0) 
+GO
+
+/* Added SendNotificationToAdministrators column */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD [SendNotificationToAdministrators] [bit] NOT NULL DEFAULT (0) 
+GO
+
+/* Set is System Workflows */
+UPDATE {databaseOwner}[{objectQualifier}ContentWorkflows] SET IsSystem = 1 where IsSystem = 0
+GO
+
+/* Set is System States */
+UPDATE {databaseOwner}[{objectQualifier}ContentWorkflowStates] SET IsSystem = 1
+  WHERE StateID IN (  
+	  SELECT StateID
+	  FROM {databaseOwner}[{objectQualifier}ContentWorkflowStates] cf JOIN 
+	  (SELECT WorkflowId, MAX([order]) as 'LastState', MIN([Order]) as 'FirstState' 
+	  FROM {databaseOwner}[{objectQualifier}ContentWorkflowStates]
+	  GROUP BY WorkflowID) a ON cf.WorkflowID = a.WorkflowID
+	  WHERE [Order] = a.FirstState OR [Order] = a.LastState) 
+  AND IsSystem = 0;
+GO
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/

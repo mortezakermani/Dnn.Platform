@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -28,7 +29,11 @@ namespace DotNetNuke.Entities.Content.Workflow
         public int WorkflowLogID { get; set; }
         public int WorkflowID { get; set; }
         public int ContentItemID { get; set; }
+
+        [StringLength(40)]
         public string Action { get; set; }
+
+        [StringLength(256)]
         public string Comment { get; set; }
         public DateTime Date { get; set; }
         public int User { get; set; }

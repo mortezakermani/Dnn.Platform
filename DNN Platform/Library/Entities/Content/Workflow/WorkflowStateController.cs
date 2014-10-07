@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using DotNetNuke.Common;
-using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Framework;
 
@@ -31,51 +30,49 @@ namespace DotNetNuke.Entities.Content.Workflow
     //TODO: add metadata info
     internal class WorkflowStateController : ServiceLocator<IWorkflowStateController, WorkflowStateController>, IWorkflowStateController
     {
-        public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowID)
+        public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId)
         {
-            return CBO.FillCollection<ContentWorkflowState>(DataProvider.Instance().GetContentWorkflowStates(workflowID));
-        }
-        public ContentWorkflowState GetWorkflowStateByID(int stateID)
-        {
-            return CBO.FillObject<ContentWorkflowState>(DataProvider.Instance().GetContentWorkflowState(stateID));
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowState>();
+                return rep.Find("WHERE WorkflowId = @0", workflowId);
+            }
         }
 
+        public ContentWorkflowState GetWorkflowStateByID(int stateId)
+        {
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowState>();
+                return rep.GetById(stateId);
+            }
+        }
+
+        // TODO: Validate
         public void AddWorkflowState(ContentWorkflowState state)
         {
             Requires.NotNull("state", state);
             Requires.PropertyNotNullOrEmpty("state", "StateName", state.StateName);
 
-            var id = DataProvider.Instance().AddContentWorkflowState(state.WorkflowID,
-                                                                state.StateName,
-                                                                state.Order,
-                                                                state.IsActive,
-                                                                state.SendEmail,
-                                                                state.SendMessage,
-                                                                state.IsDisposalState,
-                                                                state.OnCompleteMessageSubject,
-                                                                state.OnCompleteMessageBody,
-                                                                state.OnDiscardMessageSubject,
-                                                                state.OnDiscardMessageBody);
-            state.StateID = id;
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowState>();
+                rep.Insert(state);
+            }
         }
 
+        // TODO: Validate
         public void UpdateWorkflowState(ContentWorkflowState state)
         {
             Requires.NotNull("state", state);
             Requires.PropertyNotNegative("state", "StateID", state.StateID);
             Requires.PropertyNotNullOrEmpty("state", "StateName", state.StateName);
 
-            DataProvider.Instance().UpdateContentWorkflowState(state.StateID,
-                                                                state.StateName,
-                                                                state.Order,
-                                                                state.IsActive,
-                                                                state.SendEmail,
-                                                                state.SendMessage,
-                                                                state.IsDisposalState,
-                                                                state.OnCompleteMessageSubject,
-                                                                state.OnCompleteMessageBody,
-                                                                state.OnDiscardMessageSubject,
-                                                                state.OnDiscardMessageBody);
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowState>();
+                rep.Update(state);
+            }
         }
 
         public void DeleteWorkflowState(ContentWorkflowState state)
@@ -83,7 +80,11 @@ namespace DotNetNuke.Entities.Content.Workflow
             Requires.NotNull("state", state);
             Requires.PropertyNotNegative("state", "StateID", state.StateID);
 
-            DataProvider.Instance().DeleteContentWorkflowState(state.StateID);
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowState>();
+                rep.Delete(state);
+            }
         }
 
         protected override Func<IWorkflowStateController> GetFactory()

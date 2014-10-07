@@ -22,13 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
     // TODO: add interface metadata documentation
+    // TODO: removed unused SPRoc and DataProvider layer
     internal class WorkflowController : ServiceLocator<IWorkflowController, WorkflowController>, IWorkflowController
     {
         private readonly IWorkflowStateController _stateController = WorkflowStateController.Instance;
@@ -45,56 +45,101 @@ namespace DotNetNuke.Entities.Content.Workflow
         }
         #endregion
 
+        public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)
+        {
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflow>();
+                return rep.Find("WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL)", portalId);
+            }
+        }
+
         public IEnumerable<ContentWorkflow> GetSystemWorkflows(int portalId)
         {
-            return CBO.FillCollection<ContentWorkflow>(DataProvider.Instance().GetContentWorkflows(portalId)).Where(w => w.IsSystem); 
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflow>();
+                return rep.Find("WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL) AND IsSystem = 1", portalId);
+            }
         }
 
         public ContentWorkflow GetWorkflowByID(int workflowId)
         {
-            var workflow = CBO.FillObject<ContentWorkflow>(DataProvider.Instance().GetContentWorkflow(workflowId));
-            if (workflow != null)
+            ContentWorkflow workflow;
+            using(var context = DataContext.Instance())
             {
-                workflow.States = _stateController.GetWorkflowStates(workflowId);
-                return workflow;
+                var rep = context.GetRepository<ContentWorkflow>();
+                workflow = rep.Find("WHERE WorkflowId = @0 AND IsDeleted = 0", workflowId).SingleOrDefault();
             }
-            return null;
+            
+            if (workflow == null)
+            {
+                return null;
+            }
+
+            workflow.States = _stateController.GetWorkflowStates(workflowId);
+            return workflow;
         }
 
         public ContentWorkflow GetWorkflow(ContentItem item)
         {
             var state = _stateController.GetWorkflowStateByID(item.StateID);
-            if (state == null) return null;
-            return GetWorkflowByID(state.WorkflowID);
+            return state == null ? null : GetWorkflowByID(state.WorkflowID);
         }
 
         // TODO: validation
         public void AddWorkflow(ContentWorkflow workflow)
         {
-            var id = DataProvider.Instance().AddContentWorkflow(workflow.PortalID, workflow.WorkflowName, workflow.Description, workflow.IsDeleted, workflow.StartAfterCreating, workflow.StartAfterEditing, workflow.DispositionEnabled);
-            workflow.WorkflowID = id;
-        }
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflow>();
 
+                if (DoesExistWorkflow(workflow, rep))
+                {
+                    throw new ApplicationException(string.Format("Already exists a workflow with this name"));
+                }
+                rep.Insert(workflow);
+            }
+        }
+        
         // TODO: validation
         public void UpdateWorkflow(ContentWorkflow workflow)
         {
-            DataProvider.Instance().UpdateContentWorkflow(workflow.WorkflowID, workflow.WorkflowName, workflow.Description, workflow.IsDeleted, workflow.StartAfterCreating, workflow.StartAfterEditing, workflow.DispositionEnabled);
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflow>();
+
+                if (DoesExistWorkflow(workflow, rep))
+                {
+                    throw new ApplicationException(string.Format("Already exists a workflow with this name"));
+                }
+                rep.Update(workflow);
+            }
         }
 
+        // Todo: workflow cannot be deleted if in usage
         public void DeleteWorkflow(ContentWorkflow workflow)
         {
-            // TODO: Implement it
-            // TODO: verify that the workflow is not in use (some content items are associated with the workflow)
-        }
-
-        public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)
-        {
-            return CBO.FillCollection<ContentWorkflow>(DataProvider.Instance().GetContentWorkflows(portalId));
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflow>();
+                rep.Update("SET IsDeleted = 1 WHERE IsDeleted = 0 AND WorkflowId = @0", workflow.WorkflowID);
+            }
         }
 
         protected override Func<IWorkflowController> GetFactory()
         {
             return () => new WorkflowController();
         }
+
+        #region Private Methods
+
+        private static bool DoesExistWorkflow(ContentWorkflow workflow, IRepository<ContentWorkflow> rep)
+        {
+            return rep.Find(
+                "WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL) AND WorkflowName = @1 AND WorkflowID !=",
+                workflow.PortalID, workflow.WorkflowName, workflow.WorkflowID).SingleOrDefault() != null;
+        }
+        #endregion
     }
 }
