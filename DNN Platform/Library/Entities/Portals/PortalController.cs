@@ -365,7 +365,7 @@ namespace DotNetNuke.Entities.Portals
                     // Add default workflows
                     try
                     {
-                        ContentWorkflowController.Instance.CreateDefaultWorkflows(portalId);
+                        //TODO Use the appropriate controller to create Default Workflows
                     }
                     catch (Exception ex)
                     {
