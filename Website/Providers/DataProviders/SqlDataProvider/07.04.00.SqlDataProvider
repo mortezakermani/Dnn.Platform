@@ -383,6 +383,41 @@ UPDATE {databaseOwner}[{objectQualifier}ContentWorkflowStates] SET IsSystem = 1
 	  WHERE [Order] = a.FirstState OR [Order] = a.LastState) 
   AND IsSystem = 0;
 GO
+
+/* Get Workflow Usage */
+IF OBJECT_ID(N'{databaseOwner}[{objectQualifier}GetContentWorkflowUsage]', N'P') IS NOT NULL
+	DROP PROCEDURE {databaseOwner}[{objectQualifier}GetContentWorkflowUsage]
+GO
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}GetContentWorkflowUsage]
+	@WorkflowId INT,
+	@PageIndex INT,
+	@PageSize INT
+AS
+	DECLARE @StartIndex INT = ((@PageIndex - 1) * @PageSize) + 1
+	DECLARE @EndIndex INT = (@PageIndex * @PageSize)
+	
+	;WITH ContentItemSet AS
+    (
+		SELECT ci.*, ROW_NUMBER() OVER (Order BY ci.ContentItemId) AS [Index]
+		FROM {databaseOwner}[{objectQualifier}ContentItems] ci 
+		INNER JOIN {databaseOwner}[{objectQualifier}ContentWorkflowStates] ws ON ci.StateID = ws.StateID
+		WHERE ws.WorkflowID = @WorkflowId
+    )
+   SELECT * FROM ContentItemSet WHERE [Index] BETWEEN @StartIndex AND @EndIndex 
+GO
+
+/* Get Workflow Usage Count */
+IF OBJECT_ID(N'{databaseOwner}[{objectQualifier}GetContentWorkflowUsageCount]', N'P') IS NOT NULL
+	DROP PROCEDURE {databaseOwner}[{objectQualifier}GetContentWorkflowUsageCount]
+GO
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}GetContentWorkflowUsageCount]
+	@WorkflowId INT
+AS
+	SELECT COUNT(ci.ContentItemID)
+	FROM {databaseOwner}[{objectQualifier}ContentItems] ci 
+	INNER JOIN {databaseOwner}[{objectQualifier}ContentWorkflowStates] ws ON ci.StateID = ws.StateID
+	WHERE ws.WorkflowID = @WorkflowId
+GO
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/
