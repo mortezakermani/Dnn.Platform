@@ -173,7 +173,7 @@ namespace DotNetNuke.Entities.Tabs
 
             // Workflow initialization.
             // TODO: this value depends on the instalation (platform or content) and the workflow setting set by the user.
-            var defaultWorkflow = 2; // 2 = content approbal for tabs, 3 = direct publish
+            var defaultWorkflow = WorkflowSettings.Instance.GetDefaultTabWorkflowId(tab.PortalID);
             ContentWorkflowController.Instance.StartWorkflow(defaultWorkflow, tab.ContentItemId, UserController.Instance.GetCurrentUserInfo().UserID);
 
             return tab.TabID;

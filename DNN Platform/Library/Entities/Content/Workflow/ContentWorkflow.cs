@@ -39,6 +39,9 @@ namespace DotNetNuke.Entities.Content.Workflow
         [StringLength(40)]
         public string WorkflowName { get; set; }
 
+        [StringLength(40)]
+        public string WorkflowKey { get; set; }
+
         [StringLength(256)]
         public string Description { get; set; }
 

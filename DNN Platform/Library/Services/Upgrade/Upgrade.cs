@@ -3089,7 +3089,7 @@ namespace DotNetNuke.Services.Upgrade
         {
             foreach (PortalInfo portal in PortalController.Instance.GetPortals())
             {
-                ContentWorkflowController.Instance.CreateDefaultWorkflows(portal.PortalID);
+                //ContentWorkflowController.Instance.CreateDefaultWorkflows(portal.PortalID);
             }
         }
 

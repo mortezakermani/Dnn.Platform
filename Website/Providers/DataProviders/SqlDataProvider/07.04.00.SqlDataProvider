@@ -356,6 +356,54 @@ GO
 ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD [IsSystem] [bit] NOT NULL DEFAULT (0) 
 GO
 
+/* Added a default value to IsDeleted column */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD CONSTRAINT DF_ContentWorkflows_IsDeleted DEFAULT 0 FOR IsDeleted
+GO
+
+/* Added a default value to StartAfterCreating column */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD CONSTRAINT DF_ContentWorkflows_StartAfterCreating DEFAULT 1 FOR StartAfterCreating
+GO
+
+/* Added a default value to StartAfterEditing column */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD CONSTRAINT DF_ContentWorkflows_StartAfterEditing DEFAULT 1 FOR StartAfterEditing
+GO
+
+/* Added a default value to DispositionEnabled column */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD CONSTRAINT DF_ContentWorkflows_DispositionEnabled DEFAULT 0 FOR DispositionEnabled
+GO
+
+/* Added WorkflowKey column to define Workflows string key (i.e.: Default Workflows keys) */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD [WorkflowKey] NVARCHAR(40) NOT NULL DEFAULT (N'') 
+GO
+
+/* Added a default value to column SendEmail */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_SendEmail DEFAULT 0 FOR SendEmail
+GO
+
+/* Added a default value to column SendMessage */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_SendMessage DEFAULT 0 FOR SendMessage
+GO
+
+/* Added a default value to column IsDisposalState */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_IsDisposalState DEFAULT 0 FOR IsDisposalState
+GO
+
+/* Added a default value to column OnCompleteMessageSubject */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_OnCompleteMessageSubject DEFAULT N'' FOR OnCompleteMessageSubject
+GO
+
+/* Added a default value to column OnCompleteMessageBody */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_OnCompleteMessageBody DEFAULT N'' FOR OnCompleteMessageBody
+GO
+
+/* Added a default value to column OnDiscardMessageSubject */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_OnDiscardMessageSubject DEFAULT N'' FOR OnDiscardMessageSubject
+GO
+
+/* Added a default value to column OnDiscardMessageBody */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_OnDiscardMessageBody DEFAULT N'' FOR OnDiscardMessageBody
+GO
+
 /* Added IsSystem column to define System Workflow States (i.e.: Draft, Published) */
 ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD [IsSystem] [bit] NOT NULL DEFAULT (0) 
 GO
