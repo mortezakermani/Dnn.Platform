@@ -21,10 +21,12 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using DotNetNuke.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    [PetaPoco.PrimaryKey("StateID")]
+    [PrimaryKey("StateID")]
+    [TableName("ContentWorkflowStates")]
     public class ContentWorkflowState 
     {
         public int StateID { get; set; }
@@ -46,30 +48,30 @@ namespace DotNetNuke.Entities.Content.Workflow
         public bool SendNotificationToAdministrators { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public bool SendEmail { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public bool SendMessage { get; set; } 
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
         public bool IsDisposalState { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public string OnCompleteMessageSubject { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public string OnCompleteMessageBody { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public string OnDiscardMessageSubject { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public string OnDiscardMessageBody { get; set; }
     }
 }

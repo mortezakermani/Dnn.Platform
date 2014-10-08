@@ -23,10 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using DotNetNuke.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    [PetaPoco.PrimaryKey("WorkflowID")]
+    [PrimaryKey("WorkflowID")]
+    [TableName("ContentWorkflows")]
     public class ContentWorkflow
     {
         public int WorkflowID { get; set; }
@@ -41,21 +43,21 @@ namespace DotNetNuke.Entities.Content.Workflow
         public string Description { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public bool IsDeleted { get; set; }
 
         public bool IsSystem { get; set; }
-        
+
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public bool StartAfterCreating { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public bool StartAfterEditing { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        [PetaPoco.Ignore]
+        [IgnoreColumn]
         public bool DispositionEnabled { get; set; }
 
         public IEnumerable<ContentWorkflowState> States { get; set; }
