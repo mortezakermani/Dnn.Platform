@@ -60,8 +60,10 @@ namespace DotNetNuke.Entities.Content.Workflow
         [IgnoreColumn]
         public bool DispositionEnabled { get; set; }
 
+        [IgnoreColumn]
         public IEnumerable<ContentWorkflowState> States { get; set; }
 
+        [IgnoreColumn]
         public ContentWorkflowState FirstState
         {
             get
@@ -70,6 +72,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
+        [IgnoreColumn]
         public ContentWorkflowState LastState
         {
             get

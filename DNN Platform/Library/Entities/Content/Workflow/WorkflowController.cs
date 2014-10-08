@@ -145,7 +145,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         private static bool DoesExistWorkflow(ContentWorkflow workflow, IRepository<ContentWorkflow> rep)
         {
             return rep.Find(
-                "WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL) AND WorkflowName = @1 AND WorkflowID !=",
+                "WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL) AND WorkflowName = @1 AND WorkflowID != @2",
                 workflow.PortalID, workflow.WorkflowName, workflow.WorkflowID).SingleOrDefault() != null;
         }
         #endregion
