@@ -23,7 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Framework;
+using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -96,7 +98,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
                 if (DoesExistWorkflow(workflow, rep))
                 {
-                    throw new ApplicationException(string.Format("Already exists a workflow with this name"));
+                    throw new WorkflowNameAlreadyExistsException();
                 }
                 rep.Insert(workflow);
             }
@@ -111,7 +113,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
                 if (DoesExistWorkflow(workflow, rep))
                 {
-                    throw new ApplicationException(string.Format("Already exists a workflow with this name"));
+                    throw new WorkflowNameAlreadyExistsException();
                 }
                 rep.Update(workflow);
             }
@@ -120,6 +122,12 @@ namespace DotNetNuke.Entities.Content.Workflow
         // Todo: workflow cannot be deleted if in usage
         public void DeleteWorkflow(ContentWorkflow workflow)
         {
+            var usageCount = DataProvider.Instance().GetContentWorkflowUsageCount(workflow.WorkflowID);
+            if (usageCount > 0)
+            {
+                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));    
+            }
+
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();
