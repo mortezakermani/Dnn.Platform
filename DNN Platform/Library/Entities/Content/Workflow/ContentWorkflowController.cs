@@ -351,7 +351,6 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         #region Default Workflows
         [Obsolete("Obsoleted in Platform 7.4.0")]
-        //TODO Mark what would be the replacement method
         public void CreateDefaultWorkflows(int portalId)
         {
             if (GetWorkflows(portalId).Any(w => w.WorkflowName == Localization.GetString("DefaultWorkflowName")))
