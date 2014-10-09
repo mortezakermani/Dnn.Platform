@@ -58,6 +58,11 @@ namespace DotNetNuke.Entities.Content.Workflow
             return HasStateReviewerPermission(user, PortalSettings.Current, stateId);
         }
 
+        public PermissionInfo GetStateReviewPermission()
+        {
+            return (PermissionInfo) new PermissionController().GetPermissionByCodeAndKey("SYSTEM_CONTENTWORKFLOWSTATE", "REVIEW")[0];
+        }
+
         protected override Func<IWorkflowSecurityController> GetFactory()
         {
             return () => new WorkflowSecurityController();

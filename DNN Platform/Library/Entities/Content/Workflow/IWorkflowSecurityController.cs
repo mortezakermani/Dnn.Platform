@@ -21,6 +21,7 @@
 
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
+using DotNetNuke.Security.Permissions;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -32,5 +33,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         bool HasStateReviewerPermission(int portalId, int userId, int stateId);
 
         bool HasStateReviewerPermission(int stateId);
+
+        PermissionInfo GetStateReviewPermission();
     }
 }
