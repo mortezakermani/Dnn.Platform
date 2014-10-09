@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
@@ -65,11 +66,11 @@ namespace DotNetNuke.Entities.Content.Workflow
             var workflow = _workflowRepository.GetWorkflowByID(state.WorkflowID);
             if (workflow == null)
             {
-                throw new WorkflowException("Workflow is not found");
+                throw new WorkflowDoesNotExistException();
             }
             if (workflow.IsSystem)
             {
-                throw new WorkflowException("New states cannot be added to system workflows");
+                throw new WorkflowException("New states cannot be added to system workflows"); //TODO: localize error message
             }
 
             var lastState = workflow.LastState;
@@ -80,6 +81,64 @@ namespace DotNetNuke.Entities.Content.Workflow
             lastState.Order++;
             _workflowStateRepository.UpdateWorkflowState(lastState); // Update last state order
             _workflowStateRepository.AddWorkflowState(state);
+        }
+
+        public void UpdateWorkflowState(ContentWorkflowState state)
+        {
+            var workflow = _workflowStateRepository.GetWorkflowStateByID(state.WorkflowID);
+            if (workflow == null)
+            {
+                throw new WorkflowDoesNotExistException();
+            }
+            _workflowStateRepository.UpdateWorkflowState(state);
+        }
+
+        public void MoveWorkflowStateDown(int stateId)
+        {
+            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).OrderByDescending(s => s.Order).ToArray();
+
+            SwitchWorkflowStateInternal(stateId, states);
+        }
+
+        public void MoveWorkflowStateUp(int stateId)
+        {
+            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
+
+            SwitchWorkflowStateInternal(stateId, states);
+        }
+
+        private void SwitchWorkflowStateInternal(int stateId, ContentWorkflowState[] states)
+        {
+            ContentWorkflowState stateToMoveUp = null;
+            ContentWorkflowState stateToMoveDown = null;
+
+            for (var i = 0; i < states.Length; i++)
+            {
+                if (states[i].StateID != stateId) continue;
+
+                if (i >= states.Length - 2)
+                {
+                    throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                }
+
+                stateToMoveUp = states[i];
+                stateToMoveDown = states[i + 1];
+                break;
+            }
+
+            if (stateToMoveUp == null || stateToMoveDown == null)
+            {
+                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+            }
+
+            var orderTmp = stateToMoveDown.Order;
+            stateToMoveDown.Order = stateToMoveUp.Order;
+            stateToMoveUp.Order = orderTmp;
+
+            _workflowStateRepository.UpdateWorkflowState(stateToMoveUp);
+            _workflowStateRepository.UpdateWorkflowState(stateToMoveDown);
         }
 
         public IEnumerable<ContentItem> GetWorkflowUsage(int workflowId, int pageIndex, int pageSize)

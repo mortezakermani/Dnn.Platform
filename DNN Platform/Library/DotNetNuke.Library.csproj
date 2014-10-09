@@ -263,6 +263,7 @@
     <Compile Include="Entities\Content\Workflow\ContentWorkflowController.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowLogType.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowSource.cs" />
+    <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowDoesNotExistException.cs" />
     <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowNameAlreadyExistsException.cs" />
     <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowException.cs" />
     <Compile Include="Entities\Content\Workflow\IContentWorkflowAction.cs" />

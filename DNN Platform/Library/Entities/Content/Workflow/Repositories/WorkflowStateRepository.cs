@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using DotNetNuke.Common;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
@@ -35,7 +36,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflowState>();
-                return rep.Find("WHERE WorkflowId = @0", workflowId);
+                return rep.Find("WHERE WorkflowId = @0 ORDER BY [Order] ASC", workflowId);
             }
         }
 
@@ -79,6 +80,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         {
             Requires.NotNull("state", state);
             Requires.PropertyNotNegative("state", "StateID", state.StateID);
+
+            if (state.IsSystem)
+            {
+                throw new WorkflowException("System workflow state cannot be deleted"); // TODO: Localize error message
+            }
 
             using (var context = DataContext.Instance())
             {

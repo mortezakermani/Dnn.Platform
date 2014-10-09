@@ -357,4 +357,10 @@
   <data name="WorkflowNameAlreadyExistsException.Text" xml:space="preserve">
     <value>Already exists a workflow with this name</value>
   </data>
+  <data name="SystemWorkflowDeletionException.Text" xml:space="preserve">
+    <value>System workflow cannot be deleted</value>
+  </data>
+  <data name="WorfklowDoesNotExistException.Text" xml:space="preserve">
+    <value>Workflow does not exist</value>
+  </data>
 </root>

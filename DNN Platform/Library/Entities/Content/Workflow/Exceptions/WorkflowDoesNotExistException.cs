@@ -1,6 +1,6 @@
-#region Copyright
+﻿#region Copyright
 // 
-// DotNetNuke� - http://www.dotnetnuke.com
+// DotNetNuke® - http://www.dotnetnuke.com
 // Copyright (c) 2002-2014
 // by DotNetNuke Corporation
 // 
@@ -19,25 +19,16 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System.Collections.Generic;
+using DotNetNuke.Services.Localization;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Exceptions
 {
-    // TODO: add metadata validation
-    public interface IWorkflowManager
+    public class WorkflowDoesNotExistException : WorkflowException
     {
-        IEnumerable<ContentItem> GetWorkflowUsage(int workflowId, int pageIndex, int pageSize);
-
-        int GetWorkflowUsageCount(int workflowId);
-
-        void AddWorkflowState(ContentWorkflowState state);
-
-        void UpdateWorkflowState(ContentWorkflowState state);
-
-        void MoveWorkflowStateDown(int stateId);
-
-        void MoveWorkflowStateUp(int stateId);
-
-        void AddWorkflow(ContentWorkflow workflow);
+        public WorkflowDoesNotExistException()
+            : base(Localization.GetString("WorfklowDoesNotExistException", Localization.ExceptionsResourceFile))
+        {
+            
+        }
     }
 }

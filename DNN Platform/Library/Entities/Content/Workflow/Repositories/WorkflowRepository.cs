@@ -119,9 +119,13 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             }
         }
 
-        // Todo: workflow cannot be deleted if in usage
         public void DeleteWorkflow(ContentWorkflow workflow)
         {
+            if (workflow.IsSystem)
+            {
+                throw new WorkflowException(Localization.GetString("SystemWorkflowDeletionException", Localization.ExceptionsResourceFile));
+            }
+
             var usageCount = DataProvider.Instance().GetContentWorkflowUsageCount(workflow.WorkflowID);
             if (usageCount > 0)
             {
