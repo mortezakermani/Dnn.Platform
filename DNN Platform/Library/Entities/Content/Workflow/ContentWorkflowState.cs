@@ -37,11 +37,11 @@ namespace DotNetNuke.Entities.Content.Workflow
         [StringLength(40)]
         public string StateName { get; set; }
 
-        public int Order { get; set; }
+        public int Order { get; set; } // Consider make set internal
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } // Consider make set internal
 
-        public bool IsSystem { get; set; }
+        public bool IsSystem { get; internal set; }
 
         public bool SendNotification { get; set; }
 

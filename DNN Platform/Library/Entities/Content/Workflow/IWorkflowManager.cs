@@ -28,5 +28,8 @@ namespace DotNetNuke.Entities.Content.Workflow
     {
         IEnumerable<ContentItem> GetWorkflowUsage(int workflowId, int pageIndex, int pageSize);
         int GetWorkflowUsageCount(int workflowId);
+        void AddWorkflowState(ContentWorkflowState state);
+
+        void AddWorkflow(ContentWorkflow workflow);
     }
 }

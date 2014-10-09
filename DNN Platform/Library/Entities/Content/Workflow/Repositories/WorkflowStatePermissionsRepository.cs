@@ -25,10 +25,10 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Framework;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
     //TODO: add interface doc metadata
-    internal class WorkflowStatePermissionsController : ServiceLocator<IWorkflowStatePermissionsController, WorkflowStatePermissionsController>, IWorkflowStatePermissionsController
+    internal class WorkflowStatePermissionsRepository : ServiceLocator<IWorkflowStatePermissionsRepository, WorkflowStatePermissionsRepository>, IWorkflowStatePermissionsRepository
     {
         public IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId)
         {
@@ -50,9 +50,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             DataProvider.Instance().DeleteContentWorkflowStatePermission(workflowStatePermissionId);
         }
 
-        protected override Func<IWorkflowStatePermissionsController> GetFactory()
+        protected override Func<IWorkflowStatePermissionsRepository> GetFactory()
         {
-            return () => new WorkflowStatePermissionsController();
+            return () => new WorkflowStatePermissionsRepository();
         }
     }
 }

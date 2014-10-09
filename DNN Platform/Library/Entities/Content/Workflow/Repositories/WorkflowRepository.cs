@@ -27,21 +27,21 @@ using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Framework;
 using DotNetNuke.Services.Localization;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
     // TODO: add interface metadata documentation
     // TODO: removed unused SPRoc and DataProvider layer
-    internal class WorkflowController : ServiceLocator<IWorkflowController, WorkflowController>, IWorkflowController
+    internal class WorkflowRepository : ServiceLocator<IWorkflowRepository, WorkflowRepository>, IWorkflowRepository
     {
-        private readonly IWorkflowStateController _stateController = WorkflowStateController.Instance;
+        private readonly IWorkflowStateRepository _stateController = WorkflowStateRepository.Instance;
 
         #region Constructor
-        public WorkflowController()
+        public WorkflowRepository()
         {
             
         }
 
-        public WorkflowController(IWorkflowStateController stateController)
+        public WorkflowRepository(IWorkflowStateRepository stateController)
         {
             _stateController = stateController;
         }
@@ -135,9 +135,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
-        protected override Func<IWorkflowController> GetFactory()
+        protected override Func<IWorkflowRepository> GetFactory()
         {
-            return () => new WorkflowController();
+            return () => new WorkflowRepository();
         }
 
         #region Private Methods

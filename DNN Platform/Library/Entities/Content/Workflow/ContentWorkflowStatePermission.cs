@@ -19,8 +19,6 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-
 using DotNetNuke.Security.Permissions;
 
 namespace DotNetNuke.Entities.Content.Workflow

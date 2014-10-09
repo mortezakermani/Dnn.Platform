@@ -1,6 +1,6 @@
-#region Copyright
+﻿#region Copyright
 // 
-// DotNetNuke� - http://www.dotnetnuke.com
+// DotNetNuke® - http://www.dotnetnuke.com
 // Copyright (c) 2002-2014
 // by DotNetNuke Corporation
 // 
@@ -19,17 +19,17 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-namespace DotNetNuke.Entities.Content.Workflow
+using System.Collections.Generic;
+
+namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
-    //TODO Add documentation info
-    public interface ISystemWorkflowController
+    //TODO: add interface doc metadata
+    internal interface IWorkflowStatePermissionsRepository
     {
-        void CreateSystemWorkflows(int portalId);
-        ContentWorkflow GetDirectPublishWorkflow(int portalId);
-        ContentWorkflow GetSaveDraftWorkflow(int portalId);
-        ContentWorkflow GetContentApprovalWorkflow(int portalId);
-        ContentWorkflowState GetDraftStateDefinition(int order);
-        ContentWorkflowState GetPublishedStateDefinition(int order);
-        ContentWorkflowState GetReadyForReviewStateDefinition(int order);
+        IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId);
+
+        void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserId);
+
+        void DeleteWorkflowStatePermission(int workflowStatePermissionId);
     }
 }

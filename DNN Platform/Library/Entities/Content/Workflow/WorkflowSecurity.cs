@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework;
@@ -30,15 +31,15 @@ using DotNetNuke.Security.Permissions;
 namespace DotNetNuke.Entities.Content.Workflow
 {
     // TODO: add interface metadata documentation
-    internal class WorkflowSecurityController : ServiceLocator<IWorkflowSecurityController, WorkflowSecurityController>, IWorkflowSecurityController
+    internal class WorkflowSecurity : ServiceLocator<IWorkflowSecurity, WorkflowSecurity>, IWorkflowSecurity
     {
         private const string Review = "REVIEW";
         private readonly IUserController _userController = UserController.Instance;
-        private readonly IWorkflowStatePermissionsController _statePermissionsController = WorkflowStatePermissionsController.Instance;
+        private readonly IWorkflowStatePermissionsRepository _statePermissionsRepository = WorkflowStatePermissionsRepository.Instance;
 
         public bool HasStateReviewerPermission(UserInfo user, PortalSettings settings, int stateId)
         {
-            var permissions = _statePermissionsController.GetWorkflowStatePermissionByState(stateId);
+            var permissions = _statePermissionsRepository.GetWorkflowStatePermissionByState(stateId);
 
             return user.IsSuperUser ||
                 PortalSecurity.IsInRoles(user, settings, settings.AdministratorRoleName) ||
@@ -63,9 +64,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             return (PermissionInfo) new PermissionController().GetPermissionByCodeAndKey("SYSTEM_CONTENTWORKFLOWSTATE", "REVIEW")[0];
         }
 
-        protected override Func<IWorkflowSecurityController> GetFactory()
+        protected override Func<IWorkflowSecurity> GetFactory()
         {
-            return () => new WorkflowSecurityController();
+            return () => new WorkflowSecurity();
         }
     }
 }

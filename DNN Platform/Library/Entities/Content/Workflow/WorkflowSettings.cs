@@ -35,7 +35,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var workflowId = PortalController.GetPortalSettingAsInteger(DefaultTabWorkflowKey, portalId, Null.NullInteger);
             if (workflowId == Null.NullInteger)
             {
-                workflowId = SystemWorkflowController.Instance.GetDirectPublishWorkflow(portalId).WorkflowID;
+                workflowId = SystemWorkflowManager.Instance.GetDirectPublishWorkflow(portalId).WorkflowID;
                 PortalController.UpdatePortalSetting(portalId, DefaultTabWorkflowKey, workflowId.ToString(CultureInfo.InvariantCulture), true);
             }
             return workflowId;

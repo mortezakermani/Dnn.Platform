@@ -25,10 +25,10 @@ using DotNetNuke.Common;
 using DotNetNuke.Data;
 using DotNetNuke.Framework;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
     //TODO: add metadata info
-    internal class WorkflowStateController : ServiceLocator<IWorkflowStateController, WorkflowStateController>, IWorkflowStateController
+    internal class WorkflowStateRepository : ServiceLocator<IWorkflowStateRepository, WorkflowStateRepository>, IWorkflowStateRepository
     {
         public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId)
         {
@@ -87,9 +87,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
-        protected override Func<IWorkflowStateController> GetFactory()
+        protected override Func<IWorkflowStateRepository> GetFactory()
         {
-            return () => new WorkflowStateController();
+            return () => new WorkflowStateRepository();
         }
     }
 }

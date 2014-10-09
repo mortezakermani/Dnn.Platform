@@ -26,7 +26,7 @@ using DotNetNuke.Security.Permissions;
 namespace DotNetNuke.Entities.Content.Workflow
 {
     // TODO: add interface metadata documentation
-    internal interface IWorkflowSecurityController
+    internal interface IWorkflowSecurity
     {
         bool HasStateReviewerPermission(UserInfo user, PortalSettings settings, int stateId);
 

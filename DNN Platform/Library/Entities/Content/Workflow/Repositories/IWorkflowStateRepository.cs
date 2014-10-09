@@ -19,36 +19,21 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
 using System.Collections.Generic;
-using DotNetNuke.Common.Utilities;
-using DotNetNuke.Data;
-using DotNetNuke.Framework;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
     //TODO: add metadata info
-    //TODO: add entities and validation
-    internal class WorkflowLogController : ServiceLocator<IWorkflowLogController, WorkflowLogController> , IWorkflowLogController
+    internal interface IWorkflowStateRepository
     {
-        public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
-        {
-            return CBO.FillCollection<ContentWorkflowLog>(DataProvider.Instance().GetContentWorkflowLogs(contentItemId, workflowId));
-        }
+        IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId);
 
-        public void DeleteWorkflowLogs(int contentItemId, int workflowId)
-        {
-            DataProvider.Instance().DeleteContentWorkflowLogs(contentItemId, workflowId);
-        }
+        ContentWorkflowState GetWorkflowStateByID(int stateID);
 
-        public void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId)
-        {
-            DataProvider.Instance().AddContentWorkflowLog(action, comment, userId, workflowId, contentItemId);
-        }
+        void AddWorkflowState(ContentWorkflowState state);
 
-        protected override Func<IWorkflowLogController> GetFactory()
-        {
-            return () => new WorkflowLogController();
-        }
+        void UpdateWorkflowState(ContentWorkflowState state);
+
+        void DeleteWorkflowState(ContentWorkflowState state);
     }
 }

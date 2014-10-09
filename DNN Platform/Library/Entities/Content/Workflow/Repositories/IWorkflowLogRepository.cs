@@ -21,19 +21,16 @@
 
 using System.Collections.Generic;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
     //TODO: add metadata info
-    internal interface IWorkflowStateController
+    internal interface IWorkflowLogRepository
     {
-        IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId);
+        void DeleteWorkflowLogs(int workflowId, int contentItemId);
 
-        ContentWorkflowState GetWorkflowStateByID(int stateID);
-
-        void AddWorkflowState(ContentWorkflowState state);
-
-        void UpdateWorkflowState(ContentWorkflowState state);
-
-        void DeleteWorkflowState(ContentWorkflowState state);
+        // TODO: review if we can use a model for action/comment/userId
+        void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId);
+        
+        IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int workflowId, int contentItemId);
     }
 }

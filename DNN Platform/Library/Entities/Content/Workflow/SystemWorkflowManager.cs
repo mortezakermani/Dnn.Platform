@@ -21,24 +21,25 @@
 
 using System;
 using System.Linq;
+using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
 using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public class SystemWorkflowController : ServiceLocator<ISystemWorkflowController, SystemWorkflowController>, ISystemWorkflowController
+    internal class SystemWorkflowManager : ServiceLocator<ISystemWorkflowManager, SystemWorkflowManager>, ISystemWorkflowManager
     {
         public const string DirectPublishWorkflowKey = "DirectPublish";
         public const string SaveDraftWorkflowKey = "SaveDraft";
         public const string ContentAprovalWorkflowKey = "ContentApproval";
 
-        private readonly IWorkflowController workflowController;
-        private readonly IWorkflowStateController workflowStateController;
+        private readonly IWorkflowRepository _workflowRepository;
+        private readonly IWorkflowStateRepository _workflowStateRepository;
 
-        public SystemWorkflowController()
+        public SystemWorkflowManager()
         {
-            workflowController = WorkflowController.Instance;
-            workflowStateController = WorkflowStateController.Instance;
+            _workflowRepository = WorkflowRepository.Instance;
+            _workflowStateRepository = WorkflowStateRepository.Instance;
         }
 
         public void CreateSystemWorkflows(int portalId)
@@ -50,17 +51,17 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public ContentWorkflow GetDirectPublishWorkflow(int portalId)
         {
-            return workflowController.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == DirectPublishWorkflowKey);
+            return _workflowRepository.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == DirectPublishWorkflowKey);
         }
 
         public ContentWorkflow GetSaveDraftWorkflow(int portalId)
         {
-            return workflowController.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == SaveDraftWorkflowKey);
+            return _workflowRepository.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == SaveDraftWorkflowKey);
         }
 
         public ContentWorkflow GetContentApprovalWorkflow(int portalId)
         {
-            return workflowController.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == ContentAprovalWorkflowKey);
+            return _workflowRepository.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == ContentAprovalWorkflowKey);
         }
 
         public ContentWorkflowState GetDraftStateDefinition(int order)
@@ -106,10 +107,10 @@ namespace DotNetNuke.Entities.Content.Workflow
                 IsSystem = true,
                 PortalID = portalId
             };
-            workflowController.AddWorkflow(workflow);
+            _workflowRepository.AddWorkflow(workflow);
             var publishedState = GetPublishedStateDefinition(1);
             publishedState.WorkflowID = workflow.WorkflowID;
-            workflowStateController.AddWorkflowState(publishedState);
+            _workflowStateRepository.AddWorkflowState(publishedState);
         }
 
         private void CreateSaveDraftWorkflow(int portalId)
@@ -122,15 +123,15 @@ namespace DotNetNuke.Entities.Content.Workflow
                 IsSystem = true,
                 PortalID = portalId
             };
-            workflowController.AddWorkflow(workflow);
+            _workflowRepository.AddWorkflow(workflow);
 
             var state = GetDraftStateDefinition(1);
             state.WorkflowID = workflow.WorkflowID;
-            workflowStateController.AddWorkflowState(state);
+            _workflowStateRepository.AddWorkflowState(state);
             
             state = GetPublishedStateDefinition(2);
             state.WorkflowID = workflow.WorkflowID;
-            workflowStateController.AddWorkflowState(state);
+            _workflowStateRepository.AddWorkflowState(state);
         }
 
         private void CreateContentApprovalWorkflow(int portalId)
@@ -143,24 +144,24 @@ namespace DotNetNuke.Entities.Content.Workflow
                 IsSystem = true,
                 PortalID = portalId
             };
-            workflowController.AddWorkflow(workflow);
+            _workflowRepository.AddWorkflow(workflow);
 
             var state = GetDraftStateDefinition(1);
             state.WorkflowID = workflow.WorkflowID;
-            workflowStateController.AddWorkflowState(state);
+            _workflowStateRepository.AddWorkflowState(state);
 
             state = GetReadyForReviewStateDefinition(2);
             state.WorkflowID = workflow.WorkflowID;
-            workflowStateController.AddWorkflowState(state);
+            _workflowStateRepository.AddWorkflowState(state);
 
             state = GetPublishedStateDefinition(3);
             state.WorkflowID = workflow.WorkflowID;
-            workflowStateController.AddWorkflowState(state);
+            _workflowStateRepository.AddWorkflowState(state);
         }
 
-        protected override Func<ISystemWorkflowController> GetFactory()
+        protected override Func<ISystemWorkflowManager> GetFactory()
         {
-            return () => new SystemWorkflowController();
+            return () => new SystemWorkflowManager();
         }
     }
 }

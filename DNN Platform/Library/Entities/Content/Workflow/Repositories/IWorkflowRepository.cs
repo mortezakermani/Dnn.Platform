@@ -21,10 +21,10 @@
 
 using System.Collections.Generic;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
     // TODO: add interface metadata documentation
-    internal interface IWorkflowController
+    internal interface IWorkflowRepository
     {
         IEnumerable<ContentWorkflow> GetSystemWorkflows(int portalId);
 
