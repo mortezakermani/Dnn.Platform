@@ -34,7 +34,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         private readonly DataProvider _dataProvider;
         private readonly IWorkflowRepository _workflowRepository = WorkflowRepository.Instance;
         private readonly IWorkflowStateRepository _workflowStateRepository = WorkflowStateRepository.Instance;
-        private readonly ISystemWorkflowManager _systemWorkflowController = SystemWorkflowManager.Instance;
+        private readonly ISystemWorkflowManager _systemWorkflowManager = SystemWorkflowManager.Instance;
 
         public WorkflowManager()
         {
@@ -45,8 +45,8 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             _workflowRepository.AddWorkflow(workflow);
 
-            var firstDefaultState = _systemWorkflowController.GetDraftStateDefinition(1);
-            var lastDefaultState = _systemWorkflowController.GetPublishedStateDefinition(2);
+            var firstDefaultState = _systemWorkflowManager.GetDraftStateDefinition(1);
+            var lastDefaultState = _systemWorkflowManager.GetPublishedStateDefinition(2);
 
             firstDefaultState.WorkflowID = workflow.WorkflowID;
             lastDefaultState.WorkflowID = workflow.WorkflowID;
@@ -85,11 +85,15 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public void UpdateWorkflowState(ContentWorkflowState state)
         {
-            var workflow = _workflowStateRepository.GetWorkflowStateByID(state.WorkflowID);
-            if (workflow == null)
+            var workflowState = _workflowStateRepository.GetWorkflowStateByID(state.WorkflowID);
+            if (workflowState == null)
             {
                 throw new WorkflowDoesNotExistException();
             }
+            // TODO: check if remove this code. We can make Order as internal
+            // We do not allow change Order property
+            state.Order = workflowState.Order;
+
             _workflowStateRepository.UpdateWorkflowState(state);
         }
 

@@ -90,7 +90,6 @@ namespace DotNetNuke.Entities.Content.Workflow
             return new ContentWorkflowState
             {
                 IsSystem = true,
-                IsActive = true,
                 SendNotification = true,
                 SendNotificationToAdministrators = false,
                 Order = order
