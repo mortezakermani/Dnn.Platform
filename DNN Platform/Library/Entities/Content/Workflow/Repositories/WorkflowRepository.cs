@@ -52,7 +52,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();
-                return rep.Find("WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL)", portalId);
+                return rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL)", portalId);
             }
         }
 
@@ -61,7 +61,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();
-                return rep.Find("WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL) AND IsSystem = 1", portalId);
+                return rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL) AND IsSystem = 1", portalId);
             }
         }
 
@@ -71,7 +71,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using(var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();
-                workflow = rep.Find("WHERE WorkflowId = @0 AND IsDeleted = 0", workflowId).SingleOrDefault();
+                workflow = rep.Find("WHERE WorkflowId = @0", workflowId).SingleOrDefault();
             }
             
             if (workflow == null)
@@ -135,7 +135,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();
-                rep.Update("SET IsDeleted = 1 WHERE IsDeleted = 0 AND WorkflowId = @0", workflow.WorkflowID);
+                rep.Delete(workflow);
             }
         }
 
