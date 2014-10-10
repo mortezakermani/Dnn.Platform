@@ -377,7 +377,7 @@ ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflows ADD [WorkflowKey] N
 GO
 
 /* Added a default value to column IsActive */
-ALTER TABLE{databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_IsActive DEFAULT 1 FOR IsActive
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD CONSTRAINT DF_ContentWorkflowStates_IsActive DEFAULT 1 FOR IsActive
 GO
 
 /* Added a default value to column SendEmail */
