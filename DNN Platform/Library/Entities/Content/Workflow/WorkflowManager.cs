@@ -83,6 +83,30 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowStateRepository.AddWorkflowState(state);
         }
 
+        public void DeleteWorkflowState(ContentWorkflowState state)
+        {
+            var workflow = _workflowRepository.GetWorkflowByID(state.WorkflowID);
+            if (workflow == null)
+            {
+                throw new WorkflowDoesNotExistException();
+            }
+
+            var stateToDelete = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
+            if (stateToDelete.IsSystem)
+            {
+                throw new WorkflowException("System workflow state cannot be deleted"); // TODO: Localize error message
+            }
+            
+            _workflowStateRepository.DeleteWorkflowState(stateToDelete);
+            
+            // Reorder states order
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowState>();
+                rep.Update("SET [Order] = [Order] - 1 WHERE WorkflowId = @0 AND [Order] > @1", stateToDelete.WorkflowID, stateToDelete.Order);
+            }
+        }
+
         public void UpdateWorkflowState(ContentWorkflowState state)
         {
             var workflowState = _workflowStateRepository.GetWorkflowStateByID(state.WorkflowID);

@@ -34,6 +34,8 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         void UpdateWorkflowState(ContentWorkflowState state);
 
+        void DeleteWorkflowState(ContentWorkflowState state);
+
         void MoveWorkflowStateDown(int stateId);
 
         void MoveWorkflowStateUp(int stateId);

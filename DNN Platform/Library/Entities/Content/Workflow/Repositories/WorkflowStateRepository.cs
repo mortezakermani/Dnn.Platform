@@ -81,11 +81,6 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             Requires.NotNull("state", state);
             Requires.PropertyNotNegative("state", "StateID", state.StateID);
 
-            if (state.IsSystem)
-            {
-                throw new WorkflowException("System workflow state cannot be deleted"); // TODO: Localize error message
-            }
-
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflowState>();
