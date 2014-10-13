@@ -124,21 +124,13 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void MoveWorkflowStateDown(int stateId)
         {
             var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
-            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).OrderByDescending(s => s.Order).ToArray();
-
-            SwitchWorkflowStateInternal(stateId, states);
-        }
-
-        public void MoveWorkflowStateUp(int stateId)
-        {
-            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
             var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
 
-            SwitchWorkflowStateInternal(stateId, states);
-        }
-
-        private void SwitchWorkflowStateInternal(int stateId, ContentWorkflowState[] states)
-        {
+            if (states.Length == 3)
+            {
+                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+            }
+            
             ContentWorkflowState stateToMoveUp = null;
             ContentWorkflowState stateToMoveDown = null;
 
@@ -146,6 +138,48 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 if (states[i].StateID != stateId) continue;
 
+                // First and Second workflow state cannot be moved down
+                if (i <= 1)
+                {
+                    throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                }
+
+                stateToMoveUp = states[i - 1];
+                stateToMoveDown = states[i];
+                break;
+            }
+
+            if (stateToMoveUp == null || stateToMoveDown == null)
+            {
+                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+            }
+
+            var orderTmp = stateToMoveDown.Order;
+            stateToMoveDown.Order = stateToMoveUp.Order;
+            stateToMoveUp.Order = orderTmp;
+
+            _workflowStateRepository.UpdateWorkflowState(stateToMoveUp);
+            _workflowStateRepository.UpdateWorkflowState(stateToMoveDown);
+        }
+
+        public void MoveWorkflowStateUp(int stateId)
+        {
+            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
+            
+            if (states.Length == 3)
+            {
+                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+            }
+
+            ContentWorkflowState stateToMoveUp = null;
+            ContentWorkflowState stateToMoveDown = null;
+
+            for (var i = 0; i < states.Length; i++)
+            {
+                if (states[i].StateID != stateId) continue;
+
+                // Last and Next to Last workflow state cannot be moved up
                 if (i >= states.Length - 2)
                 {
                     throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
