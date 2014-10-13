@@ -109,7 +109,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public void UpdateWorkflowState(ContentWorkflowState state)
         {
-            var workflowState = _workflowStateRepository.GetWorkflowStateByID(state.WorkflowID);
+            var workflowState = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
             if (workflowState == null)
             {
                 throw new WorkflowDoesNotExistException();
