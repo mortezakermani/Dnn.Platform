@@ -363,4 +363,7 @@
   <data name="WorfklowDoesNotExistException.Text" xml:space="preserve">
     <value>Workflow does not exist</value>
   </data>
+  <data name="WorkflowStateNameAlreadyExistsException.Text" xml:space="preserve">
+    <value>Already exists a workflow state with this name</value>
+  </data>
 </root>

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DotNetNuke.Common;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
@@ -58,6 +59,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflowState>();
+                if (DoesExistWorkflowState(state, rep))
+                {
+                    throw new WorkflowStateNameAlreadyExistsException();
+                }
+
                 rep.Insert(state);
             }
         }
@@ -72,6 +78,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflowState>();
+                if (DoesExistWorkflowState(state, rep))
+                {
+                    throw new WorkflowStateNameAlreadyExistsException();
+                }
+
                 rep.Update(state);
             }
         }
@@ -92,5 +103,15 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         {
             return () => new WorkflowStateRepository();
         }
+
+        #region Private Methods
+
+        private static bool DoesExistWorkflowState(ContentWorkflowState state, IRepository<ContentWorkflowState> rep)
+        {
+            return rep.Find(
+                "WHERE StateName = @0 AND WorkflowID = @1 AND StateId != @2",
+                state.StateName, state.WorkflowID, state.StateID).SingleOrDefault() != null;
+        }
+        #endregion
     }
 }
