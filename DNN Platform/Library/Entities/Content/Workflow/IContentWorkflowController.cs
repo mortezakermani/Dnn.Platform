@@ -30,24 +30,31 @@ namespace DotNetNuke.Entities.Content.Workflow
 {
     public interface IContentWorkflowController
     {
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         void StartWorkflow(int workflowID, int itemID, int userID);
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
         void CompleteState(int itemID, string subject, string body, string comment, int portalID, int userID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         void CompleteState(int itemID, string subject, string body, string comment, int portalID, int userID, string source, params string[] parameters);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         void DiscardState(int itemID, string subject, string body, string comment, int portalID, int userID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         bool IsWorkflowCompleted(int itemID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         bool IsWorkflowOnDraft(int itemID);
         
         void SendWorkflowNotification(bool sendEmail, bool sendMessage, PortalSettings settings, IEnumerable<RoleInfo> roles, IEnumerable<UserInfo> users, string subject, string body, string comment,
                               int userID);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         void DiscardWorkflow(int contentItemId, string comment, int portalId, int userId);
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         void CompleteWorkflow(int contentItemId, string comment, int portalId, int userId);
 
         [Obsolete("Obsoleted in Platform 7.4.0")]

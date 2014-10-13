@@ -49,6 +49,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         #region Public Methods
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         public void StartWorkflow(int workflowID, int itemID, int userID)
         {
             var item = contentController.GetContentItem(itemID);
@@ -72,7 +73,8 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowLog(item, ContentWorkflowLogType.WorkflowStarted, userID);            
             AddWorkflowLog(item, ContentWorkflowLogType.StateInitiated, userID);
         }
-        
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         public void CompleteState(int itemID, string subject, string body, string comment, int portalID, int userID, string source, params string[] parameters)
         {
             var item = contentController.GetContentItem(itemID);
@@ -104,6 +106,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         public void DiscardState(int itemID, string subject, string body, string comment, int portalID, int userID)
         {
             var item = contentController.GetContentItem(itemID);
@@ -127,6 +130,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         public bool IsWorkflowCompleted(int itemID)
         {
             var item = contentController.GetContentItem(itemID); //Ensure DB values
@@ -134,7 +138,8 @@ namespace DotNetNuke.Entities.Content.Workflow
             if (workflow == null) return true; // If item has not workflow, then it is considered as completed
             return IsWorkflowCompleted(workflow, item);
         }
-            
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         public bool IsWorkflowOnDraft(int itemID)
         {
             var item = contentController.GetContentItem(itemID); //Ensure DB values
@@ -156,6 +161,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             SendNotification(sendEmail, sendMessage, settings, roles, users, replacedSubject, replacedBody, comment, userID, null, null);
         }
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         public void DiscardWorkflow(int contentItemId, string comment, int portalId, int userId)
         {
             var item = contentController.GetContentItem(contentItemId);
@@ -166,6 +172,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             SetWorkflowState(stateId, item);
         }
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         public void CompleteWorkflow(int contentItemId, string comment, int portalId, int userId)
         {
             var item = contentController.GetContentItem(contentItemId);

@@ -264,8 +264,9 @@
     <Compile Include="Entities\Content\Workflow\ContentWorkflowLogType.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowSource.cs" />
     <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowDoesNotExistException.cs" />
-    <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowStateNameAlreadyExistsException.cs" />
+    <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowSecurityException.cs" />
     <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowNameAlreadyExistsException.cs" />
+    <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowStateNameAlreadyExistsException.cs" />
     <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowException.cs" />
     <Compile Include="Entities\Content\Workflow\IContentWorkflowAction.cs" />
     <Compile Include="Entities\Content\Workflow\IContentWorkflowController.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="Entities\Content\Workflow\ContentWorkflowState.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowStatePermission.cs" />
     <Compile Include="Entities\Content\Workflow\ISystemWorkflowManager.cs" />
+    <Compile Include="Entities\Content\Workflow\IWorkflowEngine.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowSettings.cs" />
     <Compile Include="Entities\Content\Workflow\Repositories\IWorkflowLogRepository.cs" />
@@ -285,6 +287,7 @@
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowStatePermissionsRepository.cs" />
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowStateRepository.cs" />
     <Compile Include="Entities\Content\Workflow\SystemWorkflowManager.cs" />
+    <Compile Include="Entities\Content\Workflow\WorkflowEngine.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowSecurity.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowSecurity.cs" />
