@@ -26,6 +26,7 @@ using DotNetNuke.Data;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
+using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -96,6 +97,11 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 throw new WorkflowException("System workflow state cannot be deleted"); // TODO: Localize error message
             }
+
+            if (GetWorkflowUsageCount(workflow.WorkflowID) > 0)
+            {
+                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));   
+            }
             
             _workflowStateRepository.DeleteWorkflowState(stateToDelete);
             
@@ -124,6 +130,12 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void MoveWorkflowStateDown(int stateId)
         {
             var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            
+            if (GetWorkflowUsageCount(workflow.WorkflowID) > 0)
+            {
+                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
+            }
+
             var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
 
             if (states.Length == 3)
@@ -165,6 +177,12 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void MoveWorkflowStateUp(int stateId)
         {
             var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            
+            if (GetWorkflowUsageCount(workflow.WorkflowID) > 0)
+            {
+                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
+            }
+
             var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
             
             if (states.Length == 3)
