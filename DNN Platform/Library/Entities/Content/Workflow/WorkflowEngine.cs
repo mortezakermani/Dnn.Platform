@@ -93,6 +93,19 @@ namespace DotNetNuke.Entities.Content.Workflow
         }
 
         #region Notification utilities
+
+        private string GetWorkflowNotificationContext(ContentItem contentItem, ContentWorkflowState state)
+        {
+            return string.Format("{0}:{1}:{2}", contentItem.ContentItemId, state.WorkflowID, state.StateID);
+        }
+
+        private void DeleteWorkflowNotifications(ContentItem contentItem, ContentWorkflowState state, int userId)
+        {
+            var context = GetWorkflowNotificationContext(contentItem, state);
+            var notificationType = _notificationsController.GetNotificationType(ContentWorkflowNotificationNoActionType).NotificationTypeId;
+            _notificationsController.DeleteNotificationRecipient(notificationType, context, userId);
+        }
+
         private void SendNotificationToAuthor(UserInfo user, StateTransactionMessage message, int senderUserId, PortalSettings portalSettings)
         {
             if (user == null)
@@ -114,7 +127,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _notificationsController.SendNotification(notification, portalSettings.PortalId, null, new []{ user });
         }
 
-        private void SendNotificationsToReviewers(ContentWorkflowState state, StateTransactionMessage message, int senderUserId, PortalSettings portalSettings)
+        private void SendNotificationsToReviewers(ContentItem contentItem, ContentWorkflowState state, StateTransactionMessage message, int senderUserId, PortalSettings portalSettings)
         {
             if (!state.SendNotification)
             {
@@ -122,14 +135,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
 
             var permissions = _workflowStatePermissionsRepository.GetWorkflowStatePermissionByState(state.StateID).ToArray();
-            var users = GetUsersFromPermissions(portalSettings, permissions, state.SendNotificationToAdministrators);
-            var roles = GetRolesFromPermissions(portalSettings, permissions, state.SendNotificationToAdministrators);
+            var users = GetUsersFromPermissions(portalSettings, permissions, state.SendNotificationToAdministrators).ToArray();
+            var roles = GetRolesFromPermissions(portalSettings, permissions, state.SendNotificationToAdministrators).ToArray();
 
-            SendNotifications(portalSettings.PortalId, roles, users, message, senderUserId);
-        }
-
-        private void SendNotifications(int portalId, IEnumerable<RoleInfo> roles, IEnumerable<UserInfo> users, StateTransactionMessage message, int senderUserId)
-        {
             roles = roles.ToArray();
             users = users.ToArray();
 
@@ -146,7 +154,8 @@ namespace DotNetNuke.Entities.Content.Workflow
                 Subject = message.Subject,
                 Body = fullbody,
                 IncludeDismissAction = true,
-                SenderUserID = senderUserId
+                SenderUserID = senderUserId,
+                Context = GetWorkflowNotificationContext(contentItem, state)
             };
 
             //TODO: source and params needs to be reviewed
@@ -160,7 +169,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             //    notification.Context = source;
             //}
 
-            _notificationsController.SendNotification(notification, portalId, roles.ToList(), users.ToList());
+            _notificationsController.SendNotification(notification, portalSettings.PortalId, roles.ToList(), users.ToList());
         }
 
         private static string AttachComment(string body, string userComment)
@@ -401,11 +410,10 @@ namespace DotNetNuke.Entities.Content.Workflow
             else
             {
                 // Send to reviewers
-                SendNotificationsToReviewers(nextState, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
+                SendNotificationsToReviewers(contentItem, nextState, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
             }
 
-            // TODO: delete previous notifications
-            //_notificationsController.DeleteNotificationRecipient();
+            DeleteWorkflowNotifications(contentItem, currentState, stateTransaction.UserId);
         }
 
         public void DiscardState(StateTransaction stateTransaction)
@@ -442,6 +450,8 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowLog(contentItem, ContentWorkflowLogType.StateDiscarded, stateTransaction.UserId);
             AddWorkflowLog(contentItem, ContentWorkflowLogType.StateInitiated, stateTransaction.UserId);
             
+            // TODO: manage discard workflow from here
+
             // Notifications
             if (previousState.StateID == workflow.FirstState.StateID)
             {
@@ -451,12 +461,10 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
             else
             {
-                SendNotificationsToReviewers(previousState, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
+                SendNotificationsToReviewers(contentItem, previousState, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
             }
 
-            // TODO: delete previous notifications
-
-            // TODO: manage discard workflow from here
+            DeleteWorkflowNotifications(contentItem, currentState, stateTransaction.UserId);
         }
 
         public bool IsWorkflowComplete(int contentItemId)
