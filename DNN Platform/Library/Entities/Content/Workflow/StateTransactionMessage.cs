@@ -1,6 +1,6 @@
-#region Copyright
+﻿#region Copyright
 // 
-// DotNetNuke� - http://www.dotnetnuke.com
+// DotNetNuke® - http://www.dotnetnuke.com
 // Copyright (c) 2002-2014
 // by DotNetNuke Corporation
 // 
@@ -21,24 +21,24 @@
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    // TODO: add metadata doc
-    public interface IWorkflowEngine
+    /// <summary>
+    /// This class represents the message that will be notified on workflow state transaction
+    /// </summary>
+    public class StateTransactionMessage
     {
         /// <summary>
-        /// Get the workflow associated to the Content Item thought the StateId
+        /// Subject of the message
         /// </summary>
-        /// <param name="contentItem">Content Item</param>
-        /// <returns>workflow entity</returns>
-        ContentWorkflow GetWorkflow(ContentItem contentItem);
-        
-        void StartWorkflow(int workflowId, int contentItemId, int userId);
-        void CompleteState(StateTransaction stateTransaction);
-        void DiscardState(StateTransaction stateTransaction);
-        bool IsWorkflowComplete(int contentItemId);
-        bool IsWorkflowComplete(ContentItem contentItem);
-        bool IsWorkflowOnDraft(int contentItemId);
-        bool IsWorkflowOnDraft(ContentItem contentItem);
-        void DiscardWorkflow(int contentItemId, string comment, int userId);
-        void CompleteWorkflow(int contentItemId, string comment, int userId);
+        public string Subject { get; set; }
+
+        /// <summary>
+        /// Body of the message
+        /// </summary>
+        public string Body { get; set; }
+
+        /// <summary>
+        /// User comment
+        /// </summary>
+        public string UserComment { get; set; }
     }
 }

@@ -286,6 +286,8 @@
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowRepository.cs" />
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowStatePermissionsRepository.cs" />
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowStateRepository.cs" />
+    <Compile Include="Entities\Content\Workflow\StateTransaction.cs" />
+    <Compile Include="Entities\Content\Workflow\StateTransactionMessage.cs" />
     <Compile Include="Entities\Content\Workflow\SystemWorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowEngine.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowManager.cs" />
