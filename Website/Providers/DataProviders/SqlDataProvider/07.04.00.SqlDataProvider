@@ -470,6 +470,28 @@ AS
 	INNER JOIN {databaseOwner}[{objectQualifier}ContentWorkflowStates] ws ON ci.StateID = ws.StateID
 	WHERE ws.WorkflowID = @WorkflowId
 GO
+
+/* Add Content Workflow Notification with no action (only dismiss) */
+IF NOT EXISTS (SELECT NotificationTypeID FROM {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypes WHERE Name = 'ContentWorkflowNoActionNotification' )
+BEGIN
+	INSERT INTO {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypes(
+		[Name]
+		,[Description]
+		,[CreatedByUserID]
+		,[CreatedOnDate]
+		,[LastModifiedByUserID]
+		,[LastModifiedOnDate]
+	) VALUES (
+		'ContentWorkflowNoActionNotification',
+		'Content Workflow No Action Notification',
+		-1,
+		GETDATE(),
+		-1,
+		GETDATE()
+	)
+END
+GO
+
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/
