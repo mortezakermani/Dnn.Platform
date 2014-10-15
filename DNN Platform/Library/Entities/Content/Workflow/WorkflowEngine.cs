@@ -373,7 +373,9 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
 
-            if (!_workflowSecurity.HasStateReviewerPermission(workflow.PortalID, stateTransaction.UserId, contentItem.StateID))
+            var isFirstState = workflow.FirstState.StateID == contentItem.StateID;
+
+            if (!isFirstState && !_workflowSecurity.HasStateReviewerPermission(workflow.PortalID, stateTransaction.UserId, contentItem.StateID))
             {
                 throw new WorkflowSecurityException();
             }
@@ -425,7 +427,10 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
 
-            if (!_workflowSecurity.HasStateReviewerPermission(workflow.PortalID, stateTransaction.UserId, contentItem.StateID))
+            var isFirstState = workflow.FirstState.StateID == contentItem.StateID;
+            var isLastState = workflow.LastState.StateID == contentItem.StateID;
+
+            if (!isFirstState && !_workflowSecurity.HasStateReviewerPermission(workflow.PortalID, stateTransaction.UserId, contentItem.StateID))
             {
                 throw new WorkflowSecurityException();
             }
@@ -436,8 +441,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
             }
 
-            if ((workflow.FirstState.StateID == currentState.StateID) ||
-                (workflow.LastState.StateID == currentState.StateID))
+            if (isFirstState || isLastState)
             {
                 throw new WorkflowException("Cannot discard first and last workflow state"); // TODO: review and localize error message
             }
