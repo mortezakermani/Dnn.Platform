@@ -41,5 +41,8 @@ namespace DotNetNuke.Entities.Content.Workflow
         void MoveWorkflowStateUp(int stateId);
 
         void AddWorkflow(ContentWorkflow workflow);
+
+        ContentWorkflow GetWorkflow(int workflowId);
+
     }
 }

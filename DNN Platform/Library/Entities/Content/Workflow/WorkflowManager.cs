@@ -42,6 +42,11 @@ namespace DotNetNuke.Entities.Content.Workflow
             _dataProvider = DataProvider.Instance();
         }
 
+        public ContentWorkflow GetWorkflow(int workflowId)
+        {
+            return _workflowRepository.GetWorkflowByID(workflowId);
+        }
+
         public void AddWorkflow(ContentWorkflow workflow)
         {
             _workflowRepository.AddWorkflow(workflow);
