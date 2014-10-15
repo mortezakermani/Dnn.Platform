@@ -19,72 +19,50 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-#region Usings
-
 using System;
+using System.Globalization;
 using System.IO;
 using System.Web;
+using System.Web.Mvc;
 using System.Web.UI;
-
-using DotNetNuke.Entities.Modules;
-using DotNetNuke.Entities.Modules.Actions;
+using Dnn.Mvc.Framework;
+using Dnn.Mvc.Framework.Modules;
+using DotNetNuke.ComponentModel;
 using DotNetNuke.UI.Modules;
 
-#endregion
-
-namespace DotNetNuke.Web.Razor
+namespace DotNetNuke.Web.Mvc
 {
-    public class RazorHostControl : ModuleControlBase, IActionable
+    public class MvcHostControl : ModuleControlBase
     {
-        private readonly string _razorScriptFile;
-
-        public RazorHostControl(string scriptFile)
+        protected override void OnInit(EventArgs e)
         {
-            _razorScriptFile = scriptFile;
+            base.OnInit(e);
+
+            HttpContextBase httpContext = new HttpContextWrapper(HttpContext.Current);
+
+            var moduleExecutionEngine = ComponentFactory.GetComponent<IModuleExecutionEngine>();
+
+            const string moduleRoute = ""; //for now - just the default route
+
+            ModuleRequestResult result = moduleExecutionEngine.ExecuteModule(httpContext, ModuleContext.Configuration, moduleRoute);
+
+            Controls.Add(new LiteralControl(RenderModule(result, httpContext).ToString()));
         }
 
-        protected virtual string RazorScriptFile
+        public static MvcHtmlString RenderModule(ModuleRequestResult moduleResult, HttpContextBase httpContext)
         {
-            get { return _razorScriptFile; }
-        }
+            MvcHtmlString moduleOutput;
 
-	    private RazorEngine _engine;
-	    private  RazorEngine Engine
-	    {
-		    get
-		    {
-				if (_engine == null)
-			    {
-					_engine = new RazorEngine(RazorScriptFile, ModuleContext, LocalResourceFile);
-			    }
-
-			    return _engine;
-		    }
-	    }
-
-        protected override void OnPreRender(EventArgs e)
-        {
-            base.OnPreRender(e);
-
-            if (!(string.IsNullOrEmpty(RazorScriptFile)))
+            using (var writer = new StringWriter(CultureInfo.CurrentCulture))
             {
-                var writer = new StringWriter();
-				Engine.Render(writer);
-                Controls.Add(new LiteralControl(HttpUtility.HtmlDecode(writer.ToString())));
+                var moduleExecutionEngine = ComponentFactory.GetComponent<IModuleExecutionEngine>();
+
+                moduleExecutionEngine.ExecuteModuleResult(new SiteContext(httpContext), moduleResult, writer);
+
+                moduleOutput = MvcHtmlString.Create(writer.ToString());
             }
+
+            return moduleOutput;
         }
-
-		public Entities.Modules.Actions.ModuleActionCollection ModuleActions
-		{
-			get
-			{
-				if (Engine.Webpage is IActionable)
-				{
-					return (Engine.Webpage as IActionable).ModuleActions;
-				}
-
-				return new ModuleActionCollection();
-			}
-		}
-	}
+    }
 }
