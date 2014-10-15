@@ -1,0 +1,133 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Projects", "Support Projects", "{1DFA65CE-5978-49F9-83BA-CFBD0C7A1814}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientDependency.Core", "DNN Platform\Components\ClientDependency\Source\ClientDependency.Core.csproj", "{3B64E72E-63CC-4A90-ADFF-4B919EF17239}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetNuke.Instrumentation", "DNN Platform\DotNetNuke.Instrumentation\DotNetNuke.Instrumentation.csproj", "{3CD5F6B8-8360-4862-80B6-F402892DB7DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetNuke.Web.Client", "DNN Platform\DotNetNuke.Web.Client\DotNetNuke.Web.Client.csproj", "{03E3AFA5-DDC9-48FB-A839-AD4282CE237E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetNuke.Syndication", "DNN Platform\Syndication\DotNetNuke.Syndication.csproj", "{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetNuke.Library", "DNN Platform\Library\DotNetNuke.Library.csproj", "{6B29ADED-7B56-4484-BEA5-C0E09079535B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CountryListBox", "DNN Platform\Controls\CountryListBox\CountryListBox.csproj", "{CA056730-5759-41F8-A6C1-420F9C0C63E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetNuke.Web", "DNN Platform\DotNetNuke.Web\DotNetNuke.Web.csproj", "{EE1329FE-FD88-4E1A-968C-345E394EF080}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetNuke.HttpModules", "DNN Platform\HttpModules\DotNetNuke.HttpModules.csproj", "{3D9C3F5F-1D2D-4D89-995B-438055A5E3A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FBD3B3FB-C9A6-43D2-8FE7-6A0A19DF0D0C}"
+	ProjectSection(SolutionItems) = preProject
+		DNN Platform\Tests\App.config = DNN Platform\Tests\App.config
+		Packages\repositories.config = Packages\repositories.config
+		SolutionInfo.cs = SolutionInfo.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5EC5DBCB-B4AD-453E-896C-E238F0F57FDA}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DNN_MVC", "http://localhost/DNN_MVC", "{ABDCE317-3D56-441C-925A-530EFEFD2A05}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "false"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/DNN_MVC"
+		Debug.AspNetCompiler.PhysicalPath = "Website\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\DNN_MVC\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/DNN_MVC"
+		Release.AspNetCompiler.PhysicalPath = "Website\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\DNN_MVC\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "Website\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B64E72E-63CC-4A90-ADFF-4B919EF17239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B64E72E-63CC-4A90-ADFF-4B919EF17239}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B64E72E-63CC-4A90-ADFF-4B919EF17239}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3B64E72E-63CC-4A90-ADFF-4B919EF17239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B64E72E-63CC-4A90-ADFF-4B919EF17239}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B64E72E-63CC-4A90-ADFF-4B919EF17239}.Release|x86.ActiveCfg = Release|Any CPU
+		{3CD5F6B8-8360-4862-80B6-F402892DB7DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD5F6B8-8360-4862-80B6-F402892DB7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD5F6B8-8360-4862-80B6-F402892DB7DD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3CD5F6B8-8360-4862-80B6-F402892DB7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD5F6B8-8360-4862-80B6-F402892DB7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CD5F6B8-8360-4862-80B6-F402892DB7DD}.Release|x86.ActiveCfg = Release|Any CPU
+		{03E3AFA5-DDC9-48FB-A839-AD4282CE237E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03E3AFA5-DDC9-48FB-A839-AD4282CE237E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03E3AFA5-DDC9-48FB-A839-AD4282CE237E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03E3AFA5-DDC9-48FB-A839-AD4282CE237E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03E3AFA5-DDC9-48FB-A839-AD4282CE237E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03E3AFA5-DDC9-48FB-A839-AD4282CE237E}.Release|x86.ActiveCfg = Release|Any CPU
+		{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}.Release|x86.ActiveCfg = Release|Any CPU
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Debug|x86.ActiveCfg = Debug|x86
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Debug|x86.Build.0 = Debug|x86
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Release|x86.ActiveCfg = Release|x86
+		{6B29ADED-7B56-4484-BEA5-C0E09079535B}.Release|x86.Build.0 = Release|x86
+		{CA056730-5759-41F8-A6C1-420F9C0C63E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA056730-5759-41F8-A6C1-420F9C0C63E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA056730-5759-41F8-A6C1-420F9C0C63E7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CA056730-5759-41F8-A6C1-420F9C0C63E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA056730-5759-41F8-A6C1-420F9C0C63E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA056730-5759-41F8-A6C1-420F9C0C63E7}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Debug|x86.ActiveCfg = Debug|x86
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Debug|x86.Build.0 = Debug|x86
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Release|x86.ActiveCfg = Release|x86
+		{EE1329FE-FD88-4E1A-968C-345E394EF080}.Release|x86.Build.0 = Release|x86
+		{3D9C3F5F-1D2D-4D89-995B-438055A5E3A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D9C3F5F-1D2D-4D89-995B-438055A5E3A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D9C3F5F-1D2D-4D89-995B-438055A5E3A6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3D9C3F5F-1D2D-4D89-995B-438055A5E3A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D9C3F5F-1D2D-4D89-995B-438055A5E3A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D9C3F5F-1D2D-4D89-995B-438055A5E3A6}.Release|x86.ActiveCfg = Release|Any CPU
+		{ABDCE317-3D56-441C-925A-530EFEFD2A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABDCE317-3D56-441C-925A-530EFEFD2A05}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ABDCE317-3D56-441C-925A-530EFEFD2A05}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABDCE317-3D56-441C-925A-530EFEFD2A05}.Release|x86.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3B64E72E-63CC-4A90-ADFF-4B919EF17239} = {1DFA65CE-5978-49F9-83BA-CFBD0C7A1814}
+		{3CD5F6B8-8360-4862-80B6-F402892DB7DD} = {1DFA65CE-5978-49F9-83BA-CFBD0C7A1814}
+		{03E3AFA5-DDC9-48FB-A839-AD4282CE237E} = {1DFA65CE-5978-49F9-83BA-CFBD0C7A1814}
+		{9F2F4076-D434-448F-9CBB-7BF7A9766AB1} = {1DFA65CE-5978-49F9-83BA-CFBD0C7A1814}
+		{CA056730-5759-41F8-A6C1-420F9C0C63E7} = {1DFA65CE-5978-49F9-83BA-CFBD0C7A1814}
+	EndGlobalSection
+EndGlobal
