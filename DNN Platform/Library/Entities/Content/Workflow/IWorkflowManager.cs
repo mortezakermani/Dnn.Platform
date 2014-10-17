@@ -44,5 +44,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         ContentWorkflow GetWorkflow(int workflowId);
 
+        ContentWorkflow GetWorkflow(ContentItem item);
+
     }
 }

@@ -29,7 +29,6 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <param name="contentItem">Content Item</param>
         /// <returns>workflow entity</returns>
-        ContentWorkflow GetWorkflow(ContentItem contentItem);
         
         void StartWorkflow(int workflowId, int contentItemId, int userId);
         void CompleteState(StateTransaction stateTransaction);

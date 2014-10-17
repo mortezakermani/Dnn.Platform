@@ -47,6 +47,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             return _workflowRepository.GetWorkflowByID(workflowId);
         }
 
+        public ContentWorkflow GetWorkflow(ContentItem item)
+        {
+            var state = WorkflowStateRepository.Instance.GetWorkflowStateByID(item.StateID);
+            return GetWorkflow(state.WorkflowID);
+        }
+
         public void AddWorkflow(ContentWorkflow workflow)
         {
             _workflowRepository.AddWorkflow(workflow);

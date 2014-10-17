@@ -31,7 +31,7 @@ using DotNetNuke.Security.Permissions;
 namespace DotNetNuke.Entities.Content.Workflow
 {
     // TODO: add interface metadata documentation
-    internal class WorkflowSecurity : ServiceLocator<IWorkflowSecurity, WorkflowSecurity>, IWorkflowSecurity
+    public class WorkflowSecurity : ServiceLocator<IWorkflowSecurity, WorkflowSecurity>, IWorkflowSecurity
     {
         private const string Review = "REVIEW";
         private readonly IUserController _userController = UserController.Instance;

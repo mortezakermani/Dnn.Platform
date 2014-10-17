@@ -250,7 +250,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         private void AddWorkflowLog(ContentItem contentItem, ContentWorkflowLogType logType, int userId, string userComment = null)
         {
-            var workflow = GetWorkflow(contentItem);
+            var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             var logTypeText = GetWorkflowActionComment(logType);
             var state = workflow.States.FirstOrDefault(s => s.StateID == contentItem.StateID);
             var actionText = GetWorkflowActionText(logType);
@@ -331,16 +331,10 @@ namespace DotNetNuke.Entities.Content.Workflow
         #endregion
 
         #region Public Methods
-        public ContentWorkflow GetWorkflow(ContentItem contentItem)
-        {
-            var state = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
-            return state == null ? null : _workflowRepository.GetWorkflowByID(state.WorkflowID);
-        }
-
-        public void StartWorkflow(int workflowId, int contentItemId, int userId)
+       public void StartWorkflow(int workflowId, int contentItemId, int userId)
         {
             var contentItem = _contentController.GetContentItem(contentItemId);
-            var workflow = GetWorkflow(contentItem);
+            var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
 
             //If already exists a started workflow
             if (workflow != null && !IsWorkflowComplete(contentItem))
@@ -367,7 +361,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void CompleteState(StateTransaction stateTransaction)
         {
             var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
-            var workflow = GetWorkflow(contentItem);
+            var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             if (workflow == null || IsWorkflowComplete(contentItem))
             {
                 return;
@@ -421,7 +415,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void DiscardState(StateTransaction stateTransaction)
         {
             var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
-            var workflow = GetWorkflow(contentItem);
+            var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             if (workflow == null)
             {
                 return;
@@ -479,7 +473,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public bool IsWorkflowComplete(ContentItem contentItem)
         {
-            var workflow = GetWorkflow(contentItem);
+            var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             if (workflow == null) return true; // If item has not workflow, then it is considered as completed
 
             return contentItem.StateID == Null.NullInteger || workflow.LastState.StateID == contentItem.StateID;
@@ -493,7 +487,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public bool IsWorkflowOnDraft(ContentItem contentItem)
         {
-            var workflow = GetWorkflow(contentItem);
+            var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             if (workflow == null) return false; // If item has not workflow, then it is not on Draft
             return contentItem.StateID == workflow.FirstState.StateID;
         }
@@ -501,7 +495,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void DiscardWorkflow(int contentItemId, string comment, int userId)
         {
             var item = _contentController.GetContentItem(contentItemId);
-            var workflow = GetWorkflow(item);
+            var workflow =WorkflowManager.Instance.GetWorkflow(item);
             UpdateContentItemWorkflowState(workflow.LastState.StateID, item);
 
             // Logs
@@ -512,7 +506,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void CompleteWorkflow(int contentItemId, string comment, int userId)
         {
             var item = _contentController.GetContentItem(contentItemId);
-            var workflow = GetWorkflow(item);
+            var workflow = WorkflowManager.Instance.GetWorkflow(item);
             UpdateContentItemWorkflowState(workflow.LastState.StateID, item);
 
             // Logs
