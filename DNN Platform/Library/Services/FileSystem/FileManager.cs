@@ -467,30 +467,39 @@ namespace DotNetNuke.Services.FileSystem
                                                                                         "File locked. The file cannot be updated because it is out of Publish Period"));
                     }
                     // Workflow
-                    folderWorkflow = ContentWorkflowController.Instance.GetWorkflowByID(folder.WorkflowID);
+                    folderWorkflow = WorkflowManager.Instance.GetWorkflow(folder.WorkflowID);
                     if (folderWorkflow != null)
                     {
-                        file.FileId = oldFile != null ? oldFile.FileId : Null.NullInteger; // If workflow exists, then the file already exists
-
-                        // Create Content Item if does not exists
-                        if (file.ContentItemID == Null.NullInteger)
+                        file.FileId = oldFile != null ? oldFile.FileId : Null.NullInteger;
+                        if (folderWorkflow.WorkflowID == SystemWorkflowManager.Instance.GetDirectPublishWorkflow(folderWorkflow.PortalID).WorkflowID)
                         {
-                            file.ContentItemID = CreateFileContentItem().ContentItemId;
+                            UpdateFile(file);
+                            contentFileName = ProcessVersioning(folder, oldFile, file, createdByUserID);
                         }
-
-                        contentFileName = UpdateWhileApproving(folder, createdByUserID, file, fileExists, fileContent);
-                        if (StartWorkflowWhenChange(createdByUserID, folderWorkflow, fileExists, file.ContentItemID))
+                        else
                         {
-                            if (fileExists)
+                            // If workflow exists, then the file already exists
+
+                            // Create Content Item if does not exists
+                            if (file.ContentItemID == Null.NullInteger)
                             {
-                                UpdateFile(file);
+                                file.ContentItemID = CreateFileContentItem().ContentItemId;
                             }
-                        }
+
+                            contentFileName = UpdateWhileApproving(folder, createdByUserID, file, fileExists, fileContent);
+                            if (StartWorkflowWhenChange(createdByUserID, folderWorkflow, fileExists, file.ContentItemID))
+                            {
+                                if (fileExists)
+                                {
+                                    UpdateFile(file);
+                                }
+                            }    
+                        }                        
                     }
-                    // Versioning
-                    else if (oldFile != null && FileVersionController.Instance.IsFolderVersioned(folder) && oldFile.SHA1Hash != file.SHA1Hash)
+                        // Versioning
+                    else
                     {
-                        contentFileName = FileVersionController.Instance.AddFileVersion(oldFile, createdByUserID);
+                        contentFileName = ProcessVersioning(folder, oldFile, file, createdByUserID);
                     }
                 }
                 else
@@ -585,6 +594,15 @@ namespace DotNetNuke.Services.FileSystem
                     fileContent.Dispose();
                 }
             }
+        }
+
+        private string ProcessVersioning(IFolderInfo folder, IFileInfo oldFile, IFileInfo file, int createdByUserID)
+        {
+            if (oldFile != null && FileVersionController.Instance.IsFolderVersioned(folder) && oldFile.SHA1Hash != file.SHA1Hash)
+            {
+                return FileVersionController.Instance.AddFileVersion(oldFile, createdByUserID);
+            }
+            return file.FileName;
         }
 
         /// <summary>
@@ -1394,24 +1412,23 @@ namespace DotNetNuke.Services.FileSystem
 
         #region Workflow Methods
 
-        private bool CanUpdateWhenApproving(IFolderInfo folder, int contentItemID, int createdByUserID)
+        private bool CanUpdateWhenApproving(IFolderInfo folder, ContentItem item, int createdByUserID)
         {
-            if (ContentWorkflowController.Instance.IsWorkflowOnDraft(contentItemID))
+            if (WorkflowEngine.Instance.IsWorkflowOnDraft(item.ContentItemId))
             {
                 ////We assume User can add content to folder
                 return true;
             }
-            return ContentWorkflowController.Instance.IsCurrentReviewer(folder.PortalID, createdByUserID, contentItemID);
+            return WorkflowSecurity.Instance.HasStateReviewerPermission(folder.PortalID, createdByUserID, item.StateID);
         }
 
         private bool StartWorkflowWhenChange(int createdByUserID, ContentWorkflow folderWorkflow, bool fileExists, int contentItemID)
         {
-            if ((folderWorkflow.StartAfterCreating && !fileExists) ||
-                (folderWorkflow.StartAfterEditing && fileExists))
+            if(fileExists)
             {
-                if (ContentWorkflowController.Instance.IsWorkflowCompleted(contentItemID))
+                if (WorkflowEngine.Instance.IsWorkflowComplete(contentItemID))
                 {
-                    ContentWorkflowController.Instance.StartWorkflow(folderWorkflow.WorkflowID, contentItemID, createdByUserID);
+                    WorkflowEngine.Instance.StartWorkflow(folderWorkflow.WorkflowID, contentItemID, createdByUserID);
                     return true;
                 }
             }
@@ -1419,7 +1436,8 @@ namespace DotNetNuke.Services.FileSystem
         }
         private string UpdateWhileApproving(IFolderInfo folder, int createdByUserID, IFileInfo file, bool fileExists, Stream content)
         {
-            bool workflowCompleted = ContentWorkflowController.Instance.IsWorkflowCompleted(file.ContentItemID);
+            var contentController = new ContentController();            
+            bool workflowCompleted = WorkflowEngine.Instance.IsWorkflowComplete(file.ContentItemID);
 
             var isDatabaseMapping = FolderMappingController.Instance.GetFolderMapping(folder.PortalID, folder.FolderMappingID).MappingName == "Database";
             //Currently, first upload is always published
@@ -1428,12 +1446,11 @@ namespace DotNetNuke.Services.FileSystem
                 return file.FileName;
             }
             if (workflowCompleted) //We assume User can add content to folder
-            {
+            {               
                 return isDatabaseMapping ? FileVersionController.Instance.AddFileVersion(file, createdByUserID, false, false, content) : FileVersionController.Instance.AddFileVersion(file, createdByUserID, false);
-
             }
 
-            if (CanUpdateWhenApproving(folder, file.ContentItemID, createdByUserID))
+            if (CanUpdateWhenApproving(folder, contentController.GetContentItem(file.ContentItemID), createdByUserID))
             {
                 //Update the Unpublished version
                 var versions = FileVersionController.Instance.GetFileVersions(file).ToArray();
