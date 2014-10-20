@@ -276,6 +276,7 @@
     <Compile Include="Entities\Content\Workflow\ContentWorkflowStatePermission.cs" />
     <Compile Include="Entities\Content\Workflow\ISystemWorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowEngine.cs" />
+    <Compile Include="Entities\Content\Workflow\IWorkflowStateManager.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowSettings.cs" />
     <Compile Include="Entities\Content\Workflow\Repositories\IWorkflowLogRepository.cs" />
@@ -290,6 +291,7 @@
     <Compile Include="Entities\Content\Workflow\StateTransactionMessage.cs" />
     <Compile Include="Entities\Content\Workflow\SystemWorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowEngine.cs" />
+    <Compile Include="Entities\Content\Workflow\WorkflowStateManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowSecurity.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowSecurity.cs" />

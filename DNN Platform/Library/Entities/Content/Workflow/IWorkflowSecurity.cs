@@ -34,6 +34,8 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         bool HasStateReviewerPermission(int stateId);
 
+        bool IsWorkflowReviewer(int workflowId, int userId);
+
         PermissionInfo GetStateReviewPermission();
     }
 }

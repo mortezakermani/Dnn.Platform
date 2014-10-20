@@ -345,7 +345,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             if (workflow == null || workflow.WorkflowID != workflowId)
             {
-                workflow = _workflowRepository.GetWorkflowByID(workflowId);
+                workflow = _workflowRepository.GetWorkflow(workflowId);
             }
 
             UpdateContentItemWorkflowState(workflow.FirstState.StateID, contentItem);

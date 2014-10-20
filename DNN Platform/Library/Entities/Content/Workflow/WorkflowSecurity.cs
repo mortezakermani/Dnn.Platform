@@ -33,8 +33,9 @@ namespace DotNetNuke.Entities.Content.Workflow
     // TODO: add interface metadata documentation
     public class WorkflowSecurity : ServiceLocator<IWorkflowSecurity, WorkflowSecurity>, IWorkflowSecurity
     {
-        private const string Review = "REVIEW";
+        private const string ReviewPermissionKey = "REVIEW";
         private readonly IUserController _userController = UserController.Instance;
+        private readonly IWorkflowManager _workflowManager = WorkflowManager.Instance;
         private readonly IWorkflowStatePermissionsRepository _statePermissionsRepository = WorkflowStatePermissionsRepository.Instance;
 
         public bool HasStateReviewerPermission(UserInfo user, PortalSettings settings, int stateId)
@@ -43,7 +44,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             return user.IsSuperUser ||
                 PortalSecurity.IsInRoles(user, settings, settings.AdministratorRoleName) ||
-                PortalSecurity.IsInRoles(user, settings, PermissionController.BuildPermissions(permissions.ToList(), Review));
+                PortalSecurity.IsInRoles(user, settings, PermissionController.BuildPermissions(permissions.ToList(), ReviewPermissionKey));
         }
 
         public bool HasStateReviewerPermission(int portalId, int userId, int stateId)
@@ -59,9 +60,15 @@ namespace DotNetNuke.Entities.Content.Workflow
             return HasStateReviewerPermission(user, PortalSettings.Current, stateId);
         }
 
+        public bool IsWorkflowReviewer(int workflowId, int userId)
+        {
+            var workflow = _workflowManager.GetWorkflow(workflowId);
+            return workflow.States.Any(contentWorkflowState => HasStateReviewerPermission(workflow.PortalID, userId, contentWorkflowState.StateID));
+        }
+
         public PermissionInfo GetStateReviewPermission()
         {
-            return (PermissionInfo) new PermissionController().GetPermissionByCodeAndKey("SYSTEM_CONTENTWORKFLOWSTATE", "REVIEW")[0];
+            return (PermissionInfo)new PermissionController().GetPermissionByCodeAndKey("SYSTEM_CONTENTWORKFLOWSTATE", ReviewPermissionKey)[0];
         }
 
         protected override Func<IWorkflowSecurity> GetFactory()

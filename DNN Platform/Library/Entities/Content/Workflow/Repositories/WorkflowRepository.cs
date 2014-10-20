@@ -53,7 +53,15 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();
-                return rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL)", portalId);
+                var workflows = rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL)", portalId).ToArray();
+
+                // Worfklow States eager loading
+                foreach (var workflow in workflows)
+                {
+                    workflow.States = _stateController.GetWorkflowStates(workflow.WorkflowID);
+                }
+
+                return workflows;
             }
         }
 
@@ -62,11 +70,19 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();
-                return rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL) AND IsSystem = 1", portalId);
+                var workflows = rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL) AND IsSystem = 1", portalId).ToArray();
+                
+                // Worfklow States eager loading
+                foreach (var workflow in workflows)
+                {
+                    workflow.States = _stateController.GetWorkflowStates(workflow.WorkflowID);
+                }
+
+                return workflows;
             }
         }
 
-        public ContentWorkflow GetWorkflowByID(int workflowId)
+        public ContentWorkflow GetWorkflow(int workflowId)
         {
             ContentWorkflow workflow;
             using(var context = DataContext.Instance())
@@ -87,7 +103,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         public ContentWorkflow GetWorkflow(ContentItem item)
         {
             var state = _stateController.GetWorkflowStateByID(item.StateID);
-            return state == null ? null : GetWorkflowByID(state.WorkflowID);
+            return state == null ? null : GetWorkflow(state.WorkflowID);
         }
 
         // TODO: validation
@@ -122,17 +138,6 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
 
         public void DeleteWorkflow(ContentWorkflow workflow)
         {
-            if (workflow.IsSystem)
-            {
-                throw new WorkflowException(Localization.GetString("SystemWorkflowDeletionException", Localization.ExceptionsResourceFile));
-            }
-
-            var usageCount = DataProvider.Instance().GetContentWorkflowUsageCount(workflow.WorkflowID);
-            if (usageCount > 0)
-            {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));    
-            }
-
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflow>();

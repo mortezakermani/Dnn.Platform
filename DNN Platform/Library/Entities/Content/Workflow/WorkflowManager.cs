@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
@@ -37,20 +36,45 @@ namespace DotNetNuke.Entities.Content.Workflow
         private readonly IWorkflowStateRepository _workflowStateRepository = WorkflowStateRepository.Instance;
         private readonly ISystemWorkflowManager _systemWorkflowManager = SystemWorkflowManager.Instance;
 
+        #region Constructor
         public WorkflowManager()
         {
             _dataProvider = DataProvider.Instance();
         }
+        #endregion
+
+        #region Public Methods
+
+        public void DeleteWorkflow(ContentWorkflow workflow)
+        {
+            if (workflow.IsSystem)
+            {
+                throw new WorkflowException(Localization.GetString("SystemWorkflowDeletionException", Localization.ExceptionsResourceFile));
+            }
+
+            var usageCount = GetWorkflowUsageCount(workflow.WorkflowID);
+            if (usageCount > 0)
+            {
+                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
+            }
+
+            _workflowRepository.DeleteWorkflow(workflow);
+        }
 
         public ContentWorkflow GetWorkflow(int workflowId)
         {
-            return _workflowRepository.GetWorkflowByID(workflowId);
+            return _workflowRepository.GetWorkflow(workflowId);
         }
 
         public ContentWorkflow GetWorkflow(ContentItem item)
         {
             var state = WorkflowStateRepository.Instance.GetWorkflowStateByID(item.StateID);
             return GetWorkflow(state.WorkflowID);
+        }
+
+        public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)
+        {
+            return _workflowRepository.GetWorkflows(portalId);
         }
 
         public void AddWorkflow(ContentWorkflow workflow)
@@ -73,163 +97,9 @@ namespace DotNetNuke.Entities.Content.Workflow
                               };
         }
 
-        public void AddWorkflowState(ContentWorkflowState state)
+        public void UpdateWorkflow(ContentWorkflow workflow)
         {
-            var workflow = _workflowRepository.GetWorkflowByID(state.WorkflowID);
-            if (workflow == null)
-            {
-                throw new WorkflowDoesNotExistException();
-            }
-            if (workflow.IsSystem)
-            {
-                throw new WorkflowException("New states cannot be added to system workflows"); //TODO: localize error message
-            }
-
-            var lastState = workflow.LastState;
-            
-            // New States always goes before the last state
-            state.Order = lastState.Order;
-
-            lastState.Order++;
-            _workflowStateRepository.UpdateWorkflowState(lastState); // Update last state order
-            _workflowStateRepository.AddWorkflowState(state);
-        }
-
-        public void DeleteWorkflowState(ContentWorkflowState state)
-        {
-            var workflow = _workflowRepository.GetWorkflowByID(state.WorkflowID);
-            if (workflow == null)
-            {
-                throw new WorkflowDoesNotExistException();
-            }
-
-            var stateToDelete = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
-            if (stateToDelete.IsSystem)
-            {
-                throw new WorkflowException("System workflow state cannot be deleted"); // TODO: Localize error message
-            }
-
-            if (GetWorkflowUsageCount(workflow.WorkflowID) > 0)
-            {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));   
-            }
-            
-            _workflowStateRepository.DeleteWorkflowState(stateToDelete);
-            
-            // Reorder states order
-            using (var context = DataContext.Instance())
-            {
-                var rep = context.GetRepository<ContentWorkflowState>();
-                rep.Update("SET [Order] = [Order] - 1 WHERE WorkflowId = @0 AND [Order] > @1", stateToDelete.WorkflowID, stateToDelete.Order);
-            }
-        }
-
-        public void UpdateWorkflowState(ContentWorkflowState state)
-        {
-            var workflowState = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
-            if (workflowState == null)
-            {
-                throw new WorkflowDoesNotExistException();
-            }
-            // TODO: check if remove this code. We can make Order as internal
-            // We do not allow change Order property
-            state.Order = workflowState.Order;
-
-            _workflowStateRepository.UpdateWorkflowState(state);
-        }
-
-        public void MoveWorkflowStateDown(int stateId)
-        {
-            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
-            
-            if (GetWorkflowUsageCount(workflow.WorkflowID) > 0)
-            {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
-            }
-
-            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
-
-            if (states.Length == 3)
-            {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
-            }
-            
-            ContentWorkflowState stateToMoveUp = null;
-            ContentWorkflowState stateToMoveDown = null;
-
-            for (var i = 0; i < states.Length; i++)
-            {
-                if (states[i].StateID != stateId) continue;
-
-                // First and Second workflow state cannot be moved down
-                if (i <= 1)
-                {
-                    throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
-                }
-
-                stateToMoveUp = states[i - 1];
-                stateToMoveDown = states[i];
-                break;
-            }
-
-            if (stateToMoveUp == null || stateToMoveDown == null)
-            {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
-            }
-
-            var orderTmp = stateToMoveDown.Order;
-            stateToMoveDown.Order = stateToMoveUp.Order;
-            stateToMoveUp.Order = orderTmp;
-
-            _workflowStateRepository.UpdateWorkflowState(stateToMoveUp);
-            _workflowStateRepository.UpdateWorkflowState(stateToMoveDown);
-        }
-
-        public void MoveWorkflowStateUp(int stateId)
-        {
-            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
-            
-            if (GetWorkflowUsageCount(workflow.WorkflowID) > 0)
-            {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
-            }
-
-            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
-            
-            if (states.Length == 3)
-            {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
-            }
-
-            ContentWorkflowState stateToMoveUp = null;
-            ContentWorkflowState stateToMoveDown = null;
-
-            for (var i = 0; i < states.Length; i++)
-            {
-                if (states[i].StateID != stateId) continue;
-
-                // Last and Next to Last workflow state cannot be moved up
-                if (i >= states.Length - 2)
-                {
-                    throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
-                }
-
-                stateToMoveUp = states[i];
-                stateToMoveDown = states[i + 1];
-                break;
-            }
-
-            if (stateToMoveUp == null || stateToMoveDown == null)
-            {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
-            }
-
-            var orderTmp = stateToMoveDown.Order;
-            stateToMoveDown.Order = stateToMoveUp.Order;
-            stateToMoveUp.Order = orderTmp;
-
-            _workflowStateRepository.UpdateWorkflowState(stateToMoveUp);
-            _workflowStateRepository.UpdateWorkflowState(stateToMoveDown);
+            throw new System.NotImplementedException();
         }
 
         public IEnumerable<ContentItem> GetWorkflowUsage(int workflowId, int pageIndex, int pageSize)
@@ -241,6 +111,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             return _dataProvider.GetContentWorkflowUsageCount(workflowId);
         }
+        #endregion
 
         protected override System.Func<IWorkflowManager> GetFactory()
         {

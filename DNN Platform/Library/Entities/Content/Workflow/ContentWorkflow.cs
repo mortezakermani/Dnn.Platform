@@ -64,7 +64,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         public bool DispositionEnabled { get; set; }
 
         [IgnoreColumn]
-        public IEnumerable<ContentWorkflowState> States { get; set; }
+        public IEnumerable<ContentWorkflowState> States { get; internal set; }
 
         [IgnoreColumn]
         public ContentWorkflowState FirstState

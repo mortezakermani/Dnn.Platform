@@ -24,23 +24,26 @@ using System.Collections.Generic;
 namespace DotNetNuke.Entities.Content.Workflow
 {
     // TODO: add metadata validation
-    public interface IWorkflowManager
+    public interface IWorkflowStateManager
     {
-        IEnumerable<ContentItem> GetWorkflowUsage(int workflowId, int pageIndex, int pageSize);
+        IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId);
 
-        int GetWorkflowUsageCount(int workflowId);
+        ContentWorkflowState GetWorkflowState(int stateId);
+
+        void AddWorkflowState(ContentWorkflowState state);
+
+        void UpdateWorkflowState(ContentWorkflowState state);
+
+        void DeleteWorkflowState(ContentWorkflowState state);
+
+        void MoveWorkflowStateDown(int stateId);
+
+        void MoveWorkflowStateUp(int stateId);
         
-        IEnumerable<ContentWorkflow> GetWorkflows(int portalId);
-        
-        void AddWorkflow(ContentWorkflow workflow);
+        IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId);
 
-        void UpdateWorkflow(ContentWorkflow workflow);
+        void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int userId);
 
-        void DeleteWorkflow(ContentWorkflow workflow);
-
-        ContentWorkflow GetWorkflow(int workflowId);
-
-        ContentWorkflow GetWorkflow(ContentItem item);
-
+        void DeleteWorkflowStatePermission(int workflowStatePermissionId);
     }
 }

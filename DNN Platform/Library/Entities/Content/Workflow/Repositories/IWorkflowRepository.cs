@@ -30,7 +30,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
 
         IEnumerable<ContentWorkflow> GetWorkflows(int portalId);
 
-        ContentWorkflow GetWorkflowByID(int workflowId);
+        ContentWorkflow GetWorkflow(int workflowId);
 
         ContentWorkflow GetWorkflow(ContentItem item);
 
