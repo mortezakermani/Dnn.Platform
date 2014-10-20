@@ -73,17 +73,17 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         #region Private Methods
 
-        private void DiscardWorkflowInternal(ContentItem contentItem, int userId, params string[] parameters)
+        private void DiscardWorkflowInternal(ContentItem contentItem, int userId)
         {
-            PerformWorkflowAction(contentItem, userId, WorkflowActionTypes.DiscardWorkflow.ToString(), parameters);
+            PerformWorkflowAction(contentItem, userId, WorkflowActionTypes.DiscardWorkflow.ToString());
         }
 
-        private void CompleteWorkflowInternal(ContentItem contentItem, int userId, params string[] parameters)
+        private void CompleteWorkflowInternal(ContentItem contentItem, int userId)
         {
-            PerformWorkflowAction(contentItem, userId, WorkflowActionTypes.CompleteWorkflow.ToString(), parameters);
+            PerformWorkflowAction(contentItem, userId, WorkflowActionTypes.CompleteWorkflow.ToString());
         }
 
-        private void PerformWorkflowAction(ContentItem contentItem, int userId, string actionType, params string[] parameters)
+        private void PerformWorkflowAction(ContentItem contentItem, int userId, string actionType)
         {
             var action = _workflowActionRepository.GetWorkflowAction(contentItem.ContentTypeId, actionType);
             if (action == null)
@@ -94,7 +94,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var workflowAction = Reflection.CreateInstance(Reflection.CreateType(action.ActionSource)) as IWorkflowAction;
             if (workflowAction != null)
             {
-                workflowAction.DoAction(contentItem, userId, parameters);
+                workflowAction.DoAction(contentItem, userId);
             }
         }
 

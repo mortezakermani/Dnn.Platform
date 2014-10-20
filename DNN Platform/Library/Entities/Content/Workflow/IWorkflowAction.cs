@@ -23,6 +23,6 @@ namespace DotNetNuke.Entities.Content.Workflow
 {
     public interface IWorkflowAction
     {
-        void DoAction(ContentItem contentItem, int userId, params string[] parameters);
+        void DoAction(ContentItem contentItem, int userId);
     }
 }
