@@ -19,19 +19,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using System.Collections.Generic;
-
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public class ContentWorkflowSource
+    internal enum WorkflowActionTypes
     {
-        public int WorkflowId { get; set; }
-
-        public int SourceId { get; set; }
-
-        public string SourceName { get; set; }
-
-        public string SourceType { get; set; }
+        Review,
+        DiscardWorkflow,
+        CompleteWorkflow
     }
 }

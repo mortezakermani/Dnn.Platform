@@ -492,6 +492,30 @@ BEGIN
 END
 GO
 
+/* Add ContentWorkflowActions table */
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}[{objectQualifier}ContentWorkflowActions]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE {databaseOwner}[{objectQualifier}ContentWorkflowActions](
+	    [ActionId] [INT] IDENTITY(1,1) NOT NULL,
+        [ContentTypeId] [INT] NOT NULL,
+		[ActionType] NVARCHAR(50) NOT NULL,
+		[ActionSource] NVARCHAR(256) NOT NULL,
+        CONSTRAINT [PK_{objectQualifier}ContentWorkflowActions] PRIMARY KEY CLUSTERED ([ActionId] ASC)
+    ) ON [PRIMARY]
+
+    ALTER TABLE {databaseOwner}[{objectQualifier}ContentWorkflowActions] 
+        WITH CHECK ADD  CONSTRAINT [FK_{objectQualifier}ContentWorkflowActions_{objectQualifier}ContentTypes] FOREIGN KEY([ContentTypeId])
+        REFERENCES {databaseOwner}[{objectQualifier}ContentTypes] ([ContentTypeID])
+    ON DELETE CASCADE
+
+	CREATE UNIQUE NONCLUSTERED INDEX [ContentTypeId_ActionType] ON {databaseOwner}[{objectQualifier}ContentWorkflowActions] 
+	(
+		[ContentTypeId] ASC,
+		[ActionType] ASC
+	)
+END
+GO
+
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/

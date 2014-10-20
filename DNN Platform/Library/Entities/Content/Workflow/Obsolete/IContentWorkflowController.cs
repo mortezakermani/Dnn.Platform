@@ -28,6 +28,7 @@ using DotNetNuke.Security.Roles;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
+    [Obsolete("Obsoleted in Platform 7.4.0.")]
     public interface IContentWorkflowController
     {
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
@@ -47,7 +48,8 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         bool IsWorkflowOnDraft(int itemID);
-        
+
+        [Obsolete("Obsoleted in Platform 7.4.0.")]
         void SendWorkflowNotification(bool sendEmail, bool sendMessage, PortalSettings settings, IEnumerable<RoleInfo> roles, IEnumerable<UserInfo> users, string subject, string body, string comment,
                               int userID);
 
@@ -59,7 +61,8 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
         string ReplaceNotificationTokens(string text, ContentWorkflow workflow, ContentItem item, ContentWorkflowState state, int portalID, int userID, string comment = "");
-        
+
+        [Obsolete("Obsoleted in Platform 7.4.0.")]
         ContentWorkflowSource GetWorkflowSource(int workflowId, string sourceName);
 
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowRepository")]
