@@ -1426,7 +1426,7 @@ namespace DotNetNuke.Services.FileSystem
         {
             if(fileExists)
             {
-                if (WorkflowEngine.Instance.IsWorkflowComplete(contentItemID))
+                if (WorkflowEngine.Instance.IsWorkflowCompleted(contentItemID))
                 {
                     WorkflowEngine.Instance.StartWorkflow(folderWorkflow.WorkflowID, contentItemID, createdByUserID);
                     return true;
@@ -1437,7 +1437,7 @@ namespace DotNetNuke.Services.FileSystem
         private string UpdateWhileApproving(IFolderInfo folder, int createdByUserID, IFileInfo file, bool fileExists, Stream content)
         {
             var contentController = new ContentController();            
-            bool workflowCompleted = WorkflowEngine.Instance.IsWorkflowComplete(file.ContentItemID);
+            bool workflowCompleted = WorkflowEngine.Instance.IsWorkflowCompleted(file.ContentItemID);
 
             var isDatabaseMapping = FolderMappingController.Instance.GetFolderMapping(folder.PortalID, folder.FolderMappingID).MappingName == "Database";
             //Currently, first upload is always published

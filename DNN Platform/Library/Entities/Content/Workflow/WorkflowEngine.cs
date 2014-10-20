@@ -324,7 +324,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 }
             }
 
-            return previousState ?? workflow.FirstState;
+            return previousState ?? workflow.LastState;
         }
         #endregion
 
@@ -337,7 +337,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
 
             //If already exists a started workflow
-            if (workflow != null && !IsWorkflowComplete(contentItem))
+            if (workflow != null && !IsWorkflowCompleted(contentItem))
             {
                 //TODO; Study if is need to throw an exception
                 return;
@@ -362,7 +362,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
-            if (workflow == null || IsWorkflowComplete(contentItem))
+            if (workflow == null || IsWorkflowCompleted(contentItem))
             {
                 return;
             }
@@ -401,7 +401,11 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 // Send to author - workflow has been completed
                 var author = GetUserThatHaveSubmittedDraftState(workflow, contentItem.ContentItemId);
-                SendNotificationToAuthor(author, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
+                if (author.UserID != stateTransaction.UserId)
+                {
+                    SendNotificationToAuthor(author, stateTransaction.Message, stateTransaction.UserId,
+                        new PortalSettings(workflow.PortalID));
+                }
             }
             else
             {
@@ -422,7 +426,6 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
 
             var isFirstState = workflow.FirstState.StateID == contentItem.StateID;
-            var isLastState = workflow.LastState.StateID == contentItem.StateID;
 
             if (!isFirstState && !_workflowSecurity.HasStateReviewerPermission(workflow.PortalID, stateTransaction.UserId, contentItem.StateID))
             {
@@ -435,9 +438,10 @@ namespace DotNetNuke.Entities.Content.Workflow
                 throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
             }
 
-            if (isFirstState || isLastState)
+            var isLastState = workflow.LastState.StateID == contentItem.StateID;
+            if (isLastState)
             {
-                throw new WorkflowException("Cannot discard first and last workflow state"); // TODO: review and localize error message
+                throw new WorkflowException("Cannot discard on last workflow state"); // TODO: review and localize error message
             }
 
             var previousState = GetPreviousWorkflowState(workflow, contentItem.StateID);
@@ -455,23 +459,29 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 // Send to author - workflow comes back to draft state
                 var author = GetUserThatHaveSubmittedDraftState(workflow, contentItem.ContentItemId);
-                SendNotificationToAuthor(author, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
+
+                if (author.UserID != stateTransaction.UserId)
+                {
+                    SendNotificationToAuthor(author, stateTransaction.Message, stateTransaction.UserId,
+                        new PortalSettings(workflow.PortalID));
+                }
             }
             else
             {
+                // TODO: replace reviewers notifications
                 SendNotificationsToReviewers(contentItem, previousState, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
             }
 
             DeleteWorkflowNotifications(contentItem, currentState, stateTransaction.UserId);
         }
 
-        public bool IsWorkflowComplete(int contentItemId)
+        public bool IsWorkflowCompleted(int contentItemId)
         {
-            var item = _contentController.GetContentItem(contentItemId);
-            return IsWorkflowComplete(item);
+            var contentItem = _contentController.GetContentItem(contentItemId);
+            return IsWorkflowCompleted(contentItem);
         }
 
-        public bool IsWorkflowComplete(ContentItem contentItem)
+        public bool IsWorkflowCompleted(ContentItem contentItem)
         {
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             if (workflow == null) return true; // If item has not workflow, then it is considered as completed
@@ -492,26 +502,40 @@ namespace DotNetNuke.Entities.Content.Workflow
             return contentItem.StateID == workflow.FirstState.StateID;
         }
 
-        public void DiscardWorkflow(int contentItemId, string comment, int userId)
+        public void DiscardWorkflow(StateTransaction stateTransaction)
         {
-            var item = _contentController.GetContentItem(contentItemId);
-            var workflow =WorkflowManager.Instance.GetWorkflow(item);
-            UpdateContentItemWorkflowState(workflow.LastState.StateID, item);
+            var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
+
+            var currentState = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
+            if (currentState.StateID != stateTransaction.CurrentStateId)
+            {
+                throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
+            }
+            
+            var workflow =WorkflowManager.Instance.GetWorkflow(contentItem);
+            UpdateContentItemWorkflowState(workflow.LastState.StateID, contentItem);
 
             // Logs
-            AddWorkflowCommentLog(item, userId, comment);
-            AddWorkflowLog(item, ContentWorkflowLogType.WorkflowDiscarded, userId);
+            AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
+            AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowDiscarded, stateTransaction.UserId);
         }
 
-        public void CompleteWorkflow(int contentItemId, string comment, int userId)
+        public void CompleteWorkflow(StateTransaction stateTransaction)
         {
-            var item = _contentController.GetContentItem(contentItemId);
-            var workflow = WorkflowManager.Instance.GetWorkflow(item);
-            UpdateContentItemWorkflowState(workflow.LastState.StateID, item);
+            var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
+
+            var currentState = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
+            if (currentState.StateID != stateTransaction.CurrentStateId)
+            {
+                throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
+            }
+            
+            var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
+            UpdateContentItemWorkflowState(workflow.LastState.StateID, contentItem);
 
             // Logs
-            AddWorkflowCommentLog(item, userId, comment);
-            AddWorkflowLog(item, ContentWorkflowLogType.WorkflowApproved, userId);
+            AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
+            AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowApproved, stateTransaction.UserId);
         }
         #endregion
 

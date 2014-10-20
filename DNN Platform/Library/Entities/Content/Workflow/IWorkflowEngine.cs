@@ -24,20 +24,14 @@ namespace DotNetNuke.Entities.Content.Workflow
     // TODO: add metadata doc
     public interface IWorkflowEngine
     {
-        /// <summary>
-        /// Get the workflow associated to the Content Item thought the StateId
-        /// </summary>
-        /// <param name="contentItem">Content Item</param>
-        /// <returns>workflow entity</returns>
-        
         void StartWorkflow(int workflowId, int contentItemId, int userId);
         void CompleteState(StateTransaction stateTransaction);
         void DiscardState(StateTransaction stateTransaction);
-        bool IsWorkflowComplete(int contentItemId);
-        bool IsWorkflowComplete(ContentItem contentItem);
+        bool IsWorkflowCompleted(int contentItemId);
+        bool IsWorkflowCompleted(ContentItem contentItem);
         bool IsWorkflowOnDraft(int contentItemId);
         bool IsWorkflowOnDraft(ContentItem contentItem);
-        void DiscardWorkflow(int contentItemId, string comment, int userId);
-        void CompleteWorkflow(int contentItemId, string comment, int userId);
+        void DiscardWorkflow(StateTransaction stateTransaction);
+        void CompleteWorkflow(StateTransaction stateTransaction);
     }
 }
