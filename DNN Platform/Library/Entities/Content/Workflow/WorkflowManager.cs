@@ -69,7 +69,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         public ContentWorkflow GetWorkflow(ContentItem item)
         {
             var state = WorkflowStateRepository.Instance.GetWorkflowStateByID(item.StateID);
-            return GetWorkflow(state.WorkflowID);
+            return state == null ? null : GetWorkflow(state.WorkflowID);
         }
 
         public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)
