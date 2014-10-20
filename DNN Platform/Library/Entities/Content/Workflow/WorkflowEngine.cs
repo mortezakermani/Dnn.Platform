@@ -483,6 +483,10 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public bool IsWorkflowCompleted(ContentItem contentItem)
         {
+            if (contentItem.StateID == Null.NullInteger )
+            {
+                return true;
+            }
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             if (workflow == null) return true; // If item has not workflow, then it is considered as completed
 
