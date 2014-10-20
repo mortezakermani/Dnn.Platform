@@ -201,6 +201,11 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         private static string AttachComment(string body, string userComment)
         {
+            if (string.IsNullOrEmpty(body))
+            {
+                return string.Empty;
+            }
+
             const string commentTag = "[COMMENT]";
 
             if (!body.Contains(commentTag))
@@ -272,14 +277,20 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 return;
             }
-            AddWorkflowLog(contentItem, ContentWorkflowLogType.CommentProvided, userId, userComment);
+            var state = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
+            AddWorkflowLog(contentItem, state, ContentWorkflowLogType.CommentProvided, userId, userComment);
         }
 
         private void AddWorkflowLog(ContentItem contentItem, ContentWorkflowLogType logType, int userId, string userComment = null)
         {
+            var state = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
+            AddWorkflowLog(contentItem, state, logType, userId, userComment);
+        }
+
+        private void AddWorkflowLog(ContentItem contentItem, ContentWorkflowState state, ContentWorkflowLogType logType, int userId, string userComment = null)
+        {
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             var logTypeText = GetWorkflowActionComment(logType);
-            var state = workflow.States.FirstOrDefault(s => s.StateID == contentItem.StateID);
             var actionText = GetWorkflowActionText(logType);
 
             var logComment = ReplaceNotificationTokens(logTypeText, workflow, contentItem, state, userId, userComment);
@@ -412,7 +423,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             // Add logs
             AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
-            AddWorkflowLog(contentItem,
+            AddWorkflowLog(contentItem, currentState,
                 currentState.StateID == workflow.FirstState.StateID
                     ? ContentWorkflowLogType.DraftCompleted
                     : ContentWorkflowLogType.StateCompleted, stateTransaction.UserId);
@@ -475,7 +486,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             // Add logs
             AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
-            AddWorkflowLog(contentItem, ContentWorkflowLogType.StateDiscarded, stateTransaction.UserId);
+            AddWorkflowLog(contentItem, currentState, ContentWorkflowLogType.StateDiscarded, stateTransaction.UserId);
             AddWorkflowLog(contentItem, ContentWorkflowLogType.StateInitiated, stateTransaction.UserId);
             
             if (previousState.StateID == workflow.LastState.StateID)

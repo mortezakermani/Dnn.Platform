@@ -63,7 +63,7 @@ namespace DotNetNuke.Web.InternalServices
                         return Request.CreateResponse(HttpStatusCode.OK, new { Result = "success" });
                     }
 
-                    string[] parameters = notification.Context.Split(';');
+                    string[] parameters = notification.Context.Split(':');
 
                     var stateTransiction = new StateTransaction
                                            {
@@ -99,7 +99,7 @@ namespace DotNetNuke.Web.InternalServices
                         return Request.CreateResponse(HttpStatusCode.OK, new { Result = "success" });
                     }
 
-                    string[] parameters = notification.Context.Split(';');
+                    string[] parameters = notification.Context.Split(':');
 
                     var stateTransiction = new StateTransaction
                                             {

@@ -524,7 +524,7 @@ SELECT @NotificationTypeId = NotificationTypeId
 IF @NotificationTypeId IS NOT NULL
 BEGIN
 	/* Delete Review notification action added int 7.3.0 */
-	DELETE FROM {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypeActions WHERE NotificationTypeId = @NotificationTypeId
+	DELETE FROM {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypeActions WHERE NotificationTypeId = @NotificationTypeId AND NameResourceKey = 'Review'
 
 	/* Add Approve notification action */
     INSERT INTO {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypeActions(
