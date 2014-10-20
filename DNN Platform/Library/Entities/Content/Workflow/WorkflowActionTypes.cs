@@ -23,7 +23,6 @@ namespace DotNetNuke.Entities.Content.Workflow
 {
     internal enum WorkflowActionTypes
     {
-        Review,
         DiscardWorkflow,
         CompleteWorkflow
     }

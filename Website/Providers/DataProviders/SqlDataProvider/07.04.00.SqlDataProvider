@@ -516,6 +516,68 @@ BEGIN
 END
 GO
 
+/* Remove Review action and add Approve, Reject */
+DECLARE @NotificationTypeId INT
+SELECT @NotificationTypeId = NotificationTypeId
+    FROM    {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypes
+    WHERE   Name = 'ContentWorkflowNotification'
+IF @NotificationTypeId IS NOT NULL
+BEGIN
+	/* Delete Review notification action added int 7.3.0 */
+	DELETE FROM {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypeActions WHERE NotificationTypeId = @NotificationTypeId
+
+	/* Add Approve notification action */
+    INSERT INTO {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypeActions(
+        [NotificationTypeID],
+        [NameResourceKey],
+        [DescriptionResourceKey],
+        [ConfirmResourceKey],
+        [Order],
+        [APICall],
+        [CreatedByUserID],
+        [CreatedOnDate],
+        [LastModifiedByUserID],
+        [LastModifiedOnDate])
+    VALUES(
+        @NotificationTypeId,
+        'Approve',
+        'Approve',
+        NULL,
+        1,
+        'DesktopModules/InternalServices/API/ContentWorkflowService/Approve',
+        -1,
+        GETDATE(),
+        -1,
+        GETDATE()
+        )
+		
+	/* Add Reject notification action */
+	INSERT INTO {databaseOwner}{objectQualifier}CoreMessaging_NotificationTypeActions(
+        [NotificationTypeID],
+        [NameResourceKey],
+        [DescriptionResourceKey],
+        [ConfirmResourceKey],
+        [Order],
+        [APICall],
+        [CreatedByUserID],
+        [CreatedOnDate],
+        [LastModifiedByUserID],
+        [LastModifiedOnDate])
+    VALUES(
+        @NotificationTypeId,
+        'Reject',
+        'Reject',
+        NULL,
+        1,
+        'DesktopModules/InternalServices/API/ContentWorkflowService/Reject',
+        -1,
+        GETDATE(),
+        -1,
+        GETDATE()
+        )
+END
+GO
+
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/

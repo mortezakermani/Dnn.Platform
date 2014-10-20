@@ -358,7 +358,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         #endregion
 
         #region Public Methods
-       public void StartWorkflow(int workflowId, int contentItemId, int userId)
+        public void StartWorkflow(int workflowId, int contentItemId, int userId)
         {
             var contentItem = _contentController.GetContentItem(contentItemId);
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
