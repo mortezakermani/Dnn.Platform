@@ -21,14 +21,19 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using DotNetNuke.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
+    [PrimaryKey("WorkflowLogID")]
+    [TableName("ContentWorkflowLogs")]
     public class ContentWorkflowLog
     {
         public int WorkflowLogID { get; set; }
         public int WorkflowID { get; set; }
         public int ContentItemID { get; set; }
+
+        public int Type { get; set; }
 
         [StringLength(40)]
         public string Action { get; set; }

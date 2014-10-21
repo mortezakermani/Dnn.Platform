@@ -110,7 +110,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             var logDraftCompleted = logs
                 .OrderByDescending(l => l.Date)
-                .FirstOrDefault(l => l.Action.Equals(GetWorkflowActionText(ContentWorkflowLogType.DraftCompleted))); // TODO: use a key
+                .FirstOrDefault(l => l.Type == (int)ContentWorkflowLogType.DraftCompleted); // TODO: use a key
 
             if (logDraftCompleted != null && logDraftCompleted.User != Null.NullInteger)
             {
@@ -309,19 +309,12 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
             var logTypeText = GetWorkflowActionComment(logType);
-            var actionText = GetWorkflowActionText(logType);
-
+            
             var logComment = ReplaceNotificationTokens(logTypeText, workflow, contentItem, state, userId, userComment);
 
-            _workflowLogRepository.AddWorkflowLog(contentItem.ContentItemId, workflow.WorkflowID, actionText, logComment, userId);
+            WorkflowLogger.Instance.AddWorkflowLog(contentItem.ContentItemId, workflow.WorkflowID, logType, logComment, userId);
         }
-
-        private static string GetWorkflowActionText(ContentWorkflowLogType logType)
-        {
-            var logName = Enum.GetName(typeof(ContentWorkflowLogType), logType);
-            return Localization.GetString(logName + ".Action");
-        }
-
+        
         private static string GetWorkflowActionComment(ContentWorkflowLogType logType)
         {
             var logName = Enum.GetName(typeof(ContentWorkflowLogType), logType);

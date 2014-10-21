@@ -25,14 +25,14 @@ namespace DotNetNuke.Entities.Content.Workflow
 {
     public enum ContentWorkflowLogType
     {
-        WorkflowStarted,
-        StateCompleted,
-        DraftCompleted,
-        StateDiscarded,
-        StateInitiated,
-        WorkflowApproved,
-        WorkflowDiscarded,
-        CommentProvided,
-        WorkflowError
+        WorkflowStarted = 0,
+        StateCompleted = 1,
+        DraftCompleted = 2,
+        StateDiscarded = 3,
+        StateInitiated = 4,
+        WorkflowApproved = 5,
+        WorkflowDiscarded = 6,
+        CommentProvided = 10,
+        WorkflowError = 500
     }
 }

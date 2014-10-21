@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using DotNetNuke.Common.Utilities;
+using System.Linq;
 using DotNetNuke.Data;
 using DotNetNuke.Framework;
 
@@ -33,22 +33,40 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
     {
         public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
         {
-            return CBO.FillCollection<ContentWorkflowLog>(DataProvider.Instance().GetContentWorkflowLogs(contentItemId, workflowId));
+            //return CBO.FillCollection<ContentWorkflowLog>(DataProvider.Instance().GetContentWorkflowLogs(contentItemId, workflowId));
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowLog>();
+                var workflowLogs = rep.Find("WHERE (ContentItemID = @0 AND WorkflowID = @1)", contentItemId, workflowId).ToArray();
+                
+                return workflowLogs;
+            }
         }
 
         public void DeleteWorkflowLogs(int contentItemId, int workflowId)
         {
-            DataProvider.Instance().DeleteContentWorkflowLogs(contentItemId, workflowId);
+            //DataProvider.Instance().DeleteContentWorkflowLogs(contentItemId, workflowId);
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowLog>();
+                rep.Delete("WHERE (ContentItemID = @0 AND WorkflowID = @1)", contentItemId, workflowId);
+            }
         }
 
-        public void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId)
+        public void AddWorkflowLog(ContentWorkflowLog workflowLog)
         {
-            DataProvider.Instance().AddContentWorkflowLog(action, comment, userId, workflowId, contentItemId);
-        }
+            //DataProvider.Instance().AddContentWorkflowLog(action, comment, userId, workflowId, contentItemId);
+            using (var context = DataContext.Instance())
+            {
+                var rep = context.GetRepository<ContentWorkflowLog>();
 
+                rep.Insert(workflowLog);
+            }
+        }
+        
         protected override Func<IWorkflowLogRepository> GetFactory()
         {
             return () => new WorkflowLogRepository();
         }
-    }
+    }    
 }

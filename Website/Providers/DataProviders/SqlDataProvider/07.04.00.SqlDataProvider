@@ -420,6 +420,10 @@ GO
 ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowStates ADD [SendNotificationToAdministrators] [bit] NOT NULL DEFAULT (0) 
 GO
 
+/* Added WorkflowLogKey column */
+ALTER TABLE {databaseOwner}{objectQualifier}ContentWorkflowLogs ADD [Type] [int] NOT NULL DEFAULT -1 
+GO
+
 /* Set is System Workflows */
 UPDATE {databaseOwner}[{objectQualifier}ContentWorkflows] SET IsSystem = 1 where IsSystem = 0
 GO

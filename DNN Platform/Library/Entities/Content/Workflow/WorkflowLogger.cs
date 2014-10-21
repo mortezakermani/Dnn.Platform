@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
+using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -36,9 +37,35 @@ namespace DotNetNuke.Entities.Content.Workflow
         }
 
 
+        public void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string comment, int userId)
+        {
+            AddWorkflowLog(contentItemId, workflowId, type, GetWorkflowActionText(type), comment, userId);
+        }
+
         public void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId)
         {
-            WorkflowLogRepository.Instance.AddWorkflowLog(contentItemId, workflowId, action, comment, userId);
+            AddWorkflowLog(contentItemId, workflowId, ContentWorkflowLogType.CommentProvided, action, comment, userId);
+        }
+
+        private void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string action, string comment, int userId)
+        {
+            var workflowLog = new ContentWorkflowLog
+            {
+                ContentItemID = contentItemId,
+                WorkflowID = workflowId,
+                Type = (int) type,
+                Action = action,
+                Comment = comment,
+                User = userId,
+                Date = DateTime.UtcNow
+            };
+            WorkflowLogRepository.Instance.AddWorkflowLog(workflowLog);
+        }
+
+        private string GetWorkflowActionText(ContentWorkflowLogType logType)
+        {
+            var logName = Enum.GetName(typeof(ContentWorkflowLogType), logType);
+            return Localization.GetString(logName + ".Action");
         }
 
         protected override Func<IWorkflowLogger> GetFactory()
