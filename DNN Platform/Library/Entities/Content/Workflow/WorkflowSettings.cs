@@ -19,9 +19,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Globalization;
+using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow
@@ -29,7 +32,8 @@ namespace DotNetNuke.Entities.Content.Workflow
     public class WorkflowSettings : ServiceLocator<IWorkflowSettings, WorkflowSettings>, IWorkflowSettings
     {
         private const string DefaultTabWorkflowKey = "DefaultTabWorkflowKey";
-        
+        private const string WorkflowEnableKey = "WorkflowEnabledKey";
+
         public int GetDefaultTabWorkflowId(int portalId)
         {
             var workflowId = PortalController.GetPortalSettingAsInteger(DefaultTabWorkflowKey, portalId, Null.NullInteger);
@@ -49,6 +53,29 @@ namespace DotNetNuke.Entities.Content.Workflow
         protected override System.Func<IWorkflowSettings> GetFactory()
         {
             return () => new WorkflowSettings();
+        }
+
+        public void SetWorkflowEnabled(int portalId, bool enabled)
+        {
+            Requires.NotNegative("portalId", portalId);
+            PortalController.UpdatePortalSetting(portalId, WorkflowEnableKey, enabled.ToString(CultureInfo.InvariantCulture), true);
+        }
+
+        public bool IsWorkflowEnabled(int portalId, int tabId)
+        {
+            if (portalId == Null.NullInteger)
+            {
+                return false;
+            }
+
+            var isWorkflowEnabledForPortal =
+                Convert.ToBoolean(PortalController.GetPortalSetting(WorkflowEnableKey, portalId, Boolean.TrueString));
+            var isWorkflowEnabledForTab = true;
+                            // TODO: uncomment when merging with development branch:
+                            // tabId == Null.NullInteger 
+                            //                    || !TabController.Instance.IsHostOrAdminPage(tabId, portalId);
+
+            return isWorkflowEnabledForPortal && isWorkflowEnabledForTab;
         }
     }
 }

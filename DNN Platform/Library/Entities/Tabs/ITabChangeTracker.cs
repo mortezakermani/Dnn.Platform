@@ -21,22 +21,22 @@
 
 using DotNetNuke.Entities.Modules;
 
-namespace DotNetNuke.Entities.Tabs.TabVersions
+namespace DotNetNuke.Entities.Tabs
 {
-    public interface ITabVersionTracker
+    public interface ITabChangeTracker
     {
         /// <summary>
-        /// Tracks an added module into a Tab Version
+        /// Tracks an added module
         /// </summary>
         void TrackModuleAddition(ModuleInfo module, int moduleVersion, int userId);
 
         /// <summary>
-        /// Tracks a modified module into a Tab Version
+        /// Tracks a modified module
         /// </summary>
         void TrackModuleModification(ModuleInfo module, int moduleVersion, int userId);
         
         /// <summary>
-        ///  Tracks a deleted module into a Tab Version
+        ///  Tracks a deleted module
         /// </summary>
         void TrackModuleDeletion(ModuleInfo module, int moduleVersion, int userId);
     }

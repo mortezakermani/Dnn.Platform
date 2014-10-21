@@ -23,12 +23,13 @@ using System;
 using System.Linq;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
+using DotNetNuke.Entities.Content.Workflow;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Tabs.TabVersions
 {
-    public class TabVersionTracker: ServiceLocator<ITabVersionTracker, TabVersionTracker>, ITabVersionTracker
+    public class TabVersionTracker : ServiceLocator<ITabChangeTracker, TabVersionTracker>, ITabChangeTracker
     {
         #region Public Methods
         public void TrackModuleAddition(ModuleInfo module, int moduleVersion, int userId)
@@ -94,7 +95,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         public void TrackModuleDeletion(ModuleInfo module, int moduleVersion, int userId)
         {
             Requires.NotNull("module", module);
-            
+
             try
             {
                 if (!IsVersioningEnabled(module))
@@ -123,6 +124,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         #endregion
 
         #region Private Statics Methods
+
         private static bool IsVersioningEnabled(ModuleInfo module)
         {
             return module.PortalID != Null.NullInteger && TabVersionSettings.Instance.IsVersioningEnabled(module.PortalID);
@@ -165,7 +167,7 @@ namespace DotNetNuke.Entities.Tabs.TabVersions
         }
         #endregion
 
-        protected override Func<ITabVersionTracker> GetFactory()
+        protected override Func<ITabChangeTracker> GetFactory()
         {
             return () => new TabVersionTracker();
         }

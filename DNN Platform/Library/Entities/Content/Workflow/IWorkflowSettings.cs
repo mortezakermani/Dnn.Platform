@@ -26,5 +26,9 @@ namespace DotNetNuke.Entities.Content.Workflow
     {
         int GetDefaultTabWorkflowId(int portalId);
         void SetDefaultTabWorkflowId(int portalId, int workflowId);
+
+        void SetWorkflowEnabled(int portalId, bool enabled);
+
+        bool IsWorkflowEnabled(int portalId, int tabId);
     }
 }

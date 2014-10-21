@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Common;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
@@ -68,8 +69,23 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public ContentWorkflow GetWorkflow(ContentItem item)
         {
+            if (item.StateID == Null.NullInteger)
+            {
+                return null;
+            }
             var state = WorkflowStateRepository.Instance.GetWorkflowStateByID(item.StateID);
             return state == null ? null : GetWorkflow(state.WorkflowID);
+        }
+
+        public ContentWorkflow GetCurrentOrDefaultWorkflow(ContentItem item, int portalId)
+        {
+            if (item.StateID != Null.NullInteger)
+            {
+                return GetWorkflow(item);
+            }
+               
+            var defaultWorkflow = WorkflowSettings.Instance.GetDefaultTabWorkflowId(portalId);
+            return GetWorkflow(defaultWorkflow);
         }
 
         public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)

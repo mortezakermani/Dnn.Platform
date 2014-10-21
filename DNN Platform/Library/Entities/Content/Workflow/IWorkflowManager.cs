@@ -42,5 +42,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         ContentWorkflow GetWorkflow(ContentItem item);
 
+        ContentWorkflow GetCurrentOrDefaultWorkflow(ContentItem item, int portalId);
+
     }
 }

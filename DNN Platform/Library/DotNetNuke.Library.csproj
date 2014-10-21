@@ -317,13 +317,14 @@
     <Compile Include="Entities\Profile\IProfileEventHandlers.cs" />
     <Compile Include="Entities\Profile\ProfileEventArgs.cs" />
     <Compile Include="Entities\Tabs\ITabModulesController.cs" />
+    <Compile Include="Entities\Tabs\TabChangeTracker.cs" />
     <Compile Include="Entities\Tabs\TabModulesController.cs" />
     <Compile Include="Entities\Tabs\TabVersions\Exceptions\DnnTabVersionException.cs" />
     <Compile Include="Entities\Tabs\TabVersions\ITabVersionController.cs" />
     <Compile Include="Entities\Tabs\TabVersions\ITabVersionDetailController.cs" />
     <Compile Include="Entities\Tabs\TabVersions\ITabVersionMaker.cs" />
     <Compile Include="Entities\Tabs\TabVersions\ITabVersionSettings.cs" />
-    <Compile Include="Entities\Tabs\TabVersions\ITabVersionTracker.cs" />
+    <Compile Include="Entities\Tabs\ITabChangeTracker.cs" />
     <Compile Include="Entities\Tabs\TabVersions\TabVersion.cs" />
     <Compile Include="Entities\Tabs\TabVersions\TabVersionController.cs" />
     <Compile Include="Entities\Tabs\TabVersions\TabVersionDetail.cs" />
@@ -333,6 +334,7 @@
     <Compile Include="Entities\Tabs\TabVersions\TabVersionSettings.cs" />
     <Compile Include="Entities\Tabs\TabVersions\TabVersionTracker.cs" />
     <Compile Include="Entities\Tabs\TabVersions\TabVersionUtils.cs" />
+    <Compile Include="Entities\Tabs\TabWorkflowTracker.cs" />
     <Compile Include="Entities\Users\IUserEventHandlers.cs" />
     <Compile Include="Common\Internal\IEventHandlersContainer.cs" />
     <Compile Include="Common\Internal\EventHandlersContainer.cs" />
