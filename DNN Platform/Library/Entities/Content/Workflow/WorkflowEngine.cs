@@ -142,7 +142,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
-        private void SendNotificationToAuthor(StateTransaction stateTransaction, ContentWorkflow workflow, ContentItem contentItem, WorkflowActionTypes workflowActionType)
+        private void SendNotificationToAuthor(StateTransaction stateTransaction, ContentWorkflowState state, ContentWorkflow workflow, ContentItem contentItem, WorkflowActionTypes workflowActionType)
         {
             var user = GetUserThatHaveSubmittedDraftState(workflow, contentItem.ContentItemId);
             if (user == null)
@@ -162,7 +162,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
 
-            var message = workflowAction.GetActionMessage(stateTransaction);
+            var message = workflowAction.GetActionMessage(stateTransaction, state);
 
             var notification = new Notification
             {
@@ -201,7 +201,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
 
-            var message = workflowAction.GetActionMessage(stateTransaction);
+            var message = workflowAction.GetActionMessage(stateTransaction, state);
 
             var notification = new Notification
             {
@@ -438,7 +438,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 CompleteWorkflowInternal(contentItem, stateTransaction.UserId);
 
                 // Send to author - workflow has been completed
-                SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);
+                SendNotificationToAuthor(stateTransaction, nextState, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);
             }
             else
             {
@@ -492,7 +492,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             else if (previousState.StateID == workflow.FirstState.StateID)
             {
                 // Send to author - workflow comes back to draft state
-                SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.DiscardState);
+                SendNotificationToAuthor(stateTransaction, previousState, workflow, contentItem, WorkflowActionTypes.DiscardState);
             }
             else
             {
@@ -550,7 +550,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             DiscardWorkflowInternal(contentItem, stateTransaction.UserId);
 
             // Notifications
-            SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.DiscardWorkflow);
+            SendNotificationToAuthor(stateTransaction, workflow.LastState, workflow, contentItem, WorkflowActionTypes.DiscardWorkflow);
             DeleteWorkflowNotifications(contentItem, currentState);
         }
 
@@ -574,7 +574,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             CompleteWorkflowInternal(contentItem, stateTransaction.UserId);
 
             // Notifications
-            SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);
+            SendNotificationToAuthor(stateTransaction, workflow.LastState, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);
             DeleteWorkflowNotifications(contentItem, currentState);
         }
         #endregion

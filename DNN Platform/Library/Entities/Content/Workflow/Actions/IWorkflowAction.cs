@@ -23,7 +23,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Actions
 {
     public interface IWorkflowAction
     {
-        WorkflowMessage GetActionMessage(StateTransaction stateTransaction);
+        WorkflowMessage GetActionMessage(StateTransaction stateTransaction, ContentWorkflowState currentState);
 
         void DoAction(ContentItem contentItem, int userId);
     }
