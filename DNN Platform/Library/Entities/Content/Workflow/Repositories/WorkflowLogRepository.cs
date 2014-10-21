@@ -33,7 +33,6 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
     {
         public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
         {
-            //return CBO.FillCollection<ContentWorkflowLog>(DataProvider.Instance().GetContentWorkflowLogs(contentItemId, workflowId));
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflowLog>();
@@ -45,7 +44,6 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
 
         public void DeleteWorkflowLogs(int contentItemId, int workflowId)
         {
-            //DataProvider.Instance().DeleteContentWorkflowLogs(contentItemId, workflowId);
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflowLog>();
@@ -55,7 +53,6 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
 
         public void AddWorkflowLog(ContentWorkflowLog workflowLog)
         {
-            //DataProvider.Instance().AddContentWorkflowLog(action, comment, userId, workflowId, contentItemId);
             using (var context = DataContext.Instance())
             {
                 var rep = context.GetRepository<ContentWorkflowLog>();

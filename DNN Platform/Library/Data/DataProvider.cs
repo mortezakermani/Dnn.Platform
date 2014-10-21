@@ -33,7 +33,6 @@ using System.Data.SqlTypes;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Web;
 using System.Web.Hosting;
 
 using DotNetNuke.Common;
@@ -41,14 +40,11 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.ComponentModel;
 using DotNetNuke.Data.PetaPoco;
 using DotNetNuke.Entities.Tabs;
-using DotNetNuke.Entities.Urls;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Instrumentation;
 using DotNetNuke.Security;
-using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Search.Entities;
 using Microsoft.ApplicationBlocks.Data;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -4074,6 +4070,7 @@ namespace DotNetNuke.Data
             return ExecuteReader("GetContentWorkflowStates", workflowId);
         }
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogger.AddWorkflowLog")]
         public virtual int AddContentWorkflowLog(string action, string comment, int user, int workflowId, int contentItemId)
         {
             return ExecuteScalar<int>("AddContentWorkflowLog",
@@ -4084,11 +4081,13 @@ namespace DotNetNuke.Data
                 contentItemId);
         }
 
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogger.GetWorkflowLogs")]
         public virtual IDataReader GetContentWorkflowLogs(int contentItemId, int workflowId)
         {
             return ExecuteReader("GetContentWorkflowLogs", contentItemId, workflowId);
         }
 
+        [Obsolete("Obsoleted in Platform 7.4.0")]
         public virtual int DeleteContentWorkflowLogs(int contentItemId, int workflowId)
         {
             return ExecuteScalar<int>("DeleteContentWorkflowLogs", contentItemId, workflowId);
