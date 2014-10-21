@@ -260,6 +260,9 @@
     <Compile Include="Entities\Content\Common\NameValueEqualityComparer.cs" />
     <Compile Include="Entities\Content\IAttachmentController.cs" />
     <Compile Include="Entities\Content\Taxonomy\TermUsage.cs" />
+    <Compile Include="Entities\Content\Workflow\Actions\IWorkflowAction.cs" />
+    <Compile Include="Entities\Content\Workflow\Actions\WorkflowAction.cs" />
+    <Compile Include="Entities\Content\Workflow\Actions\WorkflowActionTypes.cs" />
     <Compile Include="Entities\Content\Workflow\Obsolete\ContentWorkflowController.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowLogType.cs" />
     <Compile Include="Entities\Content\Workflow\Obsolete\ContentWorkflowSource.cs" />
@@ -275,7 +278,6 @@
     <Compile Include="Entities\Content\Workflow\ContentWorkflowState.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowStatePermission.cs" />
     <Compile Include="Entities\Content\Workflow\ISystemWorkflowManager.cs" />
-    <Compile Include="Entities\Content\Workflow\IWorkflowAction.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowEngine.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowLogger.cs" />
     <Compile Include="Entities\Content\Workflow\IWorkflowStateManager.cs" />
@@ -294,10 +296,9 @@
     <Compile Include="Entities\Content\Workflow\StateTransaction.cs" />
     <Compile Include="Entities\Content\Workflow\StateTransactionMessage.cs" />
     <Compile Include="Entities\Content\Workflow\SystemWorkflowManager.cs" />
-    <Compile Include="Entities\Content\Workflow\WorkflowAction.cs" />
-    <Compile Include="Entities\Content\Workflow\WorkflowActionTypes.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowEngine.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowLogger.cs" />
+    <Compile Include="Entities\Content\Workflow\WorkflowMessage.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowStateManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowSecurity.cs" />

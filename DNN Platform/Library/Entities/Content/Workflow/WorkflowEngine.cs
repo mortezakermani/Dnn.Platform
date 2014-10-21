@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using DotNetNuke.Common.Utilities;
+using DotNetNuke.Entities.Content.Workflow.Actions;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Entities.Portals;
@@ -72,7 +73,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         #endregion
 
         #region Private Methods
-
+        
         private void DiscardWorkflowInternal(ContentItem contentItem, int userId)
         {
             PerformWorkflowAction(contentItem, userId, WorkflowActionTypes.DiscardWorkflow.ToString());
@@ -85,17 +86,22 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         private void PerformWorkflowAction(ContentItem contentItem, int userId, string actionType)
         {
-            var action = _workflowActionRepository.GetWorkflowAction(contentItem.ContentTypeId, actionType);
-            if (action == null)
-            {
-                return;
-            }
-
-            var workflowAction = Reflection.CreateInstance(Reflection.CreateType(action.ActionSource)) as IWorkflowAction;
+            var workflowAction = GetWorkflowAction(contentItem, actionType);
             if (workflowAction != null)
             {
                 workflowAction.DoAction(contentItem, userId);
             }
+        }
+
+        private IWorkflowAction GetWorkflowAction(ContentItem contentItem, string actionType)
+        {
+            var action = _workflowActionRepository.GetWorkflowAction(contentItem.ContentTypeId, actionType);
+            if (action == null)
+            {
+                return null;
+            }
+
+            return Reflection.CreateInstance(Reflection.CreateType(action.ActionSource)) as IWorkflowAction;
         }
 
         private void UpdateContentItemWorkflowState(int stateId, ContentItem item)
@@ -136,7 +142,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
-        private void SendNotificationToAuthor(StateTransaction stateTransaction, ContentWorkflow workflow, ContentItem contentItem)
+        private void SendNotificationToAuthor(StateTransaction stateTransaction, ContentWorkflow workflow, ContentItem contentItem, WorkflowActionTypes workflowActionType)
         {
             var user = GetUserThatHaveSubmittedDraftState(workflow, contentItem.ContentItemId);
             if (user == null)
@@ -150,13 +156,19 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
 
-            var fullbody = AttachComment(stateTransaction.Message.Body, stateTransaction.Message.UserComment);
+            var workflowAction = GetWorkflowAction(contentItem, workflowActionType.ToString());
+            if (workflowAction == null)
+            {
+                return;
+            }
+
+            var message = workflowAction.GetActionMessage(stateTransaction);
 
             var notification = new Notification
             {
                 NotificationTypeID = _notificationsController.GetNotificationType(ContentWorkflowNotificationNoActionType).NotificationTypeId,
-                Subject = stateTransaction.Message.Subject,
-                Body = fullbody,
+                Subject = message.Subject,
+                Body = message.Body,
                 IncludeDismissAction = true,
                 SenderUserID = stateTransaction.UserId
             };
@@ -164,7 +176,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _notificationsController.SendNotification(notification, workflow.PortalID, null, new []{ user });
         }
 
-        private void SendNotificationsToReviewers(ContentItem contentItem, ContentWorkflowState state, StateTransactionMessage message, int senderUserId, PortalSettings portalSettings)
+        private void SendNotificationsToReviewers(ContentItem contentItem, ContentWorkflowState state, StateTransaction stateTransaction, WorkflowActionTypes workflowActionType, PortalSettings portalSettings)
         {
             if (!state.SendNotification)
             {
@@ -183,49 +195,27 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return; // If there are no receivers, the notification is avoided
             }
 
-            var fullbody = AttachComment(message.Body, message.UserComment);
+            var workflowAction = GetWorkflowAction(contentItem, workflowActionType.ToString());
+            if (workflowAction == null)
+            {
+                return;
+            }
+
+            var message = workflowAction.GetActionMessage(stateTransaction);
 
             var notification = new Notification
             {
                 NotificationTypeID = _notificationsController.GetNotificationType(ContentWorkflowNotificationType).NotificationTypeId,
                 Subject = message.Subject,
-                Body = fullbody,
+                Body = message.Body,
                 IncludeDismissAction = true,
-                SenderUserID = senderUserId,
+                SenderUserID = stateTransaction.UserId,
                 Context = GetWorkflowNotificationContext(contentItem, state)
             };
 
-            //TODO: source and params needs to be reviewed
-            //append the context
-            //if (!string.IsNullOrEmpty(source))
-            //{
-            //    if (parameters != null && parameters.Length > 0)
-            //    {
-            //        source = string.Format("{0};{1}", source, string.Join(";", parameters));
-            //    }
-            //    notification.Context = source;
-            //}
-
             _notificationsController.SendNotification(notification, portalSettings.PortalId, roles.ToList(), users.ToList());
         }
-
-        private static string AttachComment(string body, string userComment)
-        {
-            if (string.IsNullOrEmpty(body))
-            {
-                return string.Empty;
-            }
-
-            const string commentTag = "[COMMENT]";
-
-            if (!body.Contains(commentTag))
-            {
-                body += "<br/><br/>" + commentTag;
-            }
-
-            return body.Replace(commentTag, userComment);
-        } 
-
+        
         private static IEnumerable<RoleInfo> GetRolesFromPermissions(PortalSettings settings, IEnumerable<ContentWorkflowStatePermission> permissions, bool includeAdministrators)
         {
             var roles = (from permission in permissions 
@@ -448,12 +438,12 @@ namespace DotNetNuke.Entities.Content.Workflow
                 CompleteWorkflowInternal(contentItem, stateTransaction.UserId);
 
                 // Send to author - workflow has been completed
-                SendNotificationToAuthor(stateTransaction, workflow, contentItem);
+                SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);
             }
             else
             {
                 // Send to reviewers
-                SendNotificationsToReviewers(contentItem, nextState, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
+                SendNotificationsToReviewers(contentItem, nextState, stateTransaction, WorkflowActionTypes.CompleteState, new PortalSettings(workflow.PortalID));
             }
 
             DeleteWorkflowNotifications(contentItem, currentState);
@@ -502,12 +492,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             else if (previousState.StateID == workflow.FirstState.StateID)
             {
                 // Send to author - workflow comes back to draft state
-                SendNotificationToAuthor(stateTransaction, workflow, contentItem);
+                SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.DiscardState);
             }
             else
             {
                 // TODO: replace reviewers notifications
-                SendNotificationsToReviewers(contentItem, previousState, stateTransaction.Message, stateTransaction.UserId, new PortalSettings(workflow.PortalID));
+                SendNotificationsToReviewers(contentItem, previousState, stateTransaction, WorkflowActionTypes.DiscardState, new PortalSettings(workflow.PortalID));
             }
 
             DeleteWorkflowNotifications(contentItem, currentState);
@@ -563,6 +553,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowDiscarded, stateTransaction.UserId);
 
             DiscardWorkflowInternal(contentItem, stateTransaction.UserId);
+
+            // Notifications
+            SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.DiscardWorkflow);
             DeleteWorkflowNotifications(contentItem, currentState);
         }
 
@@ -584,6 +577,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowApproved, stateTransaction.UserId);
 
             CompleteWorkflowInternal(contentItem, stateTransaction.UserId);
+
+            // Notifications
+            SendNotificationToAuthor(stateTransaction, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);
             DeleteWorkflowNotifications(contentItem, currentState);
         }
         #endregion

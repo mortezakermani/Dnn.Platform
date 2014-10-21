@@ -19,13 +19,13 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using DotNetNuke.Entities.Content.Workflow.Actions;
-
-namespace DotNetNuke.Entities.Content.Workflow.Repositories
+namespace DotNetNuke.Entities.Content.Workflow.Actions
 {
-    internal interface IWorkflowActionRepository
+    internal enum WorkflowActionTypes
     {
-        WorkflowAction GetWorkflowAction(int contentTypeId, string type);
-        void AddWorkflowAction(WorkflowAction action);
+        DiscardWorkflow,
+        CompleteWorkflow,
+        DiscardState,
+        CompleteState
     }
 }

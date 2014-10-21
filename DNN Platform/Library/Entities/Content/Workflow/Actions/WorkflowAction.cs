@@ -19,11 +19,18 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-namespace DotNetNuke.Entities.Content.Workflow
+using DotNetNuke.ComponentModel.DataAnnotations;
+
+namespace DotNetNuke.Entities.Content.Workflow.Actions
 {
-    internal enum WorkflowActionTypes
+    // TODO: add documentation
+    [PrimaryKey("ActionId")]
+    [TableName("ContentWorkflowActions")]
+    internal class WorkflowAction
     {
-        DiscardWorkflow,
-        CompleteWorkflow
+        public int ActionId { get; set; }
+        public int ContentTypeId { get; set; }
+        public string ActionType { get; set; }
+        public string ActionSource { get; set; }
     }
 }

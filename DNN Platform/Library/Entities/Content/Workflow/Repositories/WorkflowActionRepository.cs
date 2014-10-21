@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Actions;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories

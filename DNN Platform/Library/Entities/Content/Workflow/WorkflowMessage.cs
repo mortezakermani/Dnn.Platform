@@ -21,8 +21,10 @@
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    public interface IWorkflowAction
+    public class WorkflowMessage
     {
-        void DoAction(ContentItem contentItem, int userId);
+        public string Subject { get; set; }
+
+        public string Body { get; set; }
     }
 }

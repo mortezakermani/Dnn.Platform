@@ -19,18 +19,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using DotNetNuke.ComponentModel.DataAnnotations;
-
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Actions
 {
-    // TODO: add documentation
-    [PrimaryKey("ActionId")]
-    [TableName("ContentWorkflowActions")]
-    internal class WorkflowAction
+    public interface IWorkflowAction
     {
-        public int ActionId { get; set; }
-        public int ContentTypeId { get; set; }
-        public string ActionType { get; set; }
-        public string ActionSource { get; set; }
+        WorkflowMessage GetActionMessage(StateTransaction stateTransaction);
+
+        void DoAction(ContentItem contentItem, int userId);
     }
 }
