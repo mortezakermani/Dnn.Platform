@@ -4084,9 +4084,9 @@ namespace DotNetNuke.Data
                 contentItemId);
         }
 
-        public virtual IDataReader GetContentWorkflowLogs(int workflowId, int contentItemId)
+        public virtual IDataReader GetContentWorkflowLogs(int contentItemId, int workflowId)
         {
-            return ExecuteReader("GetContentWorkflowLogs", workflowId, contentItemId);
+            return ExecuteReader("GetContentWorkflowLogs", contentItemId, workflowId);
         }
 
         public virtual int DeleteContentWorkflowLogs(int contentItemId, int workflowId)

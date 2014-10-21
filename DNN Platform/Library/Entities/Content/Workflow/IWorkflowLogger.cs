@@ -29,6 +29,6 @@ namespace DotNetNuke.Entities.Content.Workflow
         // TODO: review if we can use a model for action/comment/userId
         void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId);
 
-        IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int workflowId, int contentItemId);
+        IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId);
     }
 }

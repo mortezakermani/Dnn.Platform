@@ -26,11 +26,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
     //TODO: add metadata info
     internal interface IWorkflowLogRepository
     {
-        void DeleteWorkflowLogs(int workflowId, int contentItemId);
+        void DeleteWorkflowLogs(int contentItemId, int workflowId);
 
         // TODO: review if we can use a model for action/comment/userId
         void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId);
         
-        IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int workflowId, int contentItemId);
+        IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId);
     }
 }
