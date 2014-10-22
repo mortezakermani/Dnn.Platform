@@ -75,29 +75,33 @@ namespace DotNetNuke.Entities.Content.Workflow
         #endregion
 
         #region Private Methods
-        
-        private void DiscardWorkflowInternal(ContentItem contentItem, int userId)
+        private void PerformWorkflowActionOnStateChanged(StateTransaction stateTransaction, WorkflowActionTypes actionType)
         {
-            PerformWorkflowAction(contentItem, userId, WorkflowActionTypes.DiscardWorkflow.ToString());
-        }
-
-        private void CompleteWorkflowInternal(ContentItem contentItem, int userId)
-        {
-            PerformWorkflowAction(contentItem, userId, WorkflowActionTypes.CompleteWorkflow.ToString());
-        }
-
-        private void PerformWorkflowAction(ContentItem contentItem, int userId, string actionType)
-        {
-            var workflowAction = GetWorkflowAction(contentItem, actionType);
+            var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
+            var workflowAction = GetWorkflowAction(contentItem.ContentTypeId, actionType);
             if (workflowAction != null)
             {
-                workflowAction.DoAction(contentItem, userId);
+                workflowAction.DoActionOnStateChanged(stateTransaction);
             }
         }
 
-        private IWorkflowAction GetWorkflowAction(ContentItem contentItem, string actionType)
+        private void PerformWorkflowActionOnStateChanging(StateTransaction stateTransaction, WorkflowActionTypes actionType)
         {
-            var action = _workflowActionRepository.GetWorkflowAction(contentItem.ContentTypeId, actionType);
+            var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
+            var workflowAction = GetWorkflowAction(contentItem.ContentTypeId, actionType);
+            if (workflowAction != null)
+            {
+                workflowAction.DoActionOnStateChanging(stateTransaction);
+            }
+        }
+
+        private IWorkflowAction GetWorkflowAction(ContentItem contentItem, WorkflowActionTypes actionType)
+        {
+            return GetWorkflowAction(contentItem.ContentTypeId, actionType);
+        }
+        private IWorkflowAction GetWorkflowAction(int contentTypeId, WorkflowActionTypes actionType)
+        {
+            var action = _workflowActionRepository.GetWorkflowAction(contentTypeId, actionType.ToString());
             if (action == null)
             {
                 return null;
@@ -158,7 +162,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
 
-            var workflowAction = GetWorkflowAction(contentItem, workflowActionType.ToString());
+            var workflowAction = GetWorkflowAction(contentItem, workflowActionType);
             if (workflowAction == null)
             {
                 return;
@@ -197,7 +201,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return; // If there are no receivers, the notification is avoided
             }
 
-            var workflowAction = GetWorkflowAction(contentItem, workflowActionType.ToString());
+            var workflowAction = GetWorkflowAction(contentItem, workflowActionType);
             if (workflowAction == null)
             {
                 return;
@@ -419,8 +423,16 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 throw new WorkflowConcurrencyException();
             }
-            
+
             var nextState = GetNextWorkflowState(workflow, contentItem.StateID);
+            if (nextState.StateID == workflow.LastState.StateID)
+            {
+                CompleteWorkflow(stateTransaction);
+                return;
+            }
+
+            // before-change action
+            PerformWorkflowActionOnStateChanging(stateTransaction, WorkflowActionTypes.CompleteState);
             UpdateContentItemWorkflowState(nextState.StateID, contentItem);
 
             // Add logs
@@ -433,20 +445,12 @@ namespace DotNetNuke.Entities.Content.Workflow
                 nextState.StateID == workflow.LastState.StateID
                     ? ContentWorkflowLogType.WorkflowApproved
                     : ContentWorkflowLogType.StateInitiated, stateTransaction.UserId);
+
+            // after-change action
+            PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.CompleteState);
             
-            if (nextState.StateID == workflow.LastState.StateID)
-            {
-                CompleteWorkflowInternal(contentItem, stateTransaction.UserId);
-
-                // Send to author - workflow has been completed
-                SendNotificationToAuthor(stateTransaction, nextState, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);
-            }
-            else
-            {
-                // Send to reviewers
-                SendNotificationsToReviewers(contentItem, nextState, stateTransaction, WorkflowActionTypes.CompleteState, new PortalSettings(workflow.PortalID));
-            }
-
+            SendNotificationsToReviewers(contentItem, nextState, stateTransaction, WorkflowActionTypes.CompleteState, new PortalSettings(workflow.PortalID));
+            
             DeleteWorkflowNotifications(contentItem, currentState);
         }
 
@@ -479,18 +483,26 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
 
             var previousState = GetPreviousWorkflowState(workflow, contentItem.StateID);
+            if (previousState.StateID == workflow.LastState.StateID)
+            {
+                DiscardWorkflow(stateTransaction);
+                return;
+            }
+
+            // before-change action
+            PerformWorkflowActionOnStateChanging(stateTransaction, WorkflowActionTypes.DiscardState);
+
             UpdateContentItemWorkflowState(previousState.StateID, contentItem);
 
             // Add logs
             AddWorkflowCommentLog(contentItem, currentState, stateTransaction.UserId, stateTransaction.Message.UserComment);
             AddWorkflowLog(contentItem, currentState, ContentWorkflowLogType.StateDiscarded, stateTransaction.UserId);
             AddWorkflowLog(contentItem, ContentWorkflowLogType.StateInitiated, stateTransaction.UserId);
+
+            // after-change action
+            PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.DiscardState);
             
-            if (previousState.StateID == workflow.LastState.StateID)
-            {
-                DiscardWorkflowInternal(contentItem, stateTransaction.UserId);
-            } 
-            else if (previousState.StateID == workflow.FirstState.StateID)
+            if (previousState.StateID == workflow.FirstState.StateID)
             {
                 // Send to author - workflow comes back to draft state
                 SendNotificationToAuthor(stateTransaction, previousState, workflow, contentItem, WorkflowActionTypes.DiscardState);
@@ -540,7 +552,10 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 throw new WorkflowConcurrencyException();
             }
-            
+
+            // before-change action
+            PerformWorkflowActionOnStateChanging(stateTransaction, WorkflowActionTypes.DiscardWorkflow);
+
             var workflow =_workflowManager.GetWorkflow(contentItem);
             UpdateContentItemWorkflowState(workflow.LastState.StateID, contentItem);
 
@@ -548,7 +563,8 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
             AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowDiscarded, stateTransaction.UserId);
 
-            DiscardWorkflowInternal(contentItem, stateTransaction.UserId);
+            // after-change action
+            PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.DiscardWorkflow);
 
             // Notifications
             SendNotificationToAuthor(stateTransaction, workflow.LastState, workflow, contentItem, WorkflowActionTypes.DiscardWorkflow);
@@ -564,7 +580,10 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 throw new WorkflowConcurrencyException();
             }
-            
+
+            // before-change action
+            PerformWorkflowActionOnStateChanging(stateTransaction, WorkflowActionTypes.CompleteWorkflow);
+
             var workflow = _workflowManager.GetWorkflow(contentItem);
             UpdateContentItemWorkflowState(workflow.LastState.StateID, contentItem);
 
@@ -572,7 +591,8 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
             AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowApproved, stateTransaction.UserId);
 
-            CompleteWorkflowInternal(contentItem, stateTransaction.UserId);
+            // after-change action
+            PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.CompleteWorkflow);
 
             // Notifications
             SendNotificationToAuthor(stateTransaction, workflow.LastState, workflow, contentItem, WorkflowActionTypes.CompleteWorkflow);

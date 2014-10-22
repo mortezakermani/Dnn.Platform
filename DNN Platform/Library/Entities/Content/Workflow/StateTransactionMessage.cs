@@ -26,15 +26,15 @@ namespace DotNetNuke.Entities.Content.Workflow
     /// </summary>
     public class StateTransactionMessage
     {
-        /// <summary>
-        /// Subject of the message
-        /// </summary>
-        public string Subject { get; set; }
+        public StateTransactionMessage()
+        {
+            Params = new string[]{};
+        }
 
         /// <summary>
-        /// Body of the message
+        /// Params of the message
         /// </summary>
-        public string Body { get; set; }
+        public string[] Params { get; set; }
 
         /// <summary>
         /// User comment

@@ -69,11 +69,7 @@ namespace DotNetNuke.Web.InternalServices
                                            {
                                                ContentItemId = int.Parse(parameters[0]),
                                                CurrentStateId = int.Parse(parameters[2]),
-                                               Message = new StateTransactionMessage
-                                                         {
-                                                             Body = "Test [USERCOMMENT]",
-                                                             Subject = "Test"
-                                                         },
+                                               Message = new StateTransactionMessage (),
                                                UserId = UserInfo.UserID
                                            };
                     _workflowEngine.DiscardState(stateTransiction);
@@ -109,11 +105,7 @@ namespace DotNetNuke.Web.InternalServices
                                             {
                                                 ContentItemId = int.Parse(parameters[0]),
                                                 CurrentStateId = int.Parse(parameters[2]),
-                                                Message = new StateTransactionMessage
-                                                {
-                                                    Body = "Test [USERCOMMENT]",
-                                                    Subject = "Test"
-                                                },
+                                                Message = new StateTransactionMessage(),
                                                 UserId = UserInfo.UserID
                                             };
                     _workflowEngine.CompleteState(stateTransiction);

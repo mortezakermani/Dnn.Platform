@@ -25,6 +25,8 @@ namespace DotNetNuke.Entities.Content.Workflow.Actions
     {
         WorkflowMessage GetActionMessage(StateTransaction stateTransaction, ContentWorkflowState currentState);
 
-        void DoAction(ContentItem contentItem, int userId);
+        void DoActionOnStateChanged(StateTransaction stateTransaction);
+
+        void DoActionOnStateChanging(StateTransaction stateTransaction);
     }
 }
