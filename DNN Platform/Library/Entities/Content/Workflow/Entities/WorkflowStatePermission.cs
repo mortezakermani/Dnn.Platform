@@ -21,12 +21,12 @@
 
 using DotNetNuke.Security.Permissions;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Entities
 {
     /// <summary>
     /// This entity represents a state permission
     /// </summary>
-    public class ContentWorkflowStatePermission : PermissionInfoBase
+    public class WorkflowStatePermission : PermissionInfoBase
     {
         /// <summary>
         /// Workflow state permission Id

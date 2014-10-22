@@ -93,14 +93,14 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <param name="stateId">State Id</param>
         /// <returns>List of state permissions</returns>
-        IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId);
+        IEnumerable<WorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId);
 
         /// <summary>
         /// This method add a new workflow state permission
         /// </summary>
         /// <param name="permission">Permission</param>
         /// <param name="userId">User Id of the user that perform the action</param>
-        void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int userId);
+        void AddWorkflowStatePermission(WorkflowStatePermission permission, int userId);
 
         /// <summary>
         /// This method deletes a workflow state permission by Id

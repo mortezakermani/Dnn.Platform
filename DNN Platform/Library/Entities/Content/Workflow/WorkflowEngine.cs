@@ -214,7 +214,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _notificationsController.SendNotification(notification, portalSettings.PortalId, roles.ToList(), users.ToList());
         }
         
-        private static IEnumerable<RoleInfo> GetRolesFromPermissions(PortalSettings settings, IEnumerable<ContentWorkflowStatePermission> permissions, bool includeAdministrators)
+        private static IEnumerable<RoleInfo> GetRolesFromPermissions(PortalSettings settings, IEnumerable<WorkflowStatePermission> permissions, bool includeAdministrators)
         {
             var roles = (from permission in permissions 
                          where permission.AllowAccess && permission.RoleID > Null.NullInteger 
@@ -240,7 +240,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             return roles.Any(r => r.RoleName == settings.AdministratorRoleName);
         }
 
-        private static IEnumerable<UserInfo> GetUsersFromPermissions(PortalSettings settings, IEnumerable<ContentWorkflowStatePermission> permissions, bool includeAdministrators)
+        private static IEnumerable<UserInfo> GetUsersFromPermissions(PortalSettings settings, IEnumerable<WorkflowStatePermission> permissions, bool includeAdministrators)
         {
             var users = (from permission in permissions 
                          where permission.AllowAccess && permission.UserID > Null.NullInteger 

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
@@ -30,12 +31,12 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
     internal class WorkflowStatePermissionsRepository : ServiceLocator<IWorkflowStatePermissionsRepository, WorkflowStatePermissionsRepository>, IWorkflowStatePermissionsRepository
     {
         #region Public Methods
-        public IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId)
+        public IEnumerable<WorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId)
         {
-            return CBO.FillCollection<ContentWorkflowStatePermission>(DataProvider.Instance().GetContentWorkflowStatePermissionsByStateID(stateId));
+            return CBO.FillCollection<WorkflowStatePermission>(DataProvider.Instance().GetContentWorkflowStatePermissionsByStateID(stateId));
         }
 
-        public void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserId)
+        public void AddWorkflowStatePermission(WorkflowStatePermission permission, int lastModifiedByUserId)
         {
             DataProvider.Instance().AddContentWorkflowStatePermission(permission.StateID,
                                                                        permission.PermissionID,

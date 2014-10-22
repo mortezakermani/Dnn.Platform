@@ -225,12 +225,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowStateRepository.UpdateWorkflowState(stateToMoveDown);
         }
 
-        public IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId)
+        public IEnumerable<WorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId)
         {
             return _workflowStatePermissionsRepository.GetWorkflowStatePermissionByState(stateId);
         }
 
-        public void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int userId)
+        public void AddWorkflowStatePermission(WorkflowStatePermission permission, int userId)
         {
             _workflowStatePermissionsRepository.AddWorkflowStatePermission(permission, userId);
         }

@@ -26,7 +26,6 @@ using System.Linq;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.ComponentModel;
 using DotNetNuke.Data;
-using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security;

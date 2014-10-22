@@ -19,34 +19,25 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System.Collections.Generic;
-using DotNetNuke.Entities.Content.Workflow.Entities;
+using System;
+using DotNetNuke.Security.Permissions;
 
-namespace DotNetNuke.Entities.Content.Workflow.Repositories
+namespace DotNetNuke.Entities.Content.Workflow
 {
     /// <summary>
-    /// This class is responsible to manage the workflow state permission entity
+    /// This entity represents a state permission
     /// </summary>
-    internal interface IWorkflowStatePermissionsRepository
+    [Obsolete("Obsoleted in Platform 7.4.0.")]
+    public class ContentWorkflowStatePermission : PermissionInfoBase
     {
         /// <summary>
-        /// Gets the registered permissions set for a specific state
+        /// Workflow state permission Id
         /// </summary>
-        /// <param name="stateId">State Id</param>
-        /// <returns>List of Workflow State Permission entities</returns>
-        IEnumerable<WorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId);
+        public int WorkflowStatePermissionID { get; set; }
 
         /// <summary>
-        /// Persists a new Workflow State Permission entity
+        /// State Id
         /// </summary>
-        /// <param name="permission">Workflow State Permission entity</param>
-        /// <param name="lastModifiedByUserId">User Id who modifies the permissions set</param>
-        void AddWorkflowStatePermission(WorkflowStatePermission permission, int lastModifiedByUserId);
-
-        /// <summary>
-        /// Deletes a specific Workflow State Permission entity
-        /// </summary>
-        /// <param name="workflowStatePermissionId">Workflow State Permission Id</param>
-        void DeleteWorkflowStatePermission(int workflowStatePermissionId);
+        public int StateID { get; set; }
     }
 }
