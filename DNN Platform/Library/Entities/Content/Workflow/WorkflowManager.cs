@@ -49,18 +49,24 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public void DeleteWorkflow(ContentWorkflow workflow)
         {
-            if (workflow.IsSystem)
+            var workflowToDelete = _workflowRepository.GetWorkflow(workflow.WorkflowID);
+            if (workflowToDelete == null)
+            {
+                return;
+            }
+
+            if (workflowToDelete.IsSystem)
             {
                 throw new WorkflowException(Localization.GetString("SystemWorkflowDeletionException", Localization.ExceptionsResourceFile));
             }
 
-            var usageCount = GetWorkflowUsageCount(workflow.WorkflowID);
+            var usageCount = GetWorkflowUsageCount(workflowToDelete.WorkflowID);
             if (usageCount > 0)
             {
                 throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
             }
 
-            _workflowRepository.DeleteWorkflow(workflow);
+            _workflowRepository.DeleteWorkflow(workflowToDelete);
         }
 
         public ContentWorkflow GetWorkflow(int workflowId)

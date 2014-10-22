@@ -75,25 +75,24 @@ namespace DotNetNuke.Entities.Content.Workflow
             state.Order = lastState.Order;
 
             lastState.Order++;
-            _workflowStateRepository.UpdateWorkflowState(lastState); // Update last state order
             _workflowStateRepository.AddWorkflowState(state);
+            _workflowStateRepository.UpdateWorkflowState(lastState); // Update last state order
         }
 
         public void DeleteWorkflowState(ContentWorkflowState state)
         {
-            var workflow = _workflowRepository.GetWorkflow(state.WorkflowID);
-            if (workflow == null)
+            var stateToDelete = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
+            if (stateToDelete == null)
             {
-                throw new WorkflowDoesNotExistException();
+                return;
             }
 
-            var stateToDelete = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
             if (stateToDelete.IsSystem)
             {
                 throw new WorkflowException("System workflow state cannot be deleted"); // TODO: Localize error message
             }
 
-            if (_dataProvider.GetContentWorkflowUsageCount(workflow.WorkflowID) > 0)
+            if (_dataProvider.GetContentWorkflowUsageCount(stateToDelete.WorkflowID) > 0)
             {
                 throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));   
             }
@@ -124,14 +123,18 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public void MoveWorkflowStateDown(int stateId)
         {
-            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            var state = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            if (state == null)
+            {
+                throw new WorkflowDoesNotExistException();
+            }
 
-            if (_dataProvider.GetContentWorkflowUsageCount(workflow.WorkflowID) > 0)
+            if (_dataProvider.GetContentWorkflowUsageCount(state.WorkflowID) > 0)
             {
                 throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
             }
 
-            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
+            var states = _workflowStateRepository.GetWorkflowStates(state.WorkflowID).ToArray();
 
             if (states.Length == 3)
             {
@@ -171,14 +174,18 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public void MoveWorkflowStateUp(int stateId)
         {
-            var workflow = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            var state = _workflowStateRepository.GetWorkflowStateByID(stateId);
+            if (state == null)
+            {
+                throw new WorkflowDoesNotExistException();
+            }
 
-            if (_dataProvider.GetContentWorkflowUsageCount(workflow.WorkflowID) > 0)
+            if (_dataProvider.GetContentWorkflowUsageCount(state.WorkflowID) > 0)
             {
                 throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
             }
 
-            var states = _workflowStateRepository.GetWorkflowStates(workflow.WorkflowID).ToArray();
+            var states = _workflowStateRepository.GetWorkflowStates(state.WorkflowID).ToArray();
             
             if (states.Length == 3)
             {
@@ -233,9 +240,11 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         #endregion
 
+        #region Service Locator
         protected override Func<IWorkflowStateManager> GetFactory()
         {
             return () => new WorkflowStateManager();
         }
+        #endregion
     }
 }
