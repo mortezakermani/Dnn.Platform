@@ -23,14 +23,14 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using DotNetNuke.ComponentModel.DataAnnotations;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Entities
 {
     /// <summary>
     /// This entity represents a Workflow State
     /// </summary>
     [PrimaryKey("StateID")]
     [TableName("ContentWorkflowStates")]
-    public class ContentWorkflowState 
+    public class WorkflowState 
     {
         /// <summary>
         /// State Id
@@ -52,11 +52,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <summary>
         /// State Order
         /// </summary>
-        public int Order { get; set; } // Consider make set internal - need to consider possible breaking compatibility
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public bool IsActive { get; set; }
+        public int Order { get; internal set; } 
 
         /// <summary>
         /// Indicates if the state is a system state. System states (i.e.: Draft, Published) have a special behavior. They cannot be deleted or moved.
@@ -73,32 +69,5 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <remarks>If SendNotification is set to false, the Workflow Engine <see cref="IWorkflowEngine"/> won't send notification to administrators user even if this property is set to true</remarks>
         public bool SendNotificationToAdministrators { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public bool SendEmail { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public bool SendMessage { get; set; } 
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        public bool IsDisposalState { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public string OnCompleteMessageSubject { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public string OnCompleteMessageBody { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public string OnDiscardMessageSubject { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public string OnDiscardMessageBody { get; set; }
     }
 }

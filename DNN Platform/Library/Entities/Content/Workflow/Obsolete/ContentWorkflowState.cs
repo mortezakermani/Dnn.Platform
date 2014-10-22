@@ -19,46 +19,51 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System.Collections.Generic;
-using DotNetNuke.Entities.Content.Workflow.Entities;
+using System;
+using System.ComponentModel.DataAnnotations;
+using DotNetNuke.ComponentModel.DataAnnotations;
 
-namespace DotNetNuke.Entities.Content.Workflow.Repositories
+namespace DotNetNuke.Entities.Content.Workflow
 {
     /// <summary>
-    /// This class is responsible to persist and retrieve workflow state entity
+    /// This entity represents a Workflow State
     /// </summary>
-    internal interface IWorkflowStateRepository
+    [Obsolete("Obsoleted in Platform 7.4.0")]    
+    public class ContentWorkflowState 
     {
         /// <summary>
-        /// Get all states for a specific workflow
+        /// State Id
         /// </summary>
-        /// <param name="workflowId">Workflow Id</param>
-        /// <returns>List of workflow states</returns>
-        IEnumerable<WorkflowState> GetWorkflowStates(int workflowId);
+        public int StateID { get; set; }
 
         /// <summary>
-        /// Get a workflow state by Id
+        /// Workflow associated to the state
         /// </summary>
-        /// <param name="stateID">State Id</param>
-        /// <returns>Workflow State entity</returns>
-        WorkflowState GetWorkflowStateByID(int stateID);
+        public int WorkflowID { get; set; }
 
         /// <summary>
-        /// Persists a new workflow state entity
+        /// State name
         /// </summary>
-        /// <param name="state">Workflow State entity</param>
-        void AddWorkflowState(WorkflowState state);
+        public string StateName { get; set; }
 
         /// <summary>
-        /// Persists changes for a workflow state entity
+        /// State Order
         /// </summary>
-        /// <param name="state">Workflow State entity</param>
-        void UpdateWorkflowState(WorkflowState state);
+        public int Order { get; set; }
+        public bool IsActive { get; set; }
 
-        /// <summary>
-        /// This method hard deletes a workflow state entity
-        /// </summary>
-        /// <param name="state">Workflow State entity</param>
-        void DeleteWorkflowState(WorkflowState state);
+        public bool SendEmail { get; set; }
+
+        public bool SendMessage { get; set; } 
+
+        public bool IsDisposalState { get; set; }
+
+        public string OnCompleteMessageSubject { get; set; }
+
+        public string OnCompleteMessageBody { get; set; }
+
+        public string OnDiscardMessageSubject { get; set; }
+
+        public string OnDiscardMessageBody { get; set; }
     }
 }

@@ -20,12 +20,13 @@
 #endregion
 
 using DotNetNuke.Entities.Content.Workflow.Dto;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 
 namespace DotNetNuke.Entities.Content.Workflow.Actions
 {
     public interface IWorkflowAction
     {
-        ActionMessage GetActionMessage(StateTransaction stateTransaction, ContentWorkflowState currentState);
+        ActionMessage GetActionMessage(StateTransaction stateTransaction, WorkflowState currentState);
 
         void DoActionOnStateChanged(StateTransaction stateTransaction);
 

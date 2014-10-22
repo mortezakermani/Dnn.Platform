@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DotNetNuke.Common;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Framework;
 
@@ -32,33 +33,33 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
     internal class WorkflowStateRepository : ServiceLocator<IWorkflowStateRepository, WorkflowStateRepository>, IWorkflowStateRepository
     {
         #region Public Methods
-        public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId)
+        public IEnumerable<WorkflowState> GetWorkflowStates(int workflowId)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowState>();
+                var rep = context.GetRepository<WorkflowState>();
                 return rep.Find("WHERE WorkflowId = @0 ORDER BY [Order] ASC", workflowId);
             }
         }
 
-        public ContentWorkflowState GetWorkflowStateByID(int stateId)
+        public WorkflowState GetWorkflowStateByID(int stateId)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowState>();
+                var rep = context.GetRepository<WorkflowState>();
                 return rep.GetById(stateId);
             }
         }
 
         // TODO: Validate
-        public void AddWorkflowState(ContentWorkflowState state)
+        public void AddWorkflowState(WorkflowState state)
         {
             Requires.NotNull("state", state);
             Requires.PropertyNotNullOrEmpty("state", "StateName", state.StateName);
 
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowState>();
+                var rep = context.GetRepository<WorkflowState>();
                 if (DoesExistWorkflowState(state, rep))
                 {
                     throw new WorkflowStateNameAlreadyExistsException();
@@ -69,7 +70,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         }
 
         // TODO: Validate
-        public void UpdateWorkflowState(ContentWorkflowState state)
+        public void UpdateWorkflowState(WorkflowState state)
         {
             Requires.NotNull("state", state);
             Requires.PropertyNotNegative("state", "StateID", state.StateID);
@@ -77,7 +78,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
 
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowState>();
+                var rep = context.GetRepository<WorkflowState>();
                 if (DoesExistWorkflowState(state, rep))
                 {
                     throw new WorkflowStateNameAlreadyExistsException();
@@ -87,14 +88,14 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             }
         }
 
-        public void DeleteWorkflowState(ContentWorkflowState state)
+        public void DeleteWorkflowState(WorkflowState state)
         {
             Requires.NotNull("state", state);
             Requires.PropertyNotNegative("state", "StateID", state.StateID);
 
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowState>();
+                var rep = context.GetRepository<WorkflowState>();
                 rep.Delete(state);
             }
         }
@@ -102,7 +103,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
 
         #region Private Methods
 
-        private static bool DoesExistWorkflowState(ContentWorkflowState state, IRepository<ContentWorkflowState> rep)
+        private static bool DoesExistWorkflowState(WorkflowState state, IRepository<WorkflowState> rep)
         {
             return rep.Find(
                 "WHERE StateName = @0 AND WorkflowID = @1 AND StateId != @2",

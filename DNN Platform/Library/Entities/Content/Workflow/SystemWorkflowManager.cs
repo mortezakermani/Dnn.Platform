@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
 using DotNetNuke.Services.Localization;
@@ -49,9 +50,9 @@ namespace DotNetNuke.Entities.Content.Workflow
         #endregion
 
         #region Private Methods
-        private ContentWorkflowState GetDefaultWorkflowState(int order)
+        private WorkflowState GetDefaultWorkflowState(int order)
         {
-            return new ContentWorkflowState
+            return new WorkflowState
             {
                 IsSystem = true,
                 SendNotification = true,
@@ -146,21 +147,21 @@ namespace DotNetNuke.Entities.Content.Workflow
             return _workflowRepository.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == ContentAprovalWorkflowKey);
         }
 
-        public ContentWorkflowState GetDraftStateDefinition(int order)
+        public WorkflowState GetDraftStateDefinition(int order)
         {
             var state = GetDefaultWorkflowState(order);
             state.StateName = Localization.GetString("DefaultWorkflowState1.StateName");
             return state;
         }
 
-        public ContentWorkflowState GetPublishedStateDefinition(int order)
+        public WorkflowState GetPublishedStateDefinition(int order)
         {
             var state = GetDefaultWorkflowState(order);
             state.StateName = Localization.GetString("DefaultWorkflowState3.StateName");
             return state;
         }
 
-        public ContentWorkflowState GetReadyForReviewStateDefinition(int order)
+        public WorkflowState GetReadyForReviewStateDefinition(int order)
         {
             var state = GetDefaultWorkflowState(order);
             state.StateName = Localization.GetString("DefaultWorkflowState2.StateName");

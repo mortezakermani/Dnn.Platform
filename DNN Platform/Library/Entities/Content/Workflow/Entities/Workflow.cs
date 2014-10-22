@@ -25,14 +25,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DotNetNuke.ComponentModel.DataAnnotations;
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Entities
 {
     /// <summary>
     /// This entity represents a Workflow
     /// </summary>
     [PrimaryKey("WorkflowID")]
     [TableName("ContentWorkflows")]
-    public class ContentWorkflow
+    public class Workflow
     {
         /// <summary>
         /// Workflow Id
@@ -88,13 +88,13 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// Workflow states
         /// </summary>
         [IgnoreColumn]
-        public IEnumerable<ContentWorkflowState> States { get; internal set; }
+        public IEnumerable<WorkflowState> States { get; internal set; }
 
         /// <summary>
         /// First workflow state
         /// </summary>
         [IgnoreColumn]
-        public ContentWorkflowState FirstState
+        public WorkflowState FirstState
         {
             get
             {
@@ -106,7 +106,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// Last workflow state
         /// </summary>
         [IgnoreColumn]
-        public ContentWorkflowState LastState
+        public WorkflowState LastState
         {
             get
             {

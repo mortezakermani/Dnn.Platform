@@ -26,6 +26,7 @@ using System.Linq;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Content.Workflow.Actions;
 using DotNetNuke.Entities.Content.Workflow.Dto;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Entities.Portals;
@@ -123,12 +124,12 @@ namespace DotNetNuke.Entities.Content.Workflow
         }
 
         #region Notification utilities
-        private string GetWorkflowNotificationContext(ContentItem contentItem, ContentWorkflowState state)
+        private string GetWorkflowNotificationContext(ContentItem contentItem, WorkflowState state)
         {
             return string.Format("{0}:{1}:{2}", contentItem.ContentItemId, state.WorkflowID, state.StateID);
         }
 
-        private void DeleteWorkflowNotifications(ContentItem contentItem, ContentWorkflowState state)
+        private void DeleteWorkflowNotifications(ContentItem contentItem, WorkflowState state)
         {
             var context = GetWorkflowNotificationContext(contentItem, state);
             var notificationTypeId = _notificationsController.GetNotificationType(ContentWorkflowNotificationType).NotificationTypeId;
@@ -139,7 +140,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
-        private void SendNotificationToAuthor(StateTransaction stateTransaction, ContentWorkflowState state, ContentWorkflow workflow, ContentItem contentItem, WorkflowActionTypes workflowActionType)
+        private void SendNotificationToAuthor(StateTransaction stateTransaction, WorkflowState state, ContentWorkflow workflow, ContentItem contentItem, WorkflowActionTypes workflowActionType)
         {
             var user = GetUserThatHaveSubmittedDraftState(workflow, contentItem.ContentItemId);
             if (user == null)
@@ -173,7 +174,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _notificationsController.SendNotification(notification, workflow.PortalID, null, new []{ user });
         }
 
-        private void SendNotificationsToReviewers(ContentItem contentItem, ContentWorkflowState state, StateTransaction stateTransaction, WorkflowActionTypes workflowActionType, PortalSettings portalSettings)
+        private void SendNotificationsToReviewers(ContentItem contentItem, WorkflowState state, StateTransaction stateTransaction, WorkflowActionTypes workflowActionType, PortalSettings portalSettings)
         {
             if (!state.SendNotification)
             {
@@ -277,7 +278,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var state = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
             AddWorkflowLog(contentItem, state, ContentWorkflowLogType.CommentProvided, userId, userComment);
         }
-        private void AddWorkflowCommentLog(ContentItem contentItem, ContentWorkflowState state, int userId, string userComment)
+        private void AddWorkflowCommentLog(ContentItem contentItem, WorkflowState state, int userId, string userComment)
         {
             if (string.IsNullOrEmpty(userComment))
             {
@@ -292,7 +293,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowLog(contentItem, state, logType, userId, userComment);
         }
 
-        private void AddWorkflowLog(ContentItem contentItem, ContentWorkflowState state, ContentWorkflowLogType logType, int userId, string userComment = null)
+        private void AddWorkflowLog(ContentItem contentItem, WorkflowState state, ContentWorkflowLogType logType, int userId, string userComment = null)
         {
             var workflow = _workflowManager.GetWorkflow(contentItem);
             var logTypeText = GetWorkflowActionComment(logType);
@@ -308,7 +309,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             return Localization.GetString(logName + ".Comment");
         }
 
-        private string ReplaceNotificationTokens(string text, ContentWorkflow workflow, ContentItem item, ContentWorkflowState state, int userId, string comment = "")
+        private string ReplaceNotificationTokens(string text, ContentWorkflow workflow, ContentItem item, WorkflowState state, int userId, string comment = "")
         {
             var user = _userController.GetUserById(workflow.PortalID, userId);
             var datetime = DateTime.UtcNow;
@@ -321,9 +322,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             return result;
         }
 
-        private ContentWorkflowState GetNextWorkflowState(ContentWorkflow workflow, int stateId)
+        private WorkflowState GetNextWorkflowState(ContentWorkflow workflow, int stateId)
         {
-            ContentWorkflowState nextState = null;
+            WorkflowState nextState = null;
             var states = workflow.States.OrderBy(s => s.Order);
             int index;
 
@@ -344,9 +345,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             return nextState ?? workflow.FirstState;
         }
 
-        private ContentWorkflowState GetPreviousWorkflowState(ContentWorkflow workflow, int stateId)
+        private WorkflowState GetPreviousWorkflowState(ContentWorkflow workflow, int stateId)
         {
-            ContentWorkflowState previousState = null;
+            WorkflowState previousState = null;
             var states = workflow.States.OrderBy(s => s.Order);
             int index;
 

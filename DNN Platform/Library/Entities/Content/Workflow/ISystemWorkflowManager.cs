@@ -19,6 +19,8 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using DotNetNuke.Entities.Content.Workflow.Entities;
+
 namespace DotNetNuke.Entities.Content.Workflow
 {
     /// <summary>
@@ -59,20 +61,20 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <param name="order">Order number to be included in the state definition</param>
         /// <returns>A 'Draft' state definition</returns>
-        ContentWorkflowState GetDraftStateDefinition(int order);
+        WorkflowState GetDraftStateDefinition(int order);
         
         /// <summary>
         /// Gets a default definition of the 'Published' system state
         /// </summary>
         /// <param name="order">Order number to be included in the state definition</param>
         /// <returns>A 'Published' state definition</returns>
-        ContentWorkflowState GetPublishedStateDefinition(int order);
+        WorkflowState GetPublishedStateDefinition(int order);
 
         /// <summary>
         /// Gets a default definition of the 'Ready for review' system state
         /// </summary>
         /// <param name="order">Order number to be included in the state definition</param>
         /// <returns>A 'Ready for review' state definition</returns>
-        ContentWorkflowState GetReadyForReviewStateDefinition(int order);
+        WorkflowState GetReadyForReviewStateDefinition(int order);
     }
 }

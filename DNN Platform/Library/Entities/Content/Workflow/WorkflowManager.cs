@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
@@ -116,7 +117,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowStateRepository.AddWorkflowState(firstDefaultState);
             _workflowStateRepository.AddWorkflowState(lastDefaultState);
 
-            workflow.States = new List<ContentWorkflowState>
+            workflow.States = new List<WorkflowState>
                               {
                                   firstDefaultState,
                                   lastDefaultState

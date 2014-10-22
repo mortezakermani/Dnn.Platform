@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -33,14 +34,14 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <param name="workflowId">Workflow Id</param>
         /// <returns>List of workflow States ordered by State Order ascending</returns>
-        IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId);
+        IEnumerable<WorkflowState> GetWorkflowStates(int workflowId);
 
         /// <summary>
         /// This method returns a workflow State by Id
         /// </summary>
         /// <param name="stateId">State Id</param>
         /// <returns>State entity</returns>
-        ContentWorkflowState GetWorkflowState(int stateId);
+        WorkflowState GetWorkflowState(int stateId);
 
         /// <summary>
         /// This method adds a new State to a workflow. The new state is always added as next to last state. 
@@ -50,7 +51,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowDoesNotExistException">Thrown when adding a state to a workflow that does not exist</exception>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when adding a state to a system workflow</exception>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowStateNameAlreadyExistsException">Thrown when already exist a state in the workflow with the same name</exception>
-        void AddWorkflowState(ContentWorkflowState state);
+        void AddWorkflowState(WorkflowState state);
 
         /// <summary>
         /// This method updates a State.
@@ -59,7 +60,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <param name="state">State entity</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowDoesNotExistException">Thrown when updating a state that does not exist</exception>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowStateNameAlreadyExistsException">Thrown when already exist a state in the workflow with the same name</exception>
-        void UpdateWorkflowState(ContentWorkflowState state);
+        void UpdateWorkflowState(WorkflowState state);
 
         /// <summary>
         /// This method hard deletes a state
@@ -67,7 +68,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <remarks>This method takes care of state reordering.</remarks>
         /// <param name="state">State entity</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when deleting a system state workflow (i.e.: Draft, Published) or if the workflow is beign used</exception>
-        void DeleteWorkflowState(ContentWorkflowState state);
+        void DeleteWorkflowState(WorkflowState state);
 
         /// <summary>
         /// This method move the state down to 1 position in the workflow state order

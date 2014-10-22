@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
@@ -47,17 +48,17 @@ namespace DotNetNuke.Entities.Content.Workflow
         #endregion
 
         #region Public Methods
-        public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId)
+        public IEnumerable<WorkflowState> GetWorkflowStates(int workflowId)
         {
             return _workflowStateRepository.GetWorkflowStates(workflowId);
         }
 
-        public ContentWorkflowState GetWorkflowState(int stateId)
+        public WorkflowState GetWorkflowState(int stateId)
         {
             return _workflowStateRepository.GetWorkflowStateByID(stateId);
         }
 
-        public void AddWorkflowState(ContentWorkflowState state)
+        public void AddWorkflowState(WorkflowState state)
         {
             var workflow = _workflowRepository.GetWorkflow(state.WorkflowID);
             if (workflow == null)
@@ -80,7 +81,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowStateRepository.UpdateWorkflowState(lastState); // Update last state order
         }
 
-        public void DeleteWorkflowState(ContentWorkflowState state)
+        public void DeleteWorkflowState(WorkflowState state)
         {
             var stateToDelete = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
             if (stateToDelete == null)
@@ -103,12 +104,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             // Reorder states order
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowState>();
+                var rep = context.GetRepository<WorkflowState>();
                 rep.Update("SET [Order] = [Order] - 1 WHERE WorkflowId = @0 AND [Order] > @1", stateToDelete.WorkflowID, stateToDelete.Order);
             }
         }
 
-        public void UpdateWorkflowState(ContentWorkflowState state)
+        public void UpdateWorkflowState(WorkflowState state)
         {
             var workflowState = _workflowStateRepository.GetWorkflowStateByID(state.StateID);
             if (workflowState == null)
@@ -142,8 +143,8 @@ namespace DotNetNuke.Entities.Content.Workflow
                 throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
             }
             
-            ContentWorkflowState stateToMoveUp = null;
-            ContentWorkflowState stateToMoveDown = null;
+            WorkflowState stateToMoveUp = null;
+            WorkflowState stateToMoveDown = null;
 
             for (var i = 0; i < states.Length; i++)
             {
@@ -193,8 +194,8 @@ namespace DotNetNuke.Entities.Content.Workflow
                 throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
             }
 
-            ContentWorkflowState stateToMoveUp = null;
-            ContentWorkflowState stateToMoveDown = null;
+            WorkflowState stateToMoveUp = null;
+            WorkflowState stateToMoveDown = null;
 
             for (var i = 0; i < states.Length; i++)
             {
