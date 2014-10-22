@@ -23,26 +23,72 @@ using System.Collections.Generic;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    // TODO: add metadata validation
+    /// <summary>
+    /// This class is responsible to manage the workflows of the portal. 
+    /// It provides CRUD operation methods and methods to know the usage of the workflow 
+    /// </summary>
     public interface IWorkflowManager
     {
+        /// <summary>
+        /// This method returns the paginated list of Content Items that are associated with any State of a workflow (even the Published state)
+        /// </summary>
+        /// <param name="workflowId">Workflow Id</param>
+        /// <param name="pageIndex">Page index (where 1 is the index of the first page)</param>
+        /// <param name="pageSize">Page size</param>
+        /// <returns>List of Content Items</returns>
         IEnumerable<ContentItem> GetWorkflowUsage(int workflowId, int pageIndex, int pageSize);
 
+        /// <summary>
+        /// This method returns the total number of Content Items that are associated with any State of a workflow (even the Published state)
+        /// </summary>
+        /// <param name="workflowId">Workflow Id</param>
+        /// <returns>Total count of Content Items that are using the specified workflow</returns>
         int GetWorkflowUsageCount(int workflowId);
         
+        /// <summary>
+        /// This method return the list of the Workflows defined for the portal
+        /// </summary>
+        /// <param name="portalId">Portal Id</param>
+        /// <returns>List of the Workflows for the portal</returns>
         IEnumerable<ContentWorkflow> GetWorkflows(int portalId);
         
+        /// <summary>
+        /// This method adds a new workflow. It automatically add two system states: "Draft" and "Published"
+        /// </summary>
+        /// <param name="workflow">Workflow Entity</param>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowNameAlreadyExistsException">Thrown when a workflow with the same name already exist for the portal</exception>
         void AddWorkflow(ContentWorkflow workflow);
 
+        /// <summary>
+        /// this method update a existing workflow.
+        /// </summary>
+        /// <param name="workflow">Workflow Entity</param>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowNameAlreadyExistsException">Thrown when a workflow with the same name already exist for the portal</exception>
         void UpdateWorkflow(ContentWorkflow workflow);
 
+        /// <summary>
+        /// This method hard deletes a workflow
+        /// </summary>
+        /// <param name="workflow">Workflow Entity</param>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowException">Thrown when a workflow is in use or is a system workflow</exception>
         void DeleteWorkflow(ContentWorkflow workflow);
 
+        /// <summary>
+        /// This method returns a workflow entity by Id
+        /// </summary>
+        /// <param name="workflowId">Workflow Id</param>
+        /// <returns>Workflow Entity</returns>
         ContentWorkflow GetWorkflow(int workflowId);
 
-        ContentWorkflow GetWorkflow(ContentItem item);
+        /// <summary>
+        /// This method returns a workflow entity by Content Item Id. It returns null if the Content Item is not under workflow.
+        /// </summary>
+        /// <param name="contentItem">Content Item</param>
+        /// <returns>Workflow Entity</returns>
+        ContentWorkflow GetWorkflow(ContentItem contentItem);
 
-        ContentWorkflow GetCurrentOrDefaultWorkflow(ContentItem item, int portalId);
+        // TODO: review method scope. This method probably need to go to a new class speficic to Tab
+        ContentWorkflow GetCurrentOrDefaultWorkflow(ContentItem contentItem, int portalId);
 
     }
 }

@@ -22,7 +22,6 @@
 using System.Collections.Generic;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
-using DotNetNuke.Entities.Content.Common;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
@@ -32,10 +31,12 @@ namespace DotNetNuke.Entities.Content.Workflow
 {
     public class WorkflowManager : ServiceLocator<IWorkflowManager, WorkflowManager>, IWorkflowManager
     {
+        #region Members
         private readonly DataProvider _dataProvider;
         private readonly IWorkflowRepository _workflowRepository = WorkflowRepository.Instance;
         private readonly IWorkflowStateRepository _workflowStateRepository = WorkflowStateRepository.Instance;
         private readonly ISystemWorkflowManager _systemWorkflowManager = SystemWorkflowManager.Instance;
+        #endregion
 
         #region Constructor
         public WorkflowManager()
@@ -67,13 +68,13 @@ namespace DotNetNuke.Entities.Content.Workflow
             return _workflowRepository.GetWorkflow(workflowId);
         }
 
-        public ContentWorkflow GetWorkflow(ContentItem item)
+        public ContentWorkflow GetWorkflow(ContentItem contentItem)
         {
-            if (item.StateID == Null.NullInteger)
+            if (contentItem.StateID == Null.NullInteger)
             {
                 return null;
             }
-            var state = WorkflowStateRepository.Instance.GetWorkflowStateByID(item.StateID);
+            var state = WorkflowStateRepository.Instance.GetWorkflowStateByID(contentItem.StateID);
             return state == null ? null : GetWorkflow(state.WorkflowID);
         }
 
@@ -115,7 +116,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public void UpdateWorkflow(ContentWorkflow workflow)
         {
-            throw new System.NotImplementedException();
+            _workflowRepository.UpdateWorkflow(workflow);
         }
 
         public IEnumerable<ContentItem> GetWorkflowUsage(int workflowId, int pageIndex, int pageSize)
@@ -129,9 +130,11 @@ namespace DotNetNuke.Entities.Content.Workflow
         }
         #endregion
 
+        #region Service Locator
         protected override System.Func<IWorkflowManager> GetFactory()
         {
             return () => new WorkflowManager();
         }
+        #endregion
     }
 }

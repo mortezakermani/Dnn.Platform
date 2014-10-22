@@ -30,15 +30,21 @@ using DotNetNuke.Security.Permissions;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    // TODO: add interface metadata documentation
     public class WorkflowSecurity : ServiceLocator<IWorkflowSecurity, WorkflowSecurity>, IWorkflowSecurity
     {
+        #region Constants
         private const string ReviewPermissionKey = "REVIEW";
+        private const string ReviewPermissionCode = "SYSTEM_CONTENTWORKFLOWSTATE";
+        #endregion
+
+        #region Members
         private readonly IUserController _userController = UserController.Instance;
         private readonly IWorkflowManager _workflowManager = WorkflowManager.Instance;
         private readonly IWorkflowStatePermissionsRepository _statePermissionsRepository = WorkflowStatePermissionsRepository.Instance;
+        #endregion
 
-        public bool HasStateReviewerPermission(UserInfo user, PortalSettings settings, int stateId)
+        #region Public Methods
+        public bool HasStateReviewerPermission(PortalSettings settings, UserInfo user, int stateId)
         {
             var permissions = _statePermissionsRepository.GetWorkflowStatePermissionByState(stateId);
 
@@ -51,13 +57,13 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             var user = _userController.GetUserById(portalId, userId);
             var portalSettings = new PortalSettings(portalId);
-            return HasStateReviewerPermission(user, portalSettings, stateId);
+            return HasStateReviewerPermission(portalSettings, user, stateId);
         }
 
         public bool HasStateReviewerPermission(int stateId)
         {
             var user = _userController.GetCurrentUserInfo();
-            return HasStateReviewerPermission(user, PortalSettings.Current, stateId);
+            return HasStateReviewerPermission(PortalSettings.Current, user, stateId);
         }
 
         public bool IsWorkflowReviewer(int workflowId, int userId)
@@ -68,12 +74,15 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         public PermissionInfo GetStateReviewPermission()
         {
-            return (PermissionInfo)new PermissionController().GetPermissionByCodeAndKey("SYSTEM_CONTENTWORKFLOWSTATE", ReviewPermissionKey)[0];
+            return (PermissionInfo)new PermissionController().GetPermissionByCodeAndKey(ReviewPermissionCode, ReviewPermissionKey)[0];
         }
+        #endregion
 
+        #region Service Locator
         protected override Func<IWorkflowSecurity> GetFactory()
         {
             return () => new WorkflowSecurity();
         }
+        #endregion
     }
 }
