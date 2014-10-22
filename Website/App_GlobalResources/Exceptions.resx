@@ -369,4 +369,16 @@
   <data name="WorkflowConcurrencyException.Text" xml:space="preserve">
     <value>The current state of the workflow is not the same of the current state specified in the input parameter</value>
   </data>
+  <data name="UserCannotReviewWorkflowState.Text" xml:space="preserve">
+    <value>User cannot review the workflow state</value>
+  </data>
+  <data name="WorkflowAlreadyStarted.Text" xml:space="preserve">
+    <value>Workflow cannot get started for this Content Item. It already has a started workflow.</value>
+  </data>
+  <data name="WorkflowAuthorNotFound.Text" xml:space="preserve">
+    <value>Author cannot be found. Notification won't be sent</value>
+  </data>
+  <data name="WorkflowCannotDiscard.Text" xml:space="preserve">
+    <value>Cannot discard on last workflow state</value>
+  </data>
 </root>
