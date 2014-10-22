@@ -29,9 +29,9 @@ using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
-    //TODO: add metadata info
     internal class WorkflowStateRepository : ServiceLocator<IWorkflowStateRepository, WorkflowStateRepository>, IWorkflowStateRepository
     {
+        #region Public Methods
         public IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId)
         {
             using (var context = DataContext.Instance())
@@ -98,11 +98,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
                 rep.Delete(state);
             }
         }
-
-        protected override Func<IWorkflowStateRepository> GetFactory()
-        {
-            return () => new WorkflowStateRepository();
-        }
+        #endregion
 
         #region Private Methods
 
@@ -111,6 +107,13 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             return rep.Find(
                 "WHERE StateName = @0 AND WorkflowID = @1 AND StateId != @2",
                 state.StateName, state.WorkflowID, state.StateID).SingleOrDefault() != null;
+        }
+        #endregion
+
+        #region Service Locator
+        protected override Func<IWorkflowStateRepository> GetFactory()
+        {
+            return () => new WorkflowStateRepository();
         }
         #endregion
     }

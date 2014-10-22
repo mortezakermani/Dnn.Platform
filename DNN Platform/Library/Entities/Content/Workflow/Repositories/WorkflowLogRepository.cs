@@ -27,10 +27,9 @@ using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
-    //TODO: add metadata info
-    //TODO: add entities and validation
     internal class WorkflowLogRepository : ServiceLocator<IWorkflowLogRepository, WorkflowLogRepository> , IWorkflowLogRepository
     {
+        #region Public Methods
         public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
         {
             using (var context = DataContext.Instance())
@@ -60,10 +59,13 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
                 rep.Insert(workflowLog);
             }
         }
-        
+        #endregion
+
+        #region Service Locator
         protected override Func<IWorkflowLogRepository> GetFactory()
         {
             return () => new WorkflowLogRepository();
         }
+        #endregion
     }    
 }

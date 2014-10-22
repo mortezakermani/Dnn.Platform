@@ -21,12 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Framework;
-using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
@@ -34,20 +32,18 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
     // TODO: removed unused SPRoc and DataProvider layer
     internal class WorkflowRepository : ServiceLocator<IWorkflowRepository, WorkflowRepository>, IWorkflowRepository
     {
-        private readonly IWorkflowStateRepository _stateController = WorkflowStateRepository.Instance;
+        #region Members
+        private readonly IWorkflowStateRepository _stateRepository;
+        #endregion
 
         #region Constructor
         public WorkflowRepository()
         {
-            
-        }
-
-        public WorkflowRepository(IWorkflowStateRepository stateController)
-        {
-            _stateController = stateController;
+            _stateRepository = WorkflowStateRepository.Instance;
         }
         #endregion
 
+        #region Public Methods
         public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)
         {
             using (var context = DataContext.Instance())
@@ -58,7 +54,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
                 // Worfklow States eager loading
                 foreach (var workflow in workflows)
                 {
-                    workflow.States = _stateController.GetWorkflowStates(workflow.WorkflowID);
+                    workflow.States = _stateRepository.GetWorkflowStates(workflow.WorkflowID);
                 }
 
                 return workflows;
@@ -75,7 +71,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
                 // Worfklow States eager loading
                 foreach (var workflow in workflows)
                 {
-                    workflow.States = _stateController.GetWorkflowStates(workflow.WorkflowID);
+                    workflow.States = _stateRepository.GetWorkflowStates(workflow.WorkflowID);
                 }
 
                 return workflows;
@@ -96,13 +92,13 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
                 return null;
             }
 
-            workflow.States = _stateController.GetWorkflowStates(workflowId);
+            workflow.States = _stateRepository.GetWorkflowStates(workflowId);
             return workflow;
         }
 
         public ContentWorkflow GetWorkflow(ContentItem item)
         {
-            var state = _stateController.GetWorkflowStateByID(item.StateID);
+            var state = _stateRepository.GetWorkflowStateByID(item.StateID);
             return state == null ? null : GetWorkflow(state.WorkflowID);
         }
 
@@ -144,19 +140,21 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
                 rep.Delete(workflow);
             }
         }
-
-        protected override Func<IWorkflowRepository> GetFactory()
-        {
-            return () => new WorkflowRepository();
-        }
+        #endregion
 
         #region Private Methods
-
         private static bool DoesExistWorkflow(ContentWorkflow workflow, IRepository<ContentWorkflow> rep)
         {
             return rep.Find(
                 "WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL) AND WorkflowName = @1 AND WorkflowID != @2",
                 workflow.PortalID, workflow.WorkflowName, workflow.WorkflowID).SingleOrDefault() != null;
+        }
+        #endregion
+
+        #region Service Locator
+        protected override Func<IWorkflowRepository> GetFactory()
+        {
+            return () => new WorkflowRepository();
         }
         #endregion
     }

@@ -27,9 +27,9 @@ using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
-    //TODO: add interface doc metadata
     internal class WorkflowStatePermissionsRepository : ServiceLocator<IWorkflowStatePermissionsRepository, WorkflowStatePermissionsRepository>, IWorkflowStatePermissionsRepository
     {
+        #region Public Methods
         public IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId)
         {
             return CBO.FillCollection<ContentWorkflowStatePermission>(DataProvider.Instance().GetContentWorkflowStatePermissionsByStateID(stateId));
@@ -49,10 +49,13 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         {
             DataProvider.Instance().DeleteContentWorkflowStatePermission(workflowStatePermissionId);
         }
+        #endregion
 
+        #region Service Locator
         protected override Func<IWorkflowStatePermissionsRepository> GetFactory()
         {
             return () => new WorkflowStatePermissionsRepository();
         }
+        #endregion
     }
 }
