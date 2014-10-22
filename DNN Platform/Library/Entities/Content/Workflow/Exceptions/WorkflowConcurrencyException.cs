@@ -23,12 +23,12 @@ using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Content.Workflow.Exceptions
 {
-    public class WorkflowDoesNotExistException : WorkflowException
+    public class WorkflowConcurrencyException : WorkflowException
     {
-        public WorkflowDoesNotExistException()
-            : base(Localization.GetString("WorkflowDoesNotExistException", Localization.ExceptionsResourceFile))
+        public WorkflowConcurrencyException()
+            : base(Localization.GetString("WorkflowConcurrencyException", Localization.ExceptionsResourceFile))
         {
-            
+
         }
     }
 }

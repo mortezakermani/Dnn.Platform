@@ -60,13 +60,13 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             if (workflowToDelete.IsSystem)
             {
-                throw new WorkflowException(Localization.GetString("SystemWorkflowDeletionException", Localization.ExceptionsResourceFile));
+                throw new WorkflowInvalidOperationException(Localization.GetString("SystemWorkflowDeletionException", Localization.ExceptionsResourceFile));
             }
 
             var usageCount = GetWorkflowUsageCount(workflowToDelete.WorkflowID);
             if (usageCount > 0)
             {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
+                throw new WorkflowInvalidOperationException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
             }
 
             _workflowRepository.DeleteWorkflow(workflowToDelete);

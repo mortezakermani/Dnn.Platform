@@ -48,7 +48,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <remarks>This method also takes care on state reordering.</remarks>
         /// <param name="state">State entity</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowDoesNotExistException">Thrown when adding a state to a workflow that does not exist</exception>
-        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowException">Thrown when adding a state to a system workflow</exception>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when adding a state to a system workflow</exception>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowStateNameAlreadyExistsException">Thrown when already exist a state in the workflow with the same name</exception>
         void AddWorkflowState(ContentWorkflowState state);
 
@@ -66,7 +66,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <remarks>This method takes care of state reordering.</remarks>
         /// <param name="state">State entity</param>
-        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowException">Thrown when deleting a system state workflow (i.e.: Draft, Published) or if the workflow is beign used</exception>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when deleting a system state workflow (i.e.: Draft, Published) or if the workflow is beign used</exception>
         void DeleteWorkflowState(ContentWorkflowState state);
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <remarks>This method takes care of state reordering.</remarks>
         /// <param name="stateId">State Id</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowDoesNotExistException">Thrown when moving a state that does not exist</exception>
-        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowException">Thrown when state cannot be moved (i.e.: workflow is beign used, is the first/last state, etc...)</exception>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when state cannot be moved (i.e.: workflow is beign used, is the first/last state, etc...)</exception>
         void MoveWorkflowStateDown(int stateId);
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <remarks>This method takes care of state reordering.</remarks>
         /// <param name="stateId">State Id</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowDoesNotExistException">Thrown when moving a state that does not exist</exception>
-        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowException">Thrown when state cannot be moved (i.e.: workflow is beign used, is the first/last state, etc...)</exception>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when state cannot be moved (i.e.: workflow is beign used, is the first/last state, etc...)</exception>
         void MoveWorkflowStateUp(int stateId);
         
         /// <summary>

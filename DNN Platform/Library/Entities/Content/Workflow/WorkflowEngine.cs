@@ -378,8 +378,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             //If already exists a started workflow
             if (workflow != null && !IsWorkflowCompleted(contentItem))
             {
-                //TODO; Study if is need to throw an exception
-                return;
+                throw new WorkflowInvalidOperationException("Workflow cannot start for this Content Item. It already has a started workflow.");
             }
 
             if (workflow == null || workflow.WorkflowID != workflowId)
@@ -416,7 +415,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var currentState = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
             if (currentState.StateID != stateTransaction.CurrentStateId)
             {
-                throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
+                throw new WorkflowConcurrencyException();
             }
             
             var nextState = GetNextWorkflowState(workflow, contentItem.StateID);
@@ -459,6 +458,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
 
             var isFirstState = workflow.FirstState.StateID == contentItem.StateID;
+            var isLastState = workflow.LastState.StateID == contentItem.StateID;
+            
+            if (isLastState)
+            {
+                throw new WorkflowInvalidOperationException("Cannot discard on last workflow state"); // TODO: review and localize error message
+            }
 
             if (!isFirstState && !_workflowSecurity.HasStateReviewerPermission(workflow.PortalID, stateTransaction.UserId, contentItem.StateID))
             {
@@ -468,13 +473,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var currentState = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
             if (currentState.StateID != stateTransaction.CurrentStateId)
             {
-                throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
-            }
-
-            var isLastState = workflow.LastState.StateID == contentItem.StateID;
-            if (isLastState)
-            {
-                throw new WorkflowException("Cannot discard on last workflow state"); // TODO: review and localize error message
+                throw new WorkflowConcurrencyException();
             }
 
             var previousState = GetPreviousWorkflowState(workflow, contentItem.StateID);
@@ -537,7 +536,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var currentState = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
             if (currentState.StateID != stateTransaction.CurrentStateId)
             {
-                throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
+                throw new WorkflowConcurrencyException();
             }
             
             var workflow =WorkflowManager.Instance.GetWorkflow(contentItem);
@@ -561,7 +560,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             var currentState = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
             if (currentState.StateID != stateTransaction.CurrentStateId)
             {
-                throw new WorkflowException("Current state id does not match with the content item state id"); // TODO: review and localize error message
+                throw new WorkflowConcurrencyException();
             }
             
             var workflow = WorkflowManager.Instance.GetWorkflow(contentItem);
@@ -579,9 +578,11 @@ namespace DotNetNuke.Entities.Content.Workflow
         }
         #endregion
 
+        #region Service Locator
         protected override Func<IWorkflowEngine> GetFactory()
         {
             return () => new WorkflowEngine();
         }
+        #endregion
     }
 }

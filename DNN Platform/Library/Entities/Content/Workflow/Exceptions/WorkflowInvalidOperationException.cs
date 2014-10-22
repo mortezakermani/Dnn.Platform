@@ -19,14 +19,17 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using DotNetNuke.Services.Localization;
-
 namespace DotNetNuke.Entities.Content.Workflow.Exceptions
 {
-    public class WorkflowDoesNotExistException : WorkflowException
+    public class WorkflowInvalidOperationException : WorkflowException
     {
-        public WorkflowDoesNotExistException()
-            : base(Localization.GetString("WorkflowDoesNotExistException", Localization.ExceptionsResourceFile))
+        public WorkflowInvalidOperationException(string message)
+            : base(message)
+        {
+
+        }
+
+        public WorkflowInvalidOperationException()
         {
             
         }

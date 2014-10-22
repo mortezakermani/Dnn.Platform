@@ -70,7 +70,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// This method hard deletes a workflow
         /// </summary>
         /// <param name="workflow">Workflow Entity</param>
-        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowException">Thrown when a workflow is in use or is a system workflow</exception>
+        /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when a workflow is in use or is a system workflow</exception>
         void DeleteWorkflow(ContentWorkflow workflow);
 
         /// <summary>

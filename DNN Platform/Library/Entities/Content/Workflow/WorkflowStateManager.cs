@@ -64,9 +64,10 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 throw new WorkflowDoesNotExistException();
             }
+
             if (workflow.IsSystem)
             {
-                throw new WorkflowException("New states cannot be added to system workflows"); //TODO: localize error message
+                throw new WorkflowInvalidOperationException("New states cannot be added to system workflows"); //TODO: localize error message
             }
 
             var lastState = workflow.LastState;
@@ -89,12 +90,12 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             if (stateToDelete.IsSystem)
             {
-                throw new WorkflowException("System workflow state cannot be deleted"); // TODO: Localize error message
+                throw new WorkflowInvalidOperationException("System workflow state cannot be deleted"); // TODO: Localize error message
             }
 
             if (_dataProvider.GetContentWorkflowUsageCount(stateToDelete.WorkflowID) > 0)
             {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));   
+                throw new WorkflowInvalidOperationException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));   
             }
             
             _workflowStateRepository.DeleteWorkflowState(stateToDelete);
@@ -131,14 +132,14 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             if (_dataProvider.GetContentWorkflowUsageCount(state.WorkflowID) > 0)
             {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
+                throw new WorkflowInvalidOperationException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
             }
 
             var states = _workflowStateRepository.GetWorkflowStates(state.WorkflowID).ToArray();
 
             if (states.Length == 3)
             {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
             }
             
             ContentWorkflowState stateToMoveUp = null;
@@ -151,7 +152,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 // First and Second workflow state cannot be moved down
                 if (i <= 1)
                 {
-                    throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                    throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
                 }
 
                 stateToMoveUp = states[i - 1];
@@ -161,7 +162,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             if (stateToMoveUp == null || stateToMoveDown == null)
             {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
             }
 
             var orderTmp = stateToMoveDown.Order;
@@ -182,14 +183,14 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             if (_dataProvider.GetContentWorkflowUsageCount(state.WorkflowID) > 0)
             {
-                throw new WorkflowException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
+                throw new WorkflowInvalidOperationException(Localization.GetString("WorkflowInUsageException", Localization.ExceptionsResourceFile));
             }
 
             var states = _workflowStateRepository.GetWorkflowStates(state.WorkflowID).ToArray();
             
             if (states.Length == 3)
             {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
             }
 
             ContentWorkflowState stateToMoveUp = null;
@@ -202,7 +203,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 // Last and Next to Last workflow state cannot be moved up
                 if (i >= states.Length - 2)
                 {
-                    throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                    throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
                 }
 
                 stateToMoveUp = states[i];
@@ -212,7 +213,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             if (stateToMoveUp == null || stateToMoveDown == null)
             {
-                throw new WorkflowException("Workflow state cannot be moved"); // TODO: localize
+                throw new WorkflowInvalidOperationException("Workflow state cannot be moved"); // TODO: localize
             }
 
             var orderTmp = stateToMoveDown.Order;

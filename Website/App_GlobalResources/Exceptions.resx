@@ -360,10 +360,13 @@
   <data name="SystemWorkflowDeletionException.Text" xml:space="preserve">
     <value>System workflow cannot be deleted</value>
   </data>
-  <data name="WorfklowDoesNotExistException.Text" xml:space="preserve">
+  <data name="WorkflowDoesNotExistException.Text" xml:space="preserve">
     <value>Workflow does not exist</value>
   </data>
   <data name="WorkflowStateNameAlreadyExistsException.Text" xml:space="preserve">
     <value>Already exists a workflow state with this name</value>
+  </data>
+  <data name="WorkflowConcurrencyException.Text" xml:space="preserve">
+    <value>The current state of the workflow is not the same of the current state specified in the input parameter</value>
   </data>
 </root>

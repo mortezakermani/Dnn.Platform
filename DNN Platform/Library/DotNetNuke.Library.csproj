@@ -263,6 +263,8 @@
     <Compile Include="Entities\Content\Workflow\Actions\IWorkflowAction.cs" />
     <Compile Include="Entities\Content\Workflow\Actions\WorkflowAction.cs" />
     <Compile Include="Entities\Content\Workflow\Actions\WorkflowActionTypes.cs" />
+    <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowInvalidOperationException.cs" />
+    <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowConcurrencyException.cs" />
     <Compile Include="Entities\Content\Workflow\Obsolete\ContentWorkflowController.cs" />
     <Compile Include="Entities\Content\Workflow\ContentWorkflowLogType.cs" />
     <Compile Include="Entities\Content\Workflow\Obsolete\ContentWorkflowSource.cs" />
@@ -1728,6 +1730,7 @@
     <Compile Include="Common\Utilities\FileSystemPermissionVerifier.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Entities\Content\Workflow\Dto\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
