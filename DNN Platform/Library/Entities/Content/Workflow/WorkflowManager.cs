@@ -33,15 +33,18 @@ namespace DotNetNuke.Entities.Content.Workflow
     {
         #region Members
         private readonly DataProvider _dataProvider;
-        private readonly IWorkflowRepository _workflowRepository = WorkflowRepository.Instance;
-        private readonly IWorkflowStateRepository _workflowStateRepository = WorkflowStateRepository.Instance;
-        private readonly ISystemWorkflowManager _systemWorkflowManager = SystemWorkflowManager.Instance;
+        private readonly IWorkflowRepository _workflowRepository;
+        private readonly IWorkflowStateRepository _workflowStateRepository;
+        private readonly ISystemWorkflowManager _systemWorkflowManager;
         #endregion
 
         #region Constructor
         public WorkflowManager()
         {
             _dataProvider = DataProvider.Instance();
+            _workflowRepository = WorkflowRepository.Instance;
+            _workflowStateRepository = WorkflowStateRepository.Instance;
+            _systemWorkflowManager = SystemWorkflowManager.Instance;
         }
         #endregion
 

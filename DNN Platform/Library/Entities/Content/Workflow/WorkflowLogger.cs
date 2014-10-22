@@ -27,13 +27,46 @@ using DotNetNuke.Services.Localization;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    //TODO: add metadata info
-    //TODO: add entities and validation
     public class WorkflowLogger : ServiceLocator<IWorkflowLogger, WorkflowLogger>, IWorkflowLogger
     {
+        #region Members
+        private readonly IWorkflowLogRepository _workflowLogRepository;
+        #endregion
+
+        #region Constructor
+        public WorkflowLogger()
+        {
+            _workflowLogRepository = WorkflowLogRepository.Instance;
+        }
+        #endregion
+
+        #region Private Methods
+        private void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string action, string comment, int userId)
+        {
+            var workflowLog = new ContentWorkflowLog
+            {
+                ContentItemID = contentItemId,
+                WorkflowID = workflowId,
+                Type = (int)type,
+                Action = action,
+                Comment = comment,
+                User = userId,
+                Date = DateTime.UtcNow
+            };
+            _workflowLogRepository.AddWorkflowLog(workflowLog);
+        }
+
+        private string GetWorkflowActionText(ContentWorkflowLogType logType)
+        {
+            var logName = Enum.GetName(typeof(ContentWorkflowLogType), logType);
+            return Localization.GetString(logName + ".Action");
+        }
+        #endregion
+
+        #region Public Methods
         public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
         {
-            return WorkflowLogRepository.Instance.GetWorkflowLogs(contentItemId, workflowId);
+            return _workflowLogRepository.GetWorkflowLogs(contentItemId, workflowId);
         }
 
 
@@ -46,31 +79,13 @@ namespace DotNetNuke.Entities.Content.Workflow
         {
             AddWorkflowLog(contentItemId, workflowId, ContentWorkflowLogType.CommentProvided, action, comment, userId);
         }
+        #endregion
 
-        private void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string action, string comment, int userId)
-        {
-            var workflowLog = new ContentWorkflowLog
-            {
-                ContentItemID = contentItemId,
-                WorkflowID = workflowId,
-                Type = (int) type,
-                Action = action,
-                Comment = comment,
-                User = userId,
-                Date = DateTime.UtcNow
-            };
-            WorkflowLogRepository.Instance.AddWorkflowLog(workflowLog);
-        }
-
-        private string GetWorkflowActionText(ContentWorkflowLogType logType)
-        {
-            var logName = Enum.GetName(typeof(ContentWorkflowLogType), logType);
-            return Localization.GetString(logName + ".Action");
-        }
-
+        #region Service Locator
         protected override Func<IWorkflowLogger> GetFactory()
         {
             return () => new WorkflowLogger();
         }
+        #endregion
     }
 }

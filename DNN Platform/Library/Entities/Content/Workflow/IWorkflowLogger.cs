@@ -23,14 +23,38 @@ using System.Collections.Generic;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    //TODO: add metadata info
+    /// <summary>
+    /// This class is responsible to manage the workflows logs. 
+    /// It provides addition and get operation methods
+    /// </summary>
     public interface IWorkflowLogger
     {
-        // TODO: review if we can use a model for action/comment/userId
+        /// <summary>
+        /// Adds a log comment regarding a specific workflow
+        /// </summary>
+        /// <param name="contentItemId">Content item Id related with the log</param>
+        /// <param name="workflowId">Workflow Id owner of the log</param>
+        /// <param name="type">Log Type</param>
+        /// <param name="comment">Comment to be added</param>
+        /// <param name="userId">User Id who adds the log</param>
         void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string comment, int userId);
 
+        /// <summary>
+        /// Adds a log comment regarding a specific workflow
+        /// </summary>
+        /// <param name="contentItemId">Content item Id related with the log</param>
+        /// <param name="workflowId">Workflow Id owner of the log</param>
+        /// <param name="action">Custom action related with the log</param>
+        /// <param name="comment">Comment to be added</param>
+        /// <param name="userId">User Id who adds the log</param>
         void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId);
         
+        /// <summary>
+        /// Gets all logs regarding a specific workflow
+        /// </summary>
+        /// <param name="contentItemId">Content item Id related with the logs</param>
+        /// <param name="workflowId">Workflow Id owner of logs</param>
+        /// <returns></returns>
         IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId);
     }
 }
