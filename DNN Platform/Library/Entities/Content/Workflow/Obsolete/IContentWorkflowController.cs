@@ -34,7 +34,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         void StartWorkflow(int workflowID, int itemID, int userID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
         void CompleteState(int itemID, string subject, string body, string comment, int portalID, int userID);
 
         [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowEngine")]
@@ -65,76 +65,76 @@ namespace DotNetNuke.Entities.Content.Workflow
         [Obsolete("Obsoleted in Platform 7.4.0.")]
         ContentWorkflowSource GetWorkflowSource(int workflowId, string sourceName);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowRepository")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowManager")]
         IEnumerable<ContentWorkflow> GetWorkflows(int portalID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead ISystemWorkflowManager")]
         ContentWorkflow GetDefaultWorkflow(int portalID);
-        
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowManager")]
         ContentWorkflow GetWorkflowByID(int workflowID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowManager")]
         ContentWorkflow GetWorkflow(ContentItem item);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowManager")]
         void AddWorkflow(ContentWorkflow workflow);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowManager")]
         void UpdateWorkflow(ContentWorkflow workflow);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogger")]
         IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int workflowId, int contentItemId);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
+        [Obsolete("Obsoleted in Platform 7.4.0.")]
         void DeleteWorkflowLogs(int workflowID, int contentItemID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowID);
-        
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
+
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         ContentWorkflowState GetWorkflowStateByID(int stateID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         void AddWorkflowState(ContentWorkflowState state);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         void UpdateWorkflowState(ContentWorkflowState state);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         void UpdateWorkflowStatePermission(ContentWorkflowStatePermission permission, int lasModifiedByUserId);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStatePermissionsController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowStateManager")]
         void DeleteWorkflowStatePermission(int workflowStatePermissionID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurity")]
         bool IsAnyReviewer(int portalID, int userID, int workflowID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurity")]
         bool IsAnyReviewer(int workflowID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurity")]
         bool IsCurrentReviewer(int portalId, int userID, int itemID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurity")]
         bool IsCurrentReviewer(int itemID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurity")]
         bool IsReviewer(int portalId, int userID, int stateID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurityController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowSecurity")]
         bool IsReviewer(int stateID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogController")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead IWorkflowLogger")]
         void AddWorkflowLog(ContentItem item, string action, string comment, int userID);
 
-        [Obsolete("Obsoleted in Platform 7.4.0")]
+        [Obsolete("Obsoleted in Platform 7.4.0. Use instead ISystemWorkflowManager")]
         void CreateDefaultWorkflows(int portalId);
     }
 }
