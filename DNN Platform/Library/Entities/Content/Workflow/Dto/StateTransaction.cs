@@ -19,26 +19,31 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Dto
 {
     /// <summary>
-    /// This class represents the message that will be notified on workflow state transaction
+    /// This Dto class represents the workflow state transaction on complete state or discard state.
     /// </summary>
-    public class StateTransactionMessage
+    public class StateTransaction
     {
-        public StateTransactionMessage()
-        {
-            Params = new string[]{};
-        }
+        /// <summary>
+        /// The content item id that represent the element that is going to change workflow state
+        /// </summary>
+        public int ContentItemId { get; set; }
 
         /// <summary>
-        /// Params of the message
+        /// The current state of the element
         /// </summary>
-        public string[] Params { get; set; }
+        public int CurrentStateId { get; set; }
 
         /// <summary>
-        /// User comment
+        /// This property represents the user that performs the state transaction
         /// </summary>
-        public string UserComment { get; set; }
+        public int UserId { get; set; }
+
+        /// <summary>
+        /// This property represents the message attached to the state transaction
+        /// </summary>
+        public StateTransactionMessage Message { get; set; }
     }
 }

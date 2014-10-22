@@ -21,7 +21,7 @@
 
 namespace DotNetNuke.Entities.Content.Workflow.Actions
 {
-    internal enum WorkflowActionTypes
+    public enum WorkflowActionTypes
     {
         DiscardWorkflow,
         CompleteWorkflow,

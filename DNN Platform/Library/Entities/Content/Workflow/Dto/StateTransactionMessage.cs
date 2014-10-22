@@ -19,12 +19,26 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-namespace DotNetNuke.Entities.Content.Workflow
+namespace DotNetNuke.Entities.Content.Workflow.Dto
 {
-    public class WorkflowMessage
+    /// <summary>
+    /// This class represents the message that will be notified on workflow state transaction
+    /// </summary>
+    public class StateTransactionMessage
     {
-        public string Subject { get; set; }
+        public StateTransactionMessage()
+        {
+            Params = new string[]{};
+        }
 
-        public string Body { get; set; }
+        /// <summary>
+        /// Params of the message
+        /// </summary>
+        public string[] Params { get; set; }
+
+        /// <summary>
+        /// User comment
+        /// </summary>
+        public string UserComment { get; set; }
     }
 }

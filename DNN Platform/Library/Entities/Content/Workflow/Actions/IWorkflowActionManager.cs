@@ -34,7 +34,7 @@ namespace DotNetNuke.Entities.Content.Workflow.Actions
         /// <param name="contentTypeId">Content Item Id</param>
         /// <param name="actionType">Action type</param>
         /// <returns>IWorkflowAction instance</returns>
-        IWorkflowAction GetWorkflowActionInstance(int contentTypeId, string actionType);
+        IWorkflowAction GetWorkflowActionInstance(int contentTypeId, WorkflowActionTypes actionType);
 
         /// <summary>
         /// This method registers a new workflow action

@@ -40,9 +40,9 @@ namespace DotNetNuke.Entities.Content.Workflow.Actions
         #endregion
 
         #region Public Methods
-        public IWorkflowAction GetWorkflowActionInstance(int contentTypeId, string actionType)
+        public IWorkflowAction GetWorkflowActionInstance(int contentTypeId, WorkflowActionTypes actionType)
         {
-            var action = _workflowActionRepository.GetWorkflowAction(contentTypeId, actionType);
+            var action = _workflowActionRepository.GetWorkflowAction(contentTypeId, actionType.ToString());
             if (action == null)
             {
                 return null;

@@ -261,8 +261,13 @@
     <Compile Include="Entities\Content\IAttachmentController.cs" />
     <Compile Include="Entities\Content\Taxonomy\TermUsage.cs" />
     <Compile Include="Entities\Content\Workflow\Actions\IWorkflowAction.cs" />
+    <Compile Include="Entities\Content\Workflow\Actions\WorkflowActionManager.cs" />
+    <Compile Include="Entities\Content\Workflow\Actions\IWorkflowActionManager.cs" />
     <Compile Include="Entities\Content\Workflow\Actions\WorkflowAction.cs" />
     <Compile Include="Entities\Content\Workflow\Actions\WorkflowActionTypes.cs" />
+    <Compile Include="Entities\Content\Workflow\Dto\StateTransaction.cs" />
+    <Compile Include="Entities\Content\Workflow\Dto\StateTransactionMessage.cs" />
+    <Compile Include="Entities\Content\Workflow\Dto\ActionMessage.cs" />
     <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowInvalidOperationException.cs" />
     <Compile Include="Entities\Content\Workflow\Exceptions\WorkflowConcurrencyException.cs" />
     <Compile Include="Entities\Content\Workflow\Obsolete\ContentWorkflowController.cs" />
@@ -295,12 +300,9 @@
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowRepository.cs" />
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowStatePermissionsRepository.cs" />
     <Compile Include="Entities\Content\Workflow\Repositories\WorkflowStateRepository.cs" />
-    <Compile Include="Entities\Content\Workflow\StateTransaction.cs" />
-    <Compile Include="Entities\Content\Workflow\StateTransactionMessage.cs" />
     <Compile Include="Entities\Content\Workflow\SystemWorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowEngine.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowLogger.cs" />
-    <Compile Include="Entities\Content\Workflow\WorkflowMessage.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowStateManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowManager.cs" />
     <Compile Include="Entities\Content\Workflow\WorkflowSecurity.cs" />
@@ -1730,7 +1732,6 @@
     <Compile Include="Common\Utilities\FileSystemPermissionVerifier.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities\Content\Workflow\Dto\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

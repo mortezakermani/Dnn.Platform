@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Content.Workflow.Actions;
+using DotNetNuke.Entities.Content.Workflow.Dto;
 using DotNetNuke.Entities.Content.Workflow.Exceptions;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Entities.Portals;
@@ -49,7 +50,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         private readonly IWorkflowStateRepository _workflowStateRepository;
         private readonly IWorkflowStatePermissionsRepository _workflowStatePermissionsRepository;
         private readonly IWorkflowLogRepository _workflowLogRepository;
-        private readonly IWorkflowActionRepository _workflowActionRepository;
+        private readonly IWorkflowActionManager _workflowActionManager;
         private readonly IUserController _userController;
         private readonly IWorkflowSecurity _workflowSecurity;
         private readonly INotificationsController _notificationsController;
@@ -65,7 +66,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowStateRepository = WorkflowStateRepository.Instance;
             _workflowStatePermissionsRepository = WorkflowStatePermissionsRepository.Instance;
             _workflowLogRepository = WorkflowLogRepository.Instance;
-            _workflowActionRepository = WorkflowActionRepository.Instance;
+            _workflowActionManager = WorkflowActionManager.Instance;
             _workflowSecurity = WorkflowSecurity.Instance;
             _userController = UserController.Instance;
             _notificationsController = NotificationsController.Instance;
@@ -78,7 +79,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         private void PerformWorkflowActionOnStateChanged(StateTransaction stateTransaction, WorkflowActionTypes actionType)
         {
             var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
-            var workflowAction = GetWorkflowAction(contentItem.ContentTypeId, actionType);
+            var workflowAction = GetWorkflowActionInstance(contentItem, actionType);
             if (workflowAction != null)
             {
                 workflowAction.DoActionOnStateChanged(stateTransaction);
@@ -88,26 +89,16 @@ namespace DotNetNuke.Entities.Content.Workflow
         private void PerformWorkflowActionOnStateChanging(StateTransaction stateTransaction, WorkflowActionTypes actionType)
         {
             var contentItem = _contentController.GetContentItem(stateTransaction.ContentItemId);
-            var workflowAction = GetWorkflowAction(contentItem.ContentTypeId, actionType);
+            var workflowAction = GetWorkflowActionInstance(contentItem, actionType);
             if (workflowAction != null)
             {
                 workflowAction.DoActionOnStateChanging(stateTransaction);
             }
         }
 
-        private IWorkflowAction GetWorkflowAction(ContentItem contentItem, WorkflowActionTypes actionType)
+        private IWorkflowAction GetWorkflowActionInstance(ContentItem contentItem, WorkflowActionTypes actionType)
         {
-            return GetWorkflowAction(contentItem.ContentTypeId, actionType);
-        }
-        private IWorkflowAction GetWorkflowAction(int contentTypeId, WorkflowActionTypes actionType)
-        {
-            var action = _workflowActionRepository.GetWorkflowAction(contentTypeId, actionType.ToString());
-            if (action == null)
-            {
-                return null;
-            }
-
-            return Reflection.CreateInstance(Reflection.CreateType(action.ActionSource)) as IWorkflowAction;
+            return _workflowActionManager.GetWorkflowActionInstance(contentItem.ContentTypeId, actionType);
         }
 
         private void UpdateContentItemWorkflowState(int stateId, ContentItem item)
@@ -162,7 +153,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
 
-            var workflowAction = GetWorkflowAction(contentItem, workflowActionType);
+            var workflowAction = GetWorkflowActionInstance(contentItem, workflowActionType);
             if (workflowAction == null)
             {
                 return;
@@ -201,7 +192,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return; // If there are no receivers, the notification is avoided
             }
 
-            var workflowAction = GetWorkflowAction(contentItem, workflowActionType);
+            var workflowAction = GetWorkflowActionInstance(contentItem, workflowActionType);
             if (workflowAction == null)
             {
                 return;

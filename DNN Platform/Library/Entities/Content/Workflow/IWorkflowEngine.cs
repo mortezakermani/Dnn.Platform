@@ -19,6 +19,8 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using DotNetNuke.Entities.Content.Workflow.Dto;
+
 namespace DotNetNuke.Entities.Content.Workflow
 {
     /// <summary>
