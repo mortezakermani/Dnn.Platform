@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Roles;

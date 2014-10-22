@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DotNetNuke.Data;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
@@ -30,11 +31,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
     internal class WorkflowLogRepository : ServiceLocator<IWorkflowLogRepository, WorkflowLogRepository> , IWorkflowLogRepository
     {
         #region Public Methods
-        public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
+        public IEnumerable<WorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowLog>();
+                var rep = context.GetRepository<WorkflowLog>();
                 var workflowLogs = rep.Find("WHERE (ContentItemID = @0 AND WorkflowID = @1)", contentItemId, workflowId).ToArray();
                 
                 return workflowLogs;
@@ -45,16 +46,16 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowLog>();
+                var rep = context.GetRepository<WorkflowLog>();
                 rep.Delete("WHERE (ContentItemID = @0 AND WorkflowID = @1)", contentItemId, workflowId);
             }
         }
 
-        public void AddWorkflowLog(ContentWorkflowLog workflowLog)
+        public void AddWorkflowLog(WorkflowLog workflowLog)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflowLog>();
+                var rep = context.GetRepository<WorkflowLog>();
 
                 rep.Insert(workflowLog);
             }

@@ -20,16 +20,13 @@
 #endregion
 
 using System;
-using System.ComponentModel.DataAnnotations;
-using DotNetNuke.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
     /// <summary>
     /// This entity represents a Workflow Log
     /// </summary>
-    [PrimaryKey("WorkflowLogID")]
-    [TableName("ContentWorkflowLogs")]
+    [Obsolete("Obsoleted in Platform 7.4.0")]   
     public class ContentWorkflowLog
     {
         /// <summary>
@@ -46,22 +43,15 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// Content Item associated to the log entry
         /// </summary>
         public int ContentItemID { get; set; }
-
-        /// <summary>
-        /// Type (<see cref="ContentWorkflowLogType"/> enum)
-        /// </summary>
-        public int Type { get; set; }
-
+        
         /// <summary>
         /// Action name (usually is a localized representation of the ContentWorkflowLogType)
         /// </summary>
-        [StringLength(40)]
         public string Action { get; set; }
 
         /// <summary>
         /// Comment
         /// </summary>
-        [StringLength(256)]
         public string Comment { get; set; }
 
         /// <summary>

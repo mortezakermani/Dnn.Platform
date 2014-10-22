@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Content.Workflow.Repositories;
 using DotNetNuke.Framework;
 using DotNetNuke.Services.Localization;
@@ -41,9 +42,9 @@ namespace DotNetNuke.Entities.Content.Workflow
         #endregion
 
         #region Private Methods
-        private void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string action, string comment, int userId)
+        private void AddWorkflowLog(int contentItemId, int workflowId, WorkflowLogType type, string action, string comment, int userId)
         {
-            var workflowLog = new ContentWorkflowLog
+            var workflowLog = new WorkflowLog
             {
                 ContentItemID = contentItemId,
                 WorkflowID = workflowId,
@@ -56,28 +57,28 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowLogRepository.AddWorkflowLog(workflowLog);
         }
 
-        private string GetWorkflowActionText(ContentWorkflowLogType logType)
+        private string GetWorkflowActionText(WorkflowLogType logType)
         {
-            var logName = Enum.GetName(typeof(ContentWorkflowLogType), logType);
+            var logName = Enum.GetName(typeof(WorkflowLogType), logType);
             return Localization.GetString(logName + ".Action");
         }
         #endregion
 
         #region Public Methods
-        public IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
+        public IEnumerable<WorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId)
         {
             return _workflowLogRepository.GetWorkflowLogs(contentItemId, workflowId);
         }
 
 
-        public void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string comment, int userId)
+        public void AddWorkflowLog(int contentItemId, int workflowId, WorkflowLogType type, string comment, int userId)
         {
             AddWorkflowLog(contentItemId, workflowId, type, GetWorkflowActionText(type), comment, userId);
         }
 
         public void AddWorkflowLog(int contentItemId, int workflowId, string action, string comment, int userId)
         {
-            AddWorkflowLog(contentItemId, workflowId, ContentWorkflowLogType.CommentProvided, action, comment, userId);
+            AddWorkflowLog(contentItemId, workflowId, WorkflowLogType.CommentProvided, action, comment, userId);
         }
         #endregion
 

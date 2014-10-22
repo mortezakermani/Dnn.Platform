@@ -114,7 +114,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             var logDraftCompleted = logs
                 .OrderByDescending(l => l.Date)
-                .FirstOrDefault(l => l.Type == (int)ContentWorkflowLogType.DraftCompleted); 
+                .FirstOrDefault(l => l.Type == (int)WorkflowLogType.DraftCompleted); 
 
             if (logDraftCompleted != null && logDraftCompleted.User != Null.NullInteger)
             {
@@ -276,7 +276,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                 return;
             }
             var state = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
-            AddWorkflowLog(contentItem, state, ContentWorkflowLogType.CommentProvided, userId, userComment);
+            AddWorkflowLog(contentItem, state, WorkflowLogType.CommentProvided, userId, userComment);
         }
         private void AddWorkflowCommentLog(ContentItem contentItem, WorkflowState state, int userId, string userComment)
         {
@@ -284,16 +284,16 @@ namespace DotNetNuke.Entities.Content.Workflow
             {
                 return;
             }
-            AddWorkflowLog(contentItem, state, ContentWorkflowLogType.CommentProvided, userId, userComment);
+            AddWorkflowLog(contentItem, state, WorkflowLogType.CommentProvided, userId, userComment);
         }
 
-        private void AddWorkflowLog(ContentItem contentItem, ContentWorkflowLogType logType, int userId, string userComment = null)
+        private void AddWorkflowLog(ContentItem contentItem, WorkflowLogType logType, int userId, string userComment = null)
         {
             var state = _workflowStateRepository.GetWorkflowStateByID(contentItem.StateID);
             AddWorkflowLog(contentItem, state, logType, userId, userComment);
         }
 
-        private void AddWorkflowLog(ContentItem contentItem, WorkflowState state, ContentWorkflowLogType logType, int userId, string userComment = null)
+        private void AddWorkflowLog(ContentItem contentItem, WorkflowState state, WorkflowLogType logType, int userId, string userComment = null)
         {
             var workflow = _workflowManager.GetWorkflow(contentItem);
             var logTypeText = GetWorkflowActionComment(logType);
@@ -303,9 +303,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowLogger.AddWorkflowLog(contentItem.ContentItemId, workflow.WorkflowID, logType, logComment, userId);
         }
         
-        private static string GetWorkflowActionComment(ContentWorkflowLogType logType)
+        private static string GetWorkflowActionComment(WorkflowLogType logType)
         {
-            var logName = Enum.GetName(typeof(ContentWorkflowLogType), logType);
+            var logName = Enum.GetName(typeof(WorkflowLogType), logType);
             return Localization.GetString(logName + ".Comment");
         }
 
@@ -390,8 +390,8 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowLogRepository.DeleteWorkflowLogs(contentItemId, workflowId);
 
             // Add logs
-            AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowStarted, userId);
-            AddWorkflowLog(contentItem, ContentWorkflowLogType.StateInitiated, userId);
+            AddWorkflowLog(contentItem, WorkflowLogType.WorkflowStarted, userId);
+            AddWorkflowLog(contentItem, WorkflowLogType.StateInitiated, userId);
         }
 
         public void CompleteState(StateTransaction stateTransaction)
@@ -431,12 +431,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             AddWorkflowCommentLog(contentItem, currentState, stateTransaction.UserId, stateTransaction.Message.UserComment);
             AddWorkflowLog(contentItem, currentState,
                 currentState.StateID == workflow.FirstState.StateID
-                    ? ContentWorkflowLogType.DraftCompleted
-                    : ContentWorkflowLogType.StateCompleted, stateTransaction.UserId);
+                    ? WorkflowLogType.DraftCompleted
+                    : WorkflowLogType.StateCompleted, stateTransaction.UserId);
             AddWorkflowLog(contentItem,
                 nextState.StateID == workflow.LastState.StateID
-                    ? ContentWorkflowLogType.WorkflowApproved
-                    : ContentWorkflowLogType.StateInitiated, stateTransaction.UserId);
+                    ? WorkflowLogType.WorkflowApproved
+                    : WorkflowLogType.StateInitiated, stateTransaction.UserId);
 
             // after-change action
             PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.CompleteState);
@@ -488,8 +488,8 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             // Add logs
             AddWorkflowCommentLog(contentItem, currentState, stateTransaction.UserId, stateTransaction.Message.UserComment);
-            AddWorkflowLog(contentItem, currentState, ContentWorkflowLogType.StateDiscarded, stateTransaction.UserId);
-            AddWorkflowLog(contentItem, ContentWorkflowLogType.StateInitiated, stateTransaction.UserId);
+            AddWorkflowLog(contentItem, currentState, WorkflowLogType.StateDiscarded, stateTransaction.UserId);
+            AddWorkflowLog(contentItem, WorkflowLogType.StateInitiated, stateTransaction.UserId);
 
             // after-change action
             PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.DiscardState);
@@ -553,7 +553,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             // Logs
             AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
-            AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowDiscarded, stateTransaction.UserId);
+            AddWorkflowLog(contentItem, WorkflowLogType.WorkflowDiscarded, stateTransaction.UserId);
 
             // after-change action
             PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.DiscardWorkflow);
@@ -581,7 +581,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             // Logs
             AddWorkflowCommentLog(contentItem, stateTransaction.UserId, stateTransaction.Message.UserComment);
-            AddWorkflowLog(contentItem, ContentWorkflowLogType.WorkflowApproved, stateTransaction.UserId);
+            AddWorkflowLog(contentItem, WorkflowLogType.WorkflowApproved, stateTransaction.UserId);
 
             // after-change action
             PerformWorkflowActionOnStateChanged(stateTransaction, WorkflowActionTypes.CompleteWorkflow);

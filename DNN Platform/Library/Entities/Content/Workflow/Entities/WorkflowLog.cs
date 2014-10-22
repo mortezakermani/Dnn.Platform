@@ -19,34 +19,59 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System.Collections.Generic;
-using DotNetNuke.Entities.Content.Workflow.Entities;
+using System;
+using System.ComponentModel.DataAnnotations;
+using DotNetNuke.ComponentModel.DataAnnotations;
 
-namespace DotNetNuke.Entities.Content.Workflow.Repositories
+namespace DotNetNuke.Entities.Content.Workflow.Entities
 {
     /// <summary>
-    /// This class is responsible to persist and retrieve workflow log entity
+    /// This entity represents a Workflow Log
     /// </summary>
-    internal interface IWorkflowLogRepository
+    [PrimaryKey("WorkflowLogID")]
+    [TableName("ContentWorkflowLogs")]
+    public class WorkflowLog
     {
         /// <summary>
-        /// This method hard delete all the workflow log of a content items
+        /// Workflow log Id
         /// </summary>
-        /// <param name="contentItemId">Content item Id</param>
-        /// <param name="workflowId">Workflow Id</param>
-        void DeleteWorkflowLogs(int contentItemId, int workflowId);
+        public int WorkflowLogID { get; set; }
 
         /// <summary>
-        /// This method persists a workflow log entity
+        /// Workflow associated to the log entry
         /// </summary>
-        /// <param name="workflowLog">WorkflowLog entity</param>
-        void AddWorkflowLog(WorkflowLog workflowLog);
+        public int WorkflowID { get; set; }
 
         /// <summary>
-        /// This method gets all the Content workflow logs
+        /// Content Item associated to the log entry
         /// </summary>
-        /// <param name="contentItemId">Content item Id</param>
-        /// <param name="workflowId">Workflow Id</param>
-        IEnumerable<WorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId);
+        public int ContentItemID { get; set; }
+
+        /// <summary>
+        /// Type (<see cref="WorkflowLogType"/> enum)
+        /// </summary>
+        public int Type { get; set; }
+
+        /// <summary>
+        /// Action name (usually is a localized representation of the ContentWorkflowLogType)
+        /// </summary>
+        [StringLength(40)]
+        public string Action { get; set; }
+
+        /// <summary>
+        /// Comment
+        /// </summary>
+        [StringLength(256)]
+        public string Comment { get; set; }
+
+        /// <summary>
+        /// Log date
+        /// </summary>
+        public DateTime Date { get; set; }
+
+        /// <summary>
+        /// User Id associated to the log
+        /// </summary>
+        public int User { get; set; }
     }
 }

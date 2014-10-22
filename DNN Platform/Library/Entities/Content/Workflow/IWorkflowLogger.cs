@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
@@ -37,7 +38,7 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <param name="type">Log Type</param>
         /// <param name="comment">Comment to be added</param>
         /// <param name="userId">User Id who adds the log</param>
-        void AddWorkflowLog(int contentItemId, int workflowId, ContentWorkflowLogType type, string comment, int userId);
+        void AddWorkflowLog(int contentItemId, int workflowId, WorkflowLogType type, string comment, int userId);
 
         /// <summary>
         /// Adds a log comment regarding a specific workflow
@@ -55,6 +56,6 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// <param name="contentItemId">Content item Id related with the logs</param>
         /// <param name="workflowId">Workflow Id owner of logs</param>
         /// <returns></returns>
-        IEnumerable<ContentWorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId);
+        IEnumerable<WorkflowLog> GetWorkflowLogs(int contentItemId, int workflowId);
     }
 }

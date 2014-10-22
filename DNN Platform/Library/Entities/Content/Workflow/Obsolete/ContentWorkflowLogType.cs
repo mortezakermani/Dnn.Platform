@@ -19,11 +19,14 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+
 namespace DotNetNuke.Entities.Content.Workflow
 {
     /// <summary>
     /// This enum represents the possible list of WorkflowLogType
     /// </summary>
+    [Obsolete("Obsoleted in Platform 7.4.0")]   
     public enum ContentWorkflowLogType
     {
         WorkflowStarted = 0,
