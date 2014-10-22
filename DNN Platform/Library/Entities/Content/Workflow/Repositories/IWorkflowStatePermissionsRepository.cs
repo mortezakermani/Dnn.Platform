@@ -23,13 +23,29 @@ using System.Collections.Generic;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
-    //TODO: add interface doc metadata
+    /// <summary>
+    /// This class is responsible to manage the workflow state permission entity
+    /// </summary>
     internal interface IWorkflowStatePermissionsRepository
     {
+        /// <summary>
+        /// Gets the registered permissions set for a specific state
+        /// </summary>
+        /// <param name="stateId">State Id</param>
+        /// <returns>List of Workflow State Permission entities</returns>
         IEnumerable<ContentWorkflowStatePermission> GetWorkflowStatePermissionByState(int stateId);
 
+        /// <summary>
+        /// Persists a new Workflow State Permission entity
+        /// </summary>
+        /// <param name="permission">Workflow State Permission entity</param>
+        /// <param name="lastModifiedByUserId">User Id who modifies the permissions set</param>
         void AddWorkflowStatePermission(ContentWorkflowStatePermission permission, int lastModifiedByUserId);
 
+        /// <summary>
+        /// Deletes a specific Workflow State Permission entity
+        /// </summary>
+        /// <param name="workflowStatePermissionId">Workflow State Permission Id</param>
         void DeleteWorkflowStatePermission(int workflowStatePermissionId);
     }
 }

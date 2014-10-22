@@ -23,17 +23,41 @@ using System.Collections.Generic;
 
 namespace DotNetNuke.Entities.Content.Workflow.Repositories
 {
-    //TODO: add metadata info
+    /// <summary>
+    /// This class is responsible to persist and retrieve workflow state entity
+    /// </summary>
     internal interface IWorkflowStateRepository
     {
+        /// <summary>
+        /// Get all states for a specific workflow
+        /// </summary>
+        /// <param name="workflowId">Workflow Id</param>
+        /// <returns>List of workflow states</returns>
         IEnumerable<ContentWorkflowState> GetWorkflowStates(int workflowId);
 
+        /// <summary>
+        /// Get a workflow state by Id
+        /// </summary>
+        /// <param name="stateID">State Id</param>
+        /// <returns>Workflow State entity</returns>
         ContentWorkflowState GetWorkflowStateByID(int stateID);
 
+        /// <summary>
+        /// Persists a new workflow state entity
+        /// </summary>
+        /// <param name="state">Workflow State entity</param>
         void AddWorkflowState(ContentWorkflowState state);
 
+        /// <summary>
+        /// Persists changes for a workflow state entity
+        /// </summary>
+        /// <param name="state">Workflow State entity</param>
         void UpdateWorkflowState(ContentWorkflowState state);
 
+        /// <summary>
+        /// This method hard deletes a workflow state entity
+        /// </summary>
+        /// <param name="state">Workflow State entity</param>
         void DeleteWorkflowState(ContentWorkflowState state);
     }
 }

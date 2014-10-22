@@ -63,13 +63,13 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         void AddWorkflow(ContentWorkflow workflow);
 
         /// <summary>
-        /// This method persists a changes for a workflow entity
+        /// This method persists changes for a workflow entity
         /// </summary>
         /// <param name="workflow">Workflow entity</param>
         void UpdateWorkflow(ContentWorkflow workflow);
 
         /// <summary>
-        /// This method hard delete a workflow
+        /// This method hard deletes a workflow
         /// </summary>
         /// <param name="workflow">Workflow entity</param>
         void DeleteWorkflow(ContentWorkflow workflow);
