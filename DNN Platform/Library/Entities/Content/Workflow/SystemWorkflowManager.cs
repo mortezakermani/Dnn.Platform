@@ -63,7 +63,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         private void CreateDirectPublishWorkflow(int portalId)
         {
-            var workflow = new ContentWorkflow
+            var workflow = new Entities.Workflow
             {
                 WorkflowName = Localization.GetString("DefaultDirectPublishWorkflowName"),
                 Description = Localization.GetString("DefaultDirectPublishWorkflowDescription"),
@@ -79,7 +79,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         private void CreateSaveDraftWorkflow(int portalId)
         {
-            var workflow = new ContentWorkflow
+            var workflow = new Entities.Workflow
             {
                 WorkflowName = Localization.GetString("DefaultSaveDraftWorkflowName"),
                 Description = Localization.GetString("DefaultSaveDraftWorkflowDescription"),
@@ -100,7 +100,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         private void CreateContentApprovalWorkflow(int portalId)
         {
-            var workflow = new ContentWorkflow
+            var workflow = new Entities.Workflow
             {
                 WorkflowName = Localization.GetString("DefaultWorkflowName"),
                 Description = Localization.GetString("DefaultWorkflowDescription"),
@@ -132,17 +132,17 @@ namespace DotNetNuke.Entities.Content.Workflow
             CreateContentApprovalWorkflow(portalId);
         }
 
-        public ContentWorkflow GetDirectPublishWorkflow(int portalId)
+        public Entities.Workflow GetDirectPublishWorkflow(int portalId)
         {
             return _workflowRepository.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == DirectPublishWorkflowKey);
         }
 
-        public ContentWorkflow GetSaveDraftWorkflow(int portalId)
+        public Entities.Workflow GetSaveDraftWorkflow(int portalId)
         {
             return _workflowRepository.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == SaveDraftWorkflowKey);
         }
 
-        public ContentWorkflow GetContentApprovalWorkflow(int portalId)
+        public Entities.Workflow GetContentApprovalWorkflow(int portalId)
         {
             return _workflowRepository.GetSystemWorkflows(portalId).SingleOrDefault(sw => sw.WorkflowKey == ContentAprovalWorkflowKey);
         }

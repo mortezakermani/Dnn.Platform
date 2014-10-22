@@ -37,6 +37,7 @@ using DotNetNuke.Entities.Content;
 using DotNetNuke.Entities.Content.Common;
 using DotNetNuke.Entities.Content.Taxonomy;
 using DotNetNuke.Entities.Content.Workflow;
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using DotNetNuke.Entities.Controllers;
 using DotNetNuke.Entities.Host;
 using DotNetNuke.Entities.Portals;
@@ -411,7 +412,7 @@ namespace DotNetNuke.Services.FileSystem
 
             try
             {
-                ContentWorkflow folderWorkflow = null;
+                Workflow folderWorkflow = null;
 
                 var contentFileName = fileName;
                 var fileHash = string.Empty;
@@ -1422,7 +1423,7 @@ namespace DotNetNuke.Services.FileSystem
             return WorkflowSecurity.Instance.HasStateReviewerPermission(folder.PortalID, createdByUserID, item.StateID);
         }
 
-        private bool StartWorkflowWhenChange(int createdByUserID, ContentWorkflow folderWorkflow, bool fileExists, int contentItemID)
+        private bool StartWorkflowWhenChange(int createdByUserID, Workflow folderWorkflow, bool fileExists, int contentItemID)
         {
             if(fileExists)
             {

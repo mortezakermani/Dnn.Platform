@@ -51,7 +51,7 @@ namespace DotNetNuke.Entities.Content.Workflow
 
         #region Public Methods
 
-        public void DeleteWorkflow(ContentWorkflow workflow)
+        public void DeleteWorkflow(Entities.Workflow workflow)
         {
             var workflowToDelete = _workflowRepository.GetWorkflow(workflow.WorkflowID);
             if (workflowToDelete == null)
@@ -73,12 +73,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             _workflowRepository.DeleteWorkflow(workflowToDelete);
         }
 
-        public ContentWorkflow GetWorkflow(int workflowId)
+        public Entities.Workflow GetWorkflow(int workflowId)
         {
             return _workflowRepository.GetWorkflow(workflowId);
         }
 
-        public ContentWorkflow GetWorkflow(ContentItem contentItem)
+        public Entities.Workflow GetWorkflow(ContentItem contentItem)
         {
             if (contentItem.StateID == Null.NullInteger)
             {
@@ -88,7 +88,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             return state == null ? null : GetWorkflow(state.WorkflowID);
         }
 
-        public ContentWorkflow GetCurrentOrDefaultWorkflow(ContentItem item, int portalId)
+        public Entities.Workflow GetCurrentOrDefaultWorkflow(ContentItem item, int portalId)
         {
             if (item.StateID != Null.NullInteger)
             {
@@ -99,12 +99,12 @@ namespace DotNetNuke.Entities.Content.Workflow
             return GetWorkflow(defaultWorkflow);
         }
 
-        public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)
+        public IEnumerable<Entities.Workflow> GetWorkflows(int portalId)
         {
             return _workflowRepository.GetWorkflows(portalId);
         }
 
-        public void AddWorkflow(ContentWorkflow workflow)
+        public void AddWorkflow(Entities.Workflow workflow)
         {
             _workflowRepository.AddWorkflow(workflow);
 
@@ -124,7 +124,7 @@ namespace DotNetNuke.Entities.Content.Workflow
                               };
         }
 
-        public void UpdateWorkflow(ContentWorkflow workflow)
+        public void UpdateWorkflow(Entities.Workflow workflow)
         {
             _workflowRepository.UpdateWorkflow(workflow);
         }

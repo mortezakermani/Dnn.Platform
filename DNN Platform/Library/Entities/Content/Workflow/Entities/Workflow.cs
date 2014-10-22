@@ -63,26 +63,10 @@ namespace DotNetNuke.Entities.Content.Workflow.Entities
         [StringLength(256)]
         public string Description { get; set; }
 
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public bool IsDeleted { get; set; }
-
         /// <summary>
         /// System workflow have a special behavior. It cannot be deleted and new states cannot be added
         /// </summary>
         public bool IsSystem { get; internal set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public bool StartAfterCreating { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public bool StartAfterEditing { get; set; }
-
-        [Obsolete("Obsoleted in Platform 7.4.0")]
-        [IgnoreColumn]
-        public bool DispositionEnabled { get; set; }
 
         /// <summary>
         /// Workflow states

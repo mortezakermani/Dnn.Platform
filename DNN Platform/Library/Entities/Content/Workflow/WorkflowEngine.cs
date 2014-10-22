@@ -108,7 +108,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             _contentController.UpdateContentItem(item);
         }
 
-        private UserInfo GetUserThatHaveSubmittedDraftState(ContentWorkflow workflow, int contentItemId)
+        private UserInfo GetUserThatHaveSubmittedDraftState(Entities.Workflow workflow, int contentItemId)
         {
             var logs = _workflowLogRepository.GetWorkflowLogs(contentItemId, workflow.WorkflowID);
 
@@ -140,7 +140,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
-        private void SendNotificationToAuthor(StateTransaction stateTransaction, WorkflowState state, ContentWorkflow workflow, ContentItem contentItem, WorkflowActionTypes workflowActionType)
+        private void SendNotificationToAuthor(StateTransaction stateTransaction, WorkflowState state, Entities.Workflow workflow, ContentItem contentItem, WorkflowActionTypes workflowActionType)
         {
             var user = GetUserThatHaveSubmittedDraftState(workflow, contentItem.ContentItemId);
             if (user == null)
@@ -309,7 +309,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             return Localization.GetString(logName + ".Comment");
         }
 
-        private string ReplaceNotificationTokens(string text, ContentWorkflow workflow, ContentItem item, WorkflowState state, int userId, string comment = "")
+        private string ReplaceNotificationTokens(string text, Entities.Workflow workflow, ContentItem item, WorkflowState state, int userId, string comment = "")
         {
             var user = _userController.GetUserById(workflow.PortalID, userId);
             var datetime = DateTime.UtcNow;
@@ -322,7 +322,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             return result;
         }
 
-        private WorkflowState GetNextWorkflowState(ContentWorkflow workflow, int stateId)
+        private WorkflowState GetNextWorkflowState(Entities.Workflow workflow, int stateId)
         {
             WorkflowState nextState = null;
             var states = workflow.States.OrderBy(s => s.Order);
@@ -345,7 +345,7 @@ namespace DotNetNuke.Entities.Content.Workflow
             return nextState ?? workflow.FirstState;
         }
 
-        private WorkflowState GetPreviousWorkflowState(ContentWorkflow workflow, int stateId)
+        private WorkflowState GetPreviousWorkflowState(Entities.Workflow workflow, int stateId)
         {
             WorkflowState previousState = null;
             var states = workflow.States.OrderBy(s => s.Order);

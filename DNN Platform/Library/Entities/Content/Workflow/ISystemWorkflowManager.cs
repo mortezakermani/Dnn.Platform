@@ -40,21 +40,21 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <param name="portalId">Portal Id</param>
         /// <returns>The 'Direct Publish' workflow</returns>
-        ContentWorkflow GetDirectPublishWorkflow(int portalId);
+        Entities.Workflow GetDirectPublishWorkflow(int portalId);
         
         /// <summary>
         /// Get the 'Save Draft' system workflow of a specific portal
         /// </summary>
         /// <param name="portalId">Portal Id</param>
         /// <returns>The 'Save Draft' workflow</returns>
-        ContentWorkflow GetSaveDraftWorkflow(int portalId);
+        Entities.Workflow GetSaveDraftWorkflow(int portalId);
 
         /// <summary>
         /// Get the 'Content Approval' system workflow of a specific portal
         /// </summary>
         /// <param name="portalId">Portal Id</param>
         /// <returns>The 'Content Approval' workflow</returns>
-        ContentWorkflow GetContentApprovalWorkflow(int portalId);
+        Entities.Workflow GetContentApprovalWorkflow(int portalId);
         
         /// <summary>
         /// Gets a default definition of the 'Draft' system state

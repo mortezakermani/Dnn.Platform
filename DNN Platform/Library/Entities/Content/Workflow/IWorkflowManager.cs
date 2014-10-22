@@ -19,6 +19,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using DotNetNuke.Entities.Content.Workflow.Entities;
 using System.Collections.Generic;
 
 namespace DotNetNuke.Entities.Content.Workflow
@@ -50,45 +51,45 @@ namespace DotNetNuke.Entities.Content.Workflow
         /// </summary>
         /// <param name="portalId">Portal Id</param>
         /// <returns>List of the Workflows for the portal</returns>
-        IEnumerable<ContentWorkflow> GetWorkflows(int portalId);
+        IEnumerable<Entities.Workflow> GetWorkflows(int portalId);
         
         /// <summary>
         /// This method adds a new workflow. It automatically add two system states: "Draft" and "Published"
         /// </summary>
         /// <param name="workflow">Workflow Entity</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowNameAlreadyExistsException">Thrown when a workflow with the same name already exist for the portal</exception>
-        void AddWorkflow(ContentWorkflow workflow);
+        void AddWorkflow(Entities.Workflow workflow);
 
         /// <summary>
         /// this method update a existing workflow.
         /// </summary>
         /// <param name="workflow">Workflow Entity</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowNameAlreadyExistsException">Thrown when a workflow with the same name already exist for the portal</exception>
-        void UpdateWorkflow(ContentWorkflow workflow);
+        void UpdateWorkflow(Entities.Workflow workflow);
 
         /// <summary>
         /// This method hard deletes a workflow
         /// </summary>
         /// <param name="workflow">Workflow Entity</param>
         /// <exception cref="DotNetNuke.Entities.Content.Workflow.Exceptions.WorkflowInvalidOperationException">Thrown when a workflow is in use or is a system workflow</exception>
-        void DeleteWorkflow(ContentWorkflow workflow);
+        void DeleteWorkflow(Entities.Workflow workflow);
 
         /// <summary>
         /// This method returns a workflow entity by Id
         /// </summary>
         /// <param name="workflowId">Workflow Id</param>
         /// <returns>Workflow Entity</returns>
-        ContentWorkflow GetWorkflow(int workflowId);
+        Entities.Workflow GetWorkflow(int workflowId);
 
         /// <summary>
         /// This method returns a workflow entity by Content Item Id. It returns null if the Content Item is not under workflow.
         /// </summary>
         /// <param name="contentItem">Content Item</param>
         /// <returns>Workflow Entity</returns>
-        ContentWorkflow GetWorkflow(ContentItem contentItem);
+        Entities.Workflow GetWorkflow(ContentItem contentItem);
 
         // TODO: review method scope. This method probably need to go to a new class speficic to Tab
-        ContentWorkflow GetCurrentOrDefaultWorkflow(ContentItem contentItem, int portalId);
+        Entities.Workflow GetCurrentOrDefaultWorkflow(ContentItem contentItem, int portalId);
 
     }
 }

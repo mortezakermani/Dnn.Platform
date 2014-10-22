@@ -44,11 +44,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         #endregion
 
         #region Public Methods
-        public IEnumerable<ContentWorkflow> GetWorkflows(int portalId)
+        public IEnumerable<Entities.Workflow> GetWorkflows(int portalId)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflow>();
+                var rep = context.GetRepository<Entities.Workflow>();
                 var workflows = rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL)", portalId).ToArray();
 
                 // Worfklow States eager loading
@@ -61,11 +61,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             }
         }
 
-        public IEnumerable<ContentWorkflow> GetSystemWorkflows(int portalId)
+        public IEnumerable<Entities.Workflow> GetSystemWorkflows(int portalId)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflow>();
+                var rep = context.GetRepository<Entities.Workflow>();
                 var workflows = rep.Find("WHERE (PortalId = @0 OR PortalId IS NULL) AND IsSystem = 1", portalId).ToArray();
                 
                 // Worfklow States eager loading
@@ -78,12 +78,12 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             }
         }
 
-        public ContentWorkflow GetWorkflow(int workflowId)
+        public Entities.Workflow GetWorkflow(int workflowId)
         {
-            ContentWorkflow workflow;
+            Entities.Workflow workflow;
             using(var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflow>();
+                var rep = context.GetRepository<Entities.Workflow>();
                 workflow = rep.Find("WHERE WorkflowId = @0", workflowId).SingleOrDefault();
             }
             
@@ -96,18 +96,18 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             return workflow;
         }
 
-        public ContentWorkflow GetWorkflow(ContentItem item)
+        public Entities.Workflow GetWorkflow(ContentItem item)
         {
             var state = _stateRepository.GetWorkflowStateByID(item.StateID);
             return state == null ? null : GetWorkflow(state.WorkflowID);
         }
 
         // TODO: validation
-        public void AddWorkflow(ContentWorkflow workflow)
+        public void AddWorkflow(Entities.Workflow workflow)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflow>();
+                var rep = context.GetRepository<Entities.Workflow>();
 
                 if (DoesExistWorkflow(workflow, rep))
                 {
@@ -118,11 +118,11 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         }
         
         // TODO: validation
-        public void UpdateWorkflow(ContentWorkflow workflow)
+        public void UpdateWorkflow(Entities.Workflow workflow)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflow>();
+                var rep = context.GetRepository<Entities.Workflow>();
 
                 if (DoesExistWorkflow(workflow, rep))
                 {
@@ -132,18 +132,18 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
             }
         }
 
-        public void DeleteWorkflow(ContentWorkflow workflow)
+        public void DeleteWorkflow(Entities.Workflow workflow)
         {
             using (var context = DataContext.Instance())
             {
-                var rep = context.GetRepository<ContentWorkflow>();
+                var rep = context.GetRepository<Entities.Workflow>();
                 rep.Delete(workflow);
             }
         }
         #endregion
 
         #region Private Methods
-        private static bool DoesExistWorkflow(ContentWorkflow workflow, IRepository<ContentWorkflow> rep)
+        private static bool DoesExistWorkflow(Entities.Workflow workflow, IRepository<Entities.Workflow> rep)
         {
             return rep.Find(
                 "WHERE IsDeleted = 0 AND (PortalId = @0 OR PortalId IS NULL) AND WorkflowName = @1 AND WorkflowID != @2",

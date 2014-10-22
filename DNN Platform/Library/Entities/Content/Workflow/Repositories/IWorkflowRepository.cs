@@ -33,45 +33,45 @@ namespace DotNetNuke.Entities.Content.Workflow.Repositories
         /// </summary>
         /// <param name="portalId">Portal Id</param>
         /// <returns>List of system workflows of the portal</returns>
-        IEnumerable<ContentWorkflow> GetSystemWorkflows(int portalId);
+        IEnumerable<Entities.Workflow> GetSystemWorkflows(int portalId);
 
         /// <summary>
         /// This method gets the list of portal workflows
         /// </summary>
         /// <param name="portalId">Portal Id</param>
         /// <returns>List of workflows of the portal</returns>
-        IEnumerable<ContentWorkflow> GetWorkflows(int portalId);
+        IEnumerable<Entities.Workflow> GetWorkflows(int portalId);
 
         /// <summary>
         /// This method gets the Workflow by Id
         /// </summary>
         /// <param name="workflowId">Workflow Id</param>
         /// <returns>Workflow entity</returns>
-        ContentWorkflow GetWorkflow(int workflowId);
+        Entities.Workflow GetWorkflow(int workflowId);
 
         /// <summary>
         /// This method gets the Workflow by Content Item Id
         /// </summary>
         /// <param name="contentItem">Content Item entity</param>
         /// <returns>Workflow entity</returns>
-        ContentWorkflow GetWorkflow(ContentItem contentItem);
+        Entities.Workflow GetWorkflow(ContentItem contentItem);
 
         /// <summary>
         /// This method persists a new workflow entity
         /// </summary>
         /// <param name="workflow">Workflow entity</param>
-        void AddWorkflow(ContentWorkflow workflow);
+        void AddWorkflow(Entities.Workflow workflow);
 
         /// <summary>
         /// This method persists changes for a workflow entity
         /// </summary>
         /// <param name="workflow">Workflow entity</param>
-        void UpdateWorkflow(ContentWorkflow workflow);
+        void UpdateWorkflow(Entities.Workflow workflow);
 
         /// <summary>
         /// This method hard deletes a workflow
         /// </summary>
         /// <param name="workflow">Workflow entity</param>
-        void DeleteWorkflow(ContentWorkflow workflow);
+        void DeleteWorkflow(Entities.Workflow workflow);
     }
 }
