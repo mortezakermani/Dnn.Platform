@@ -36,8 +36,6 @@ using DotNetNuke.Services.Social.Notifications;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
-    // TODO: add metadata doc
-    // TODO: localize exceptions
     public class WorkflowEngine : ServiceLocator<IWorkflowEngine, WorkflowEngine>, IWorkflowEngine
     {
         #region Constants

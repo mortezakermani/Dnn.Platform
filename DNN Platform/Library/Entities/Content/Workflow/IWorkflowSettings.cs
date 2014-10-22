@@ -22,6 +22,7 @@
 namespace DotNetNuke.Entities.Content.Workflow
 {
     //TODO Add documentation info
+    //TODO: review the class scope
     public interface IWorkflowSettings
     {
         int GetDefaultTabWorkflowId(int portalId);

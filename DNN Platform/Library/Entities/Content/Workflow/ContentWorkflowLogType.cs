@@ -19,10 +19,11 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-
 namespace DotNetNuke.Entities.Content.Workflow
 {
+    /// <summary>
+    /// This enum represents the possible list of WorkflowLogType
+    /// </summary>
     public enum ContentWorkflowLogType
     {
         WorkflowStarted = 0,

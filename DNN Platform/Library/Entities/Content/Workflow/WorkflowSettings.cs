@@ -24,16 +24,18 @@ using System.Globalization;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
-using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Framework;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
     public class WorkflowSettings : ServiceLocator<IWorkflowSettings, WorkflowSettings>, IWorkflowSettings
     {
+        #region Constants
         private const string DefaultTabWorkflowKey = "DefaultTabWorkflowKey";
         private const string WorkflowEnableKey = "WorkflowEnabledKey";
+        #endregion
 
+        #region Public Methods
         public int GetDefaultTabWorkflowId(int portalId)
         {
             var workflowId = PortalController.GetPortalSettingAsInteger(DefaultTabWorkflowKey, portalId, Null.NullInteger);
@@ -48,11 +50,6 @@ namespace DotNetNuke.Entities.Content.Workflow
         public void SetDefaultTabWorkflowId(int portalId, int workflowId)
         {
             PortalController.UpdatePortalSetting(portalId, DefaultTabWorkflowKey, workflowId.ToString(CultureInfo.InvariantCulture), true);
-        }
-
-        protected override System.Func<IWorkflowSettings> GetFactory()
-        {
-            return () => new WorkflowSettings();
         }
 
         public void SetWorkflowEnabled(int portalId, bool enabled)
@@ -77,5 +74,13 @@ namespace DotNetNuke.Entities.Content.Workflow
 
             return isWorkflowEnabledForPortal && isWorkflowEnabledForTab;
         }
+        #endregion
+
+        #region Service Locator
+        protected override Func<IWorkflowSettings> GetFactory()
+        {
+            return () => new WorkflowSettings();
+        }
+        #endregion
     }
 }

@@ -22,7 +22,7 @@
 namespace DotNetNuke.Entities.Content.Workflow
 {
     /// <summary>
-    /// This class represents the workflow state transaction on complete state or discard state.
+    /// This Dto class represents the workflow state transaction on complete state or discard state.
     /// </summary>
     public class StateTransaction
     {

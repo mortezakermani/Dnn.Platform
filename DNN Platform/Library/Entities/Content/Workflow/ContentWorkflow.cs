@@ -27,21 +27,39 @@ using DotNetNuke.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
+    /// <summary>
+    /// This entity represents a Workflow
+    /// </summary>
     [PrimaryKey("WorkflowID")]
     [TableName("ContentWorkflows")]
     public class ContentWorkflow
     {
+        /// <summary>
+        /// Workflow Id
+        /// </summary>
         public int WorkflowID { get; set; }
 
+        /// <summary>
+        /// Portal Id
+        /// </summary>
         public int PortalID { get; set; }
 
+        /// <summary>
+        /// Workflow Name
+        /// </summary>
         [Required]
         [StringLength(40)]
         public string WorkflowName { get; set; }
 
+        /// <summary>
+        /// Workflow Key. This property can be used to 
+        /// </summary>
         [StringLength(40)]
         public string WorkflowKey { get; set; }
 
+        /// <summary>
+        /// Workflow Description
+        /// </summary>
         [StringLength(256)]
         public string Description { get; set; }
 
@@ -49,7 +67,10 @@ namespace DotNetNuke.Entities.Content.Workflow
         [IgnoreColumn]
         public bool IsDeleted { get; set; }
 
-        public bool IsSystem { get; set; }
+        /// <summary>
+        /// System workflow have a special behavior. It cannot be deleted and new states cannot be added
+        /// </summary>
+        public bool IsSystem { get; internal set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
         [IgnoreColumn]
@@ -63,9 +84,15 @@ namespace DotNetNuke.Entities.Content.Workflow
         [IgnoreColumn]
         public bool DispositionEnabled { get; set; }
 
+        /// <summary>
+        /// Workflow states
+        /// </summary>
         [IgnoreColumn]
         public IEnumerable<ContentWorkflowState> States { get; internal set; }
 
+        /// <summary>
+        /// First workflow state
+        /// </summary>
         [IgnoreColumn]
         public ContentWorkflowState FirstState
         {
@@ -75,6 +102,9 @@ namespace DotNetNuke.Entities.Content.Workflow
             }
         }
 
+        /// <summary>
+        /// Last workflow state
+        /// </summary>
         [IgnoreColumn]
         public ContentWorkflowState LastState
         {

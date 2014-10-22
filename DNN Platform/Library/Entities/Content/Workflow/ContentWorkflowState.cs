@@ -25,28 +25,53 @@ using DotNetNuke.ComponentModel.DataAnnotations;
 
 namespace DotNetNuke.Entities.Content.Workflow
 {
+    /// <summary>
+    /// This entity represents a Workflow State
+    /// </summary>
     [PrimaryKey("StateID")]
     [TableName("ContentWorkflowStates")]
     public class ContentWorkflowState 
     {
+        /// <summary>
+        /// State Id
+        /// </summary>
         public int StateID { get; set; }
 
+        /// <summary>
+        /// Workflow associated to the state
+        /// </summary>
         public int WorkflowID { get; set; }
 
+        /// <summary>
+        /// State name
+        /// </summary>
         [Required]
         [StringLength(40)]
         public string StateName { get; set; }
 
+        /// <summary>
+        /// State Order
+        /// </summary>
         public int Order { get; set; } // Consider make set internal - need to consider possible breaking compatibility
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
         [IgnoreColumn]
         public bool IsActive { get; set; }
 
+        /// <summary>
+        /// Indicates if the state is a system state. System states (i.e.: Draft, Published) have a special behavior. They cannot be deleted or moved.
+        /// </summary>
         public bool IsSystem { get; internal set; }
 
+        /// <summary>
+        /// If set to true the Workflow Engine will send system notification to the reviewer of the state when the workflow reach it
+        /// </summary>
         public bool SendNotification { get; set; }
 
+        /// <summary>
+        /// If set to true the Workflow Engine <see cref="IWorkflowEngine"/> will send system notification to the administrators of the state when the workflow reach it
+        /// </summary>
+        /// <remarks>If SendNotification is set to false, the Workflow Engine <see cref="IWorkflowEngine"/> won't send notification to administrators user even if this property is set to true</remarks>
         public bool SendNotificationToAdministrators { get; set; }
 
         [Obsolete("Obsoleted in Platform 7.4.0")]
