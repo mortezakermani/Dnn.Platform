@@ -43,6 +43,7 @@ using DotNetNuke.Web.Api;
 using DotNetNuke.Web.Common;
 using DotNetNuke.Common;
 using DotNetNuke.Instrumentation;
+using Newtonsoft.Json;
 
 namespace DotNetNuke.Web.InternalServices
 {
@@ -623,7 +624,7 @@ namespace DotNetNuke.Web.InternalServices
             bool includeDisabled = false, bool includeAllTypes = false, bool includeActive = false,
             bool includeHostPages = false, string roles = "")
         {
-            var tree = Json.Deserialize<NTree<ItemIdDto>>(treeAsJson);
+            var tree = JsonConvert.DeserializeObject<NTree<ItemIdDto>>(treeAsJson);
             return SortPagesInternal(portalId, tree, sortOrder, includeDisabled, includeAllTypes, includeActive, includeHostPages, roles);
         }
 
@@ -665,7 +666,7 @@ namespace DotNetNuke.Web.InternalServices
             bool includeActive = false, bool includeHostPages = false, string roles = "")
         {
             var treeNode = new NTree<ItemDto> { Data = new ItemDto { Key = RootKey } };
-            var openedNode = Json.Deserialize<NTree<ItemIdDto>>(treeAsJson);
+            var openedNode = JsonConvert.DeserializeObject<NTree<ItemIdDto>>(treeAsJson);
             if (openedNode == null)
             {
                 return treeNode;
@@ -700,7 +701,7 @@ namespace DotNetNuke.Web.InternalServices
             bool includeDisabled = false, bool includeAllTypes = false, bool includeActive = false,
             bool includeHostPages = false, string roles = "")
         {
-            var tree = Json.Deserialize<NTree<ItemIdDto>>(treeAsJson);
+            var tree = JsonConvert.DeserializeObject<NTree<ItemIdDto>>(treeAsJson);
 			return SortPagesInPortalGroupInternal(tree, sortOrder, includeDisabled, includeAllTypes, includeActive, includeHostPages, roles);
         }
 
@@ -969,7 +970,7 @@ namespace DotNetNuke.Web.InternalServices
 
         private NTree<ItemDto> SortFoldersInternal(int portalId, string treeAsJson, int sortOrder, string permissions)
         {
-            var tree = Json.Deserialize<NTree<ItemIdDto>>(treeAsJson);
+            var tree = JsonConvert.DeserializeObject<NTree<ItemIdDto>>(treeAsJson);
             return SortFoldersInternal(portalId, tree, sortOrder, permissions);
         }
 

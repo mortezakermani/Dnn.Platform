@@ -1,0 +1,41 @@
+﻿@using Dnn.Mvc.Framework.Modules
+@using Dnn.Mvc.Helpers
+@using Dnn.Mvc.Web.Helpers
+@using DotNetNuke.Entities.Portals
+
+@model ModuleRequestResult
+
+<div class="moduleTitle">
+    <h2>@Model.Module.ModuleTitle</h2>
+    @Dnn.RenderModuleActions()
+</div>
+<div>
+    @Dnn.RenderModule()
+</div>
+
+@{
+    if (Request.IsAuthenticated && Model.ModuleMode == ModuleInjectMode.Modal)
+    {
+        <script type="text/javascript">
+                $(document).ready(function () {
+                    $(".moduleTitle a.module-@Model.Module.ModuleID").click(function () {
+                        $.ajax({
+                            url: "@Dnn.Action("Edit", true)",
+                            datatype: "html",
+                            contenttyep: "application/html; charset=utf-8",
+                            type: "GET",
+                            //data: { "returnUrl": "@Request.RawUrl" },
+                            success: function (result) {
+                                var $modal = $(result);
+                                $("body").append($modal);
+                                $modal.filter(".modal").modal();
+                            },
+                            error: function (xhr, status) {
+
+                            }
+                        });
+                    });
+                });
+</script>
+    }
+}

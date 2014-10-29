@@ -1,0 +1,82 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DAAD992-E675-40D9-98C0-4B40F43EEBC6}"
+	ProjectSection(SolutionItems) = preProject
+		Deploy_Platform.bat = Deploy_Platform.bat
+		Build\BuildScripts\Deploy_Platform.build = Build\BuildScripts\Deploy_Platform.build
+		Dnn.Mvc.Core.nuspec = Dnn.Mvc.Core.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{32EB0B96-2C91-477C-8F95-EF82ACAA9117}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Utils", "DNN MVC\Dnn.Mvc.Utils\Dnn.Mvc.Utils.csproj", "{E8BF981F-E09C-43D9-BDD1-40D3FBD5376B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Core", "DNN MVC\Dnn.Mvc.Core\Dnn.Mvc.Core.csproj", "{927CFFDA-9723-4B61-83E2-43EFA617A90B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Web", "DNN MVC\Dnn.Mvc.Web\Dnn.Mvc.Web.csproj", "{4F79EE16-ED11-456D-81BF-D80DAE115CB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Tests.Utilities", "DNN MVC\Tests\Dnn.Mvc.Tests.Utilities\Dnn.Mvc.Tests.Utilities.csproj", "{B8E7FDB0-D075-4F91-8F97-F4FB28B4A758}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Core.Tests", "DNN MVC\Tests\Dnn.Mvc.Core.Tests\Dnn.Mvc.Core.Tests.csproj", "{0CC976A7-CF40-4D4C-B543-CF61EE01676E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Web.Tests", "DNN MVC\Tests\Dnn.Mvc.Web.Tests\Dnn.Mvc.Web.Tests.csproj", "{82F06E89-BB03-42F5-BB12-D5949F0C0C0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Html", "DNN MVC\MVC Modules\Dnn.Mvc.Html\Dnn.Mvc.Html.csproj", "{04ABE07A-0749-44CC-97EA-D9B195C8938D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dnn.Mvc.Tasks", "DNN MVC\MVC Modules\Dnn.Mvc.Tasks\Dnn.Mvc.Tasks.csproj", "{B9F1BDC5-A547-4A56-886D-1BFBC2F13F97}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC Modules", "MVC Modules", "{9C5AEE60-90E6-4E46-B7F4-DA074E9DE71C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8BF981F-E09C-43D9-BDD1-40D3FBD5376B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8BF981F-E09C-43D9-BDD1-40D3FBD5376B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8BF981F-E09C-43D9-BDD1-40D3FBD5376B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8BF981F-E09C-43D9-BDD1-40D3FBD5376B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{927CFFDA-9723-4B61-83E2-43EFA617A90B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{927CFFDA-9723-4B61-83E2-43EFA617A90B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{927CFFDA-9723-4B61-83E2-43EFA617A90B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{927CFFDA-9723-4B61-83E2-43EFA617A90B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F79EE16-ED11-456D-81BF-D80DAE115CB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F79EE16-ED11-456D-81BF-D80DAE115CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F79EE16-ED11-456D-81BF-D80DAE115CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F79EE16-ED11-456D-81BF-D80DAE115CB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8E7FDB0-D075-4F91-8F97-F4FB28B4A758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E7FDB0-D075-4F91-8F97-F4FB28B4A758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E7FDB0-D075-4F91-8F97-F4FB28B4A758}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E7FDB0-D075-4F91-8F97-F4FB28B4A758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CC976A7-CF40-4D4C-B543-CF61EE01676E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CC976A7-CF40-4D4C-B543-CF61EE01676E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CC976A7-CF40-4D4C-B543-CF61EE01676E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CC976A7-CF40-4D4C-B543-CF61EE01676E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82F06E89-BB03-42F5-BB12-D5949F0C0C0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82F06E89-BB03-42F5-BB12-D5949F0C0C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F06E89-BB03-42F5-BB12-D5949F0C0C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82F06E89-BB03-42F5-BB12-D5949F0C0C0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04ABE07A-0749-44CC-97EA-D9B195C8938D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04ABE07A-0749-44CC-97EA-D9B195C8938D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04ABE07A-0749-44CC-97EA-D9B195C8938D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04ABE07A-0749-44CC-97EA-D9B195C8938D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9F1BDC5-A547-4A56-886D-1BFBC2F13F97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9F1BDC5-A547-4A56-886D-1BFBC2F13F97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9F1BDC5-A547-4A56-886D-1BFBC2F13F97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9F1BDC5-A547-4A56-886D-1BFBC2F13F97}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B8E7FDB0-D075-4F91-8F97-F4FB28B4A758} = {32EB0B96-2C91-477C-8F95-EF82ACAA9117}
+		{0CC976A7-CF40-4D4C-B543-CF61EE01676E} = {32EB0B96-2C91-477C-8F95-EF82ACAA9117}
+		{82F06E89-BB03-42F5-BB12-D5949F0C0C0F} = {32EB0B96-2C91-477C-8F95-EF82ACAA9117}
+		{04ABE07A-0749-44CC-97EA-D9B195C8938D} = {9C5AEE60-90E6-4E46-B7F4-DA074E9DE71C}
+		{B9F1BDC5-A547-4A56-886D-1BFBC2F13F97} = {9C5AEE60-90E6-4E46-B7F4-DA074E9DE71C}
+	EndGlobalSection
+EndGlobal

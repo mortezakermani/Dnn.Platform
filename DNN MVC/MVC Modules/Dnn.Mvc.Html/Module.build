@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <BuildScriptsPath>$(MSBuildProjectDirectory)\..\..\..\Build\BuildScripts</BuildScriptsPath>
+    <WebsitePath>$(MSBuildProjectDirectory)\..\..\..\Website</WebsitePath>
+    <MvcWebsitePath>$(MSBuildProjectDirectory)\..\..\..\MVC Website</MvcWebsitePath>
+    <ModuleFolderPath>$(WebsitePath)\Modules\Html</ModuleFolderPath>
+    <MvcModuleFolderPath>$(MvcWebsitePath)\Modules\Html</MvcModuleFolderPath>
+  </PropertyGroup>
+  
+  <Import Project="$(BuildScriptsPath)\MSBuild.Community.Tasks.Targets" />
+  
+  <Target Name="AfterBuild" DependsOnTargets="CopyBin;GetFiles;CopyFiles">
+  </Target>
+
+  <Target Name="GetFiles">
+    <ItemGroup>
+      <Views Include="Views/Html/*.cshtml" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CopyBin">
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\bin\$(AssemblyName).dll" DestinationFolder="$(WebsitePath)\bin" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\bin\$(AssemblyName).pdb" DestinationFolder="$(WebsitePath)\bin" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\bin\$(AssemblyName).dll" DestinationFolder="$(MvcWebsitePath)\bin" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\bin\$(AssemblyName).pdb" DestinationFolder="$(MvcWebsitePath)\bin" />
+  </Target>
+
+  <Target Name="CopyFiles">
+    <Copy SourceFiles="@(Views)" DestinationFolder="$(MvcModuleFolderPath)\Views\Html" />
+    <Copy SourceFiles="@(Views)" DestinationFolder="$(ModuleFolderPath)\Views\Html" />
+  </Target>
+         
+
+</Project>

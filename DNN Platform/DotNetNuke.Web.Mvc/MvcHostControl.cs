@@ -1,8 +1,8 @@
 ﻿#region Copyright
 // 
-// DotNetNuke® - http://www.dotnetnuke.com
+// DotNetNuke® - http://www.dnnsoftware.com
 // Copyright (c) 2002-2014
-// by DotNetNuke Corporation
+// by DNN Corporation
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 // documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -27,29 +27,82 @@ using System.Web.Mvc;
 using System.Web.UI;
 using Dnn.Mvc.Framework;
 using Dnn.Mvc.Framework.Modules;
+using Dnn.Mvc.Helpers;
 using DotNetNuke.ComponentModel;
+using DotNetNuke.Entities.Modules;
+using DotNetNuke.Entities.Modules.Actions;
+using DotNetNuke.Entities.Portals;
+using DotNetNuke.Security;
 using DotNetNuke.UI.Modules;
 
 namespace DotNetNuke.Web.Mvc
 {
-    public class MvcHostControl : ModuleControlBase
+    public class MvcHostControl : ModuleControlBase, IActionable
     {
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
 
+            if (String.IsNullOrEmpty(ModuleContext.Configuration.ModuleControl.ControlKey))
+            {
+                LoadActions(ModuleContext.Configuration);
+            }
+
             HttpContextBase httpContext = new HttpContextWrapper(HttpContext.Current);
 
             var moduleExecutionEngine = ComponentFactory.GetComponent<IModuleExecutionEngine>();
 
-            const string moduleRoute = ""; //for now - just the default route
+            string moduleRoute = "";
+
+            var moduleApplication = moduleExecutionEngine.GetModuleApplication(ModuleContext.Configuration);
+
+            LoadActions(ModuleContext.Configuration);
+            if (String.IsNullOrEmpty(ModuleContext.Configuration.ModuleControl.ControlKey))
+            {
+                moduleRoute = "";
+            }
+            else
+            {
+                var controlKey = ModuleContext.Configuration.ModuleControl.ControlKey;
+                moduleRoute = String.Format("{0}/{1}", moduleApplication.DefaultControllerName, controlKey);
+            }
 
             ModuleRequestResult result = moduleExecutionEngine.ExecuteModule(httpContext, ModuleContext.Configuration, moduleRoute);
 
-            Controls.Add(new LiteralControl(RenderModule(result, httpContext).ToString()));
+            if (result != null)
+            {
+                Controls.Add(new LiteralControl(RenderModule(result, httpContext).ToString()));
+            }
         }
 
-        public static MvcHtmlString RenderModule(ModuleRequestResult moduleResult, HttpContextBase httpContext)
+        private void LoadActions(ModuleInfo module)
+        {
+            ModuleActions = new ModuleActionCollection();
+
+            if (String.IsNullOrEmpty(module.ModuleControl.ControlKey))
+            {
+                var moduleControls = ModuleControlController.GetModuleControlsByModuleDefinitionID(module.ModuleDefID);
+
+                foreach (var moduleControl in moduleControls.Values)
+                {
+                    if (!String.IsNullOrEmpty(moduleControl.ControlKey))
+                    {
+                        ModuleActions.Add(this.ModuleContext.GetNextActionID(),
+                            moduleControl.ControlKey,
+                            moduleControl.ControlKey + ".Action",
+                            "",
+                            "edit.gif",
+                            ModuleContext.EditUrl("Edit"),
+                            false,
+                            SecurityAccessLevel.Edit,
+                            true,
+                            false);
+                    }
+                }
+            }
+        }
+
+        public MvcHtmlString RenderModule(ModuleRequestResult moduleResult, HttpContextBase httpContext)
         {
             MvcHtmlString moduleOutput;
 
@@ -57,12 +110,28 @@ namespace DotNetNuke.Web.Mvc
             {
                 var moduleExecutionEngine = ComponentFactory.GetComponent<IModuleExecutionEngine>();
 
-                moduleExecutionEngine.ExecuteModuleResult(new SiteContext(httpContext), moduleResult, writer);
+                var site = PortalController.Instance.GetPortal(ModuleContext.PortalId);
+                var alias = ModuleContext.PortalAlias;
+                var page = ModuleContext.PortalSettings.ActiveTab;
+
+                var siteContext = new SiteContext(httpContext)
+                                    {
+                                        ActiveSite = site,
+                                        ActiveSiteAlias = alias,
+                                        ActivePage = page,
+                                        ActiveModuleRequest = moduleResult
+                                    };
+
+                httpContext.SetSiteContext(siteContext);
+
+                moduleExecutionEngine.ExecuteModuleResult(siteContext, moduleResult, writer);
 
                 moduleOutput = MvcHtmlString.Create(writer.ToString());
             }
 
             return moduleOutput;
         }
+
+        public ModuleActionCollection ModuleActions { get; private set; }
     }
 }

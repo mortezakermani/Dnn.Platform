@@ -1,0 +1,27 @@
+﻿@using Dnn.Mvc.Web.Helpers
+@model Dnn.Mvc.Web.Models.PageViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @{
+            Dnn.RenderPane("ContentPane");
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        @{
+            Dnn.RenderPane("leftPane");
+        }
+    </div>
+    <div class="col-md-4">
+        @{
+            Dnn.RenderPane("rightPane");
+        }
+    </div>
+</div>
