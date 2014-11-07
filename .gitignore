@@ -84,8 +84,11 @@ DNN [Pp]latform/[Pp]roviders/*/*/[Bb]in/*
 DNN [Pp]latform/[Pp]roviders/*/*/*/[Bb]in/*
 DNN [Pp]latform/Syndication/[Bb]in/*
 
-DNN MVC/*/[Bb]in/*
-DNN MVC/MVC Modules/*/[Bb]in/*
+DNN MVC/Dnn.Mvc.Core/[Bb]in/*
+DNN MVC/Dnn.Mvc.Utils/[Bb]in/*
+DNN MVC/MVC Modules/Dnn.Mvc.Html/[Bb]in/*
+DNN MVC/MVC Modules/Dnn.Mvc.Tasks/[Bb]in/*
+MVC Website/Dnn.Mvc.Web/[Bb]in/*
 
 [Ww]ebsite/*/[Dd]efault.aspx
 
