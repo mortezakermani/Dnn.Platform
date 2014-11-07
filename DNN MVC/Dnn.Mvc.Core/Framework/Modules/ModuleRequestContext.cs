@@ -27,14 +27,16 @@ namespace Dnn.Mvc.Framework.Modules
 {
     public class ModuleRequestContext
     {
-        public ModuleInfo Module { get; set; }
-
         public ModuleApplication Application { get; set; }
 
-        public RouteData RouteData { get; set; }
+        public HttpContextBase HttpContext { get; set; }
+
+        public ModuleInfo Module { get; set; }
+
+        public MvcMode MvcMode { get; set; }
 
         public string ModuleRoutingUrl { get; set; }
 
-        public HttpContextBase HttpContext { get; set; }
+        public RouteData RouteData { get; set; }
     }
 }

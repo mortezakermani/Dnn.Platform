@@ -19,9 +19,13 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Dnn.Mvc.Framework.ActionResults;
+using Dnn.Mvc.Framework.Modules;
 using Dnn.Mvc.Helpers;
+using Dnn.Mvc.Routing;
 using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
@@ -75,8 +79,7 @@ namespace Dnn.Mvc.Framework.Controllers
         {
             get { return (SiteContext == null) ? null : SiteContext.User; }
         }
-
-
+        
         protected override ViewResult View(IView view, object model)
         {
             if (model != null)
@@ -110,3 +113,6 @@ namespace Dnn.Mvc.Framework.Controllers
         }
     }
 }
+
+
+

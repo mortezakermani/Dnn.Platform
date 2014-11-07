@@ -19,8 +19,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Web.Mvc;
+using System.Web.Routing;
+using Dnn.Mvc.Framework.ActionResults;
 using Dnn.Mvc.Framework.Modules;
+using Dnn.Mvc.Routing;
 
 namespace Dnn.Mvc.Framework.Controllers
 {
@@ -32,6 +36,48 @@ namespace Dnn.Mvc.Framework.Controllers
         {
             _actionInvoker = new ResultCapturingActionInvoker();
             ActionInvoker = _actionInvoker;
+        }
+        public MvcMode MvcMode { get; set; }
+
+        protected override RedirectToRouteResult RedirectToAction(string actionName, string controllerName, RouteValueDictionary routeValues)
+        {
+
+            return RedirectToRoute(actionName, controllerName, routeValues, false);
+        }
+
+        protected override RedirectToRouteResult RedirectToActionPermanent(string actionName, string controllerName, RouteValueDictionary routeValues)
+        {
+            return RedirectToRoute(actionName, controllerName, routeValues, true);
+        }
+
+        protected internal RedirectToRouteResult RedirectToDefaultRoute()
+        {
+            if (MvcMode == MvcMode.Standard)
+            {
+                return RedirectToAction("Index", "Page");
+            }
+            return new DnnRedirecttoRouteResult(String.Empty, String.Empty, String.Empty, null, false, MvcMode);
+        }
+
+        protected override RedirectToRouteResult RedirectToRoute(string routeName, RouteValueDictionary routeValues)
+        {
+            return new DnnRedirecttoRouteResult(String.Empty, String.Empty, routeName, routeValues, false, MvcMode);
+        }
+
+        private DnnRedirecttoRouteResult RedirectToRoute(string actionName, string controllerName, RouteValueDictionary routeValues, bool permanent)
+        {
+            var values = RouteData != null
+                ? RouteValuesHelpers.MergeRouteValues(actionName, controllerName, RouteData.Values, routeValues, true)
+                : RouteValuesHelpers.MergeRouteValues(actionName, controllerName, null, routeValues, true);
+
+            var result = new DnnRedirecttoRouteResult(actionName, controllerName, String.Empty, values, false, MvcMode);
+
+            return result;
+        }
+
+        protected override RedirectToRouteResult RedirectToRoutePermanent(string routeName, RouteValueDictionary routeValues)
+        {
+            return new DnnRedirecttoRouteResult(String.Empty, String.Empty, routeName, routeValues, true, MvcMode);
         }
 
         public ActionResult ResultOfLastExecute

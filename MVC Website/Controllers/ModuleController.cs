@@ -27,7 +27,7 @@ namespace Dnn.Mvc.Web.Controllers
 
                 var moduleExecutionEngine = ComponentFactory.GetComponent<IModuleExecutionEngine>();
 
-                moduleResult = moduleExecutionEngine.ExecuteModule(HttpContext, module, moduleRoute);
+                moduleResult = moduleExecutionEngine.ExecuteModule(HttpContext, MvcMode.Standard, module, moduleRoute);
 
                 ControllerContext.HttpContext.GetSiteContext().ActiveModuleRequest = moduleResult;
 

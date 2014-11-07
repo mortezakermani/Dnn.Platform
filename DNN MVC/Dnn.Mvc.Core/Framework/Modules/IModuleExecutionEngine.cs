@@ -27,9 +27,7 @@ namespace Dnn.Mvc.Framework.Modules
 {
     public interface IModuleExecutionEngine
     {
-        ModuleRequestResult ExecuteModule(HttpContextBase httpContext, ModuleInfo module, string moduleRoute);
-
-        ModuleRequestResult ExecuteModule(HttpContextBase httpContext, ModuleInfo module, ModuleApplication moduleApplication, string moduleRoute);
+        ModuleRequestResult ExecuteModule(HttpContextBase httpContext, MvcMode mvcMode, ModuleInfo module, string moduleRoute);
 
         void ExecuteModuleResult(SiteContext siteContext, ModuleRequestResult moduleResult);
 

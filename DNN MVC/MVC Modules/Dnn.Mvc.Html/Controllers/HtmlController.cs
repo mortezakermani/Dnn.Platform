@@ -24,7 +24,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Dnn.Mvc.Framework.Controllers;
-using Dnn.Mvc.Framework.Modules;
 using Dnn.Mvc.Modules.Html.Models;
 using DotNetNuke.Common;
 using DotNetNuke.Data;
@@ -121,7 +120,7 @@ namespace Dnn.Mvc.Modules.Html.Controllers
                 }
             }
 
-            return RedirectToRoute("DefaultMvcRoute");
+            return RedirectToDefaultRoute();
         }
     }
 }

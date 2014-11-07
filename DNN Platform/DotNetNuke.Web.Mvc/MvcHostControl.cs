@@ -67,7 +67,7 @@ namespace DotNetNuke.Web.Mvc
                 moduleRoute = String.Format("{0}/{1}", moduleApplication.DefaultControllerName, controlKey);
             }
 
-            ModuleRequestResult result = moduleExecutionEngine.ExecuteModule(httpContext, ModuleContext.Configuration, moduleRoute);
+            ModuleRequestResult result = moduleExecutionEngine.ExecuteModule(httpContext, MvcMode.Hosted, ModuleContext.Configuration, moduleRoute);
 
             if (result != null)
             {

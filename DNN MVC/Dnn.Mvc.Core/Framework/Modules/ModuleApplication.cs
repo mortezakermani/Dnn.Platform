@@ -119,6 +119,7 @@ namespace Dnn.Mvc.Framework.Modules
                     throw new InvalidOperationException("Could Not Construct Controller");
                 }
                 moduleController.ActiveModule = context.Module;
+                moduleController.MvcMode = context.MvcMode;
 
                 // Execute the controller and capture the result
                 moduleController.Execute(requestContext);

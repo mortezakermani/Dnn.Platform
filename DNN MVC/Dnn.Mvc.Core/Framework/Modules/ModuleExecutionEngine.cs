@@ -33,7 +33,7 @@ namespace Dnn.Mvc.Framework.Modules
 {
     public class ModuleExecutionEngine : IModuleExecutionEngine
     {
-        public virtual ModuleRequestResult ExecuteModule(HttpContextBase httpContext, ModuleInfo module, string moduleRoute)
+        public virtual ModuleRequestResult ExecuteModule(HttpContextBase httpContext, MvcMode mvcMode, ModuleInfo module, string moduleRoute)
         {
             Requires.NotNull("httpContext", httpContext);
             Requires.NotNull("module", module);
@@ -42,10 +42,10 @@ namespace Dnn.Mvc.Framework.Modules
             //Get the module application for this module
             var app = GetModuleApplication(module);
 
-            return ExecuteModule(httpContext, module, app, moduleRoute);
+            return ExecuteModule(httpContext, mvcMode, module, app, moduleRoute);
         }
 
-        public virtual ModuleRequestResult ExecuteModule(HttpContextBase httpContext, ModuleInfo module, ModuleApplication moduleApplication, string moduleRoute)
+        private ModuleRequestResult ExecuteModule(HttpContextBase httpContext, MvcMode mvcMode, ModuleInfo module, ModuleApplication moduleApplication, string moduleRoute)
         {
             Requires.NotNull("httpContext", httpContext);
             Requires.NotNull("module", module);
@@ -59,7 +59,8 @@ namespace Dnn.Mvc.Framework.Modules
                     Application = moduleApplication,
                     Module = module,
                     ModuleRoutingUrl = moduleRoute,
-                    HttpContext = httpContext
+                    HttpContext = httpContext,
+                    MvcMode = mvcMode
                 };
 
 

@@ -20,6 +20,7 @@
 #endregion
 
 using System.Web.Mvc;
+using Dnn.Mvc.Framework.Modules;
 using DotNetNuke.Entities.Modules;
 
 namespace Dnn.Mvc.Framework.Controllers
@@ -29,6 +30,8 @@ namespace Dnn.Mvc.Framework.Controllers
         ModuleInfo ActiveModule { get; set; }
 
         ControllerContext ControllerContext { get; }
+
+        MvcMode MvcMode { get; set; }
 
         ActionResult ResultOfLastExecute { get; }
     }

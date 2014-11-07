@@ -83,7 +83,7 @@ namespace Dnn.Mvc.Web.Controllers
                 {
                     if (CanInjectModule(selectedModule))
                     {
-                        selectedResult = moduleExecutionEngine.ExecuteModule(HttpContext, selectedModule, moduleRoute);
+                        selectedResult = moduleExecutionEngine.ExecuteModule(HttpContext, MvcMode.Standard, selectedModule, moduleRoute);
 
                         if (selectedResult != null && selectedResult.ActionResult is PageOverrideResult)
                         {
@@ -116,7 +116,7 @@ namespace Dnn.Mvc.Web.Controllers
                         }
                         else
                         {
-                            result = moduleExecutionEngine.ExecuteModule(HttpContext, module, String.Empty);
+                            result = moduleExecutionEngine.ExecuteModule(HttpContext, MvcMode.Hosted, module, String.Empty);
                         }
 
                         //Add result to PaneViewModel

@@ -84,6 +84,8 @@ DNN [Pp]latform/[Pp]roviders/*/*/[Bb]in/*
 DNN [Pp]latform/[Pp]roviders/*/*/*/[Bb]in/*
 DNN [Pp]latform/Syndication/[Bb]in/*
 
+DNN MVC/*/[Bb]in/*
+DNN MVC/MVC Modules/*/[Bb]in/*
 
 [Ww]ebsite/*/[Dd]efault.aspx
 

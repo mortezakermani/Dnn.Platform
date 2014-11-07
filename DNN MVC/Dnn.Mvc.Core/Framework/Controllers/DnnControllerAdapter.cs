@@ -59,5 +59,7 @@ namespace Dnn.Mvc.Framework.Controllers
         {
             get { return _adaptedController.ControllerContext; }
         }
+
+        public MvcMode MvcMode { get; set; }
     }
 }
