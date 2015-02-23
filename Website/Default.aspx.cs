@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// DotNetNuke® - http://www.dotnetnuke.com
+// DotNetNukeÂ® - http://www.dotnetnuke.com
 // Copyright (c) 2002-2014
 // by DotNetNuke Corporation
 // 
@@ -650,7 +650,13 @@ namespace DotNetNuke.Framework
         protected override void OnInit(EventArgs e)
         {
             base.OnInit(e);
-
+	    
+	    //add rtl class to page body tag
+	    if (CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft)
+            {
+                Body.Attributes.Add("class", "rtl");
+            }
+            
             //set global page settings
             InitializePage();
 
